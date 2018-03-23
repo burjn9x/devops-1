@@ -1,10 +1,9 @@
 ## 1.1.ubuntu-upgrade.sh
 
-### cd /home/ubuntu/
-
 ```
+## cd /home/ubuntu/
 git clone https://github.com/o2oprotocol/DevOps.git       && 
-cd DevOps                                                 &&
+cd DevOps
 ```
 
 ### Ubuntu update & upgrade
@@ -38,6 +37,7 @@ sudo ufw allow 'Nginx HTTP'  &&
 sudo ufw allow 'Nginx HTTPS' &&
 sudo ufw allow 'OpenSSH'     &&
 sudo ufw allow 8080          &&
+sudo ufw allow 8888          &&
 sudo ufw enable              
 ```
 
@@ -137,7 +137,7 @@ tar xf mysql-connector-java-5.1.46.tar.gz                                       
 cd "$(find . -type d -name "mysql-connector*")"                                                  &&
 sudo mv mysql-connector*.jar /home/devops/tomcat/lib                                             &&
 
-sudo rsync -avz /home/ubuntu/DevOps/tomcat/devops.service.app  /etc/systemd/system/               &&
+sudo rsync -avz /home/ubuntu/DevOps/tomcat/devops.service      /etc/systemd/system/               &&
 sudo rsync -avz /home/ubuntu/DevOps/scripts/devops-service.sh  /home/devops/                      &&
 sudo sed -i "s/@@LOCALESUPPORT@@/en_US.utf8/g"                 /home/devops/devops-service.sh     &&
 sudo chmod 755 /home/devops/devops-service.sh                                                    &&
@@ -166,13 +166,13 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 `sudo chmod u+x /home/ubuntu/DevOps/scripts/camunda-install.sh`
 
-## Alfresco
+## 3.install-Alfresco
 
 ```
 sudo chmod u+x /home/ubuntu/DevOps/scripts/camunda-install.sh                 &&
 
-echo "alfresco  soft  nofile  8192" | sudo tee -a /etc/security/limits.conf   &&
-echo "alfresco  hard  nofile  65536" | sudo tee -a /etc/security/limits.conf  &&
+echo "alfresco  soft  nofile  8192"   | sudo tee -a /etc/security/limits.conf   &&
+echo "alfresco  hard  nofile  65536"  | sudo tee -a /etc/security/limits.conf  &&
 echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session &&
 echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session-noninteractive
 ```
