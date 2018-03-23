@@ -5,13 +5,13 @@
 
 | x | ## | Software     		| Version            | Command              | PATH                |
 | - | -- | ------------ 		| ------------------ | -------------------- | ------------------- |
-| x | 01 | Ubuntu       		| Ubuntu 16.04.3 LTS | lsb_release -a       |                     |
+| x | 01 | Ubuntu       		| Ubuntu 16.04.4 LTS | lsb_release -a       |                     |
 | x | 02 | Nginx        		| 1.10.3             | nginx -v             |                     |
-| x | 03 | Oracle Java  		| 1.8.0_151          | java -version        | /etc/java-8-oracle/ |
+| x | 03 | Oracle Java  		| 1.8.0_161          | java -version        | /etc/java-8-oracle/ |
 | x | 04 | MAVEN        		| 3.3.9              | mvn -v               | /usr/share/maven    |
 | x | 05 | ANT          		| 1.9.6              | ant -v               | /usr/share/ant      |
 | x | 06 | MariaDB      		| 9.4.11             | mysql --version      | DigitalBusiness2018 |
-| x | 07 | Tomcat       		| 8.0.38             |         			 	|                     |
+| x | 07 | Tomcat       		| 8.5.29             |         			 	|                     |
 | x | 08 | SSL          		|                    |                      |                     |
 | - | 09 | Camunda BPM          |                    |                      |                     |
 | - | 10 | Alfresco ECM         |                    |                      |                     |
