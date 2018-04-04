@@ -3,10 +3,10 @@
 # Script for install of Postgresql to be used with DevOps
 # -------
 
-export DEVOPSDB=devops
-export DEVOPSUSER=devops
-DB_USERNAME=$DEVOPSUSER
-DB_NAME=$DEVOPSDB
+export DEVOPS_DB=devops
+export DEVOPS_USER=devops
+DB_USERNAME=$DEVOPS_USER
+DB_NAME=$DEVOPS_DB
 
 echo
 echo "--------------------------------------------"
@@ -36,8 +36,8 @@ fi
 
 read -e -p "Create DevOps Database and user? [y/n] " -i "n" createdb
 if [ "$createdb" = "y" ]; then
-  sudo -u postgres createuser -D -A -P $DEVOPSUSER
-  sudo -u postgres createdb -O $DEVOPSUSER $DEVOPSDB
+  sudo -u postgres createuser -D -A -P $DEVOPS_USER
+  sudo -u postgres createdb -O $DEVOPS_USER $DEVOPS_DB
   echo
   echo "Remember to update alfresco-global.properties with the DevOps database password"
   echo

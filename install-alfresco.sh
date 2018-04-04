@@ -1,0 +1,764 @@
+#!/bin/bash
+# -------
+# This is standalone script which configure and install Alfresco ECM
+# -------
+
+GHOSTSCRIPT_VERSION=9.18
+export DEVOPS_HOME=/opt/devops
+export CATALINA_HOME=$DEVOPS_HOME/tomcat
+export ALF_DATA_HOME=$DEVOPS_HOME/alf_data
+export BASE_INSTALL=/home/ubuntu/devops
+export TMP_INSTALL=/tmp/devops-install
+export APTVERBOSITY="-qq -y"
+export DEFAULTYESNO="y"
+
+export CATALINA_HOME=$DEVOPS_HOME/tomcat
+
+export ALF_DB_USERNAME_DEFAULT=alfresco
+export ALF_DB_PASSWORD_DEFAULT=alfresco
+export ALF_DB_PORT_DEFAULT=5432
+export ALF_DB_DRIVER_DEFAULT=org.postgresql.Driver
+export ALF_DB_CONNECTOR_DEFAULT=postgresql
+
+export CAMUNDA_DB_USERNAME_DEFAULT=camunda
+export CAMUNDA_DB_PASSWORD_DEFAULT=camunda
+export CAMUNDA_DB_PORT_DEFAULT=3306
+export CAMUNDA_DB_DRIVER_DEFAULT=com.mysql.jdbc.Driver
+export CAMUNDA_DB_CONNECTOR_DEFAULT=mysql
+export CAMUNDA_DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
+#export DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
+
+
+export ALFREPOWAR=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-platform/5.2.g/alfresco-platform-5.2.g.war
+export ALFSHAREWAR=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/share/5.2.f/share-5.2.f.war
+export ALFSHARESERVICES=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-share-services/5.2.f/alfresco-share-services-5.2.f.amp
+export ALFMMTJAR=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-mmt/5.2.g/alfresco-mmt-5.2.g.jar
+
+export SOLR4_WAR_DOWNLOAD=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-solr4/5.2.g/alfresco-solr4-5.2.g.war
+export LIBREOFFICE=http://downloadarchive.documentfoundation.org/libreoffice/old/5.1.6.2/deb/x86_64/LibreOffice_5.1.6.2_Linux_x86-64_deb.tar.gz
+export ALFRESCO_PDF_RENDERER=https://artifacts.alfresco.com/nexus/service/local/repositories/releases/content/org/alfresco/alfresco-pdf-renderer/1.0/alfresco-pdf-renderer-1.0-linux.tgz
+
+export GHOSTSCRIPTURL=http://downloads.ghostscript.com/public/binaries/ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64.tgz
+
+export GOOGLEDOCSREPO=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/integrations/alfresco-googledocs-repo/3.0.4.1/alfresco-googledocs-repo-3.0.4.1.amp
+export GOOGLEDOCSSHARE=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/integrations/alfresco-googledocs-share/3.0.4.1/alfresco-googledocs-share-3.0.4.1.amp
+
+export AOS_VTI=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/aos-module/alfresco-vti-bin/1.1.5/alfresco-vti-bin-1.1.5.war
+export AOS_SERVER_ROOT=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-server-root/5.2.g/alfresco-server-root-5.2.g.war
+export AOS_AMP=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/aos-module/alfresco-aos-module/1.1.6/alfresco-aos-module-1.1.6.amp
+export SOLR4_CONFIG=$BASE_INSTALL/_addons/solr4/$SOLR4_CONFIG_FILE
+
+# Escape for sed
+ALFRESCO_DATA_HOME_PATH="${ALF_DATA_HOME//\//\\/}"
+ALFRESCO_HOME_PATH="${DEVOPS_HOME//\//\\/}"
+
+#Enable Smart Folder or not
+SF_ENABLE=true
+
+
+# Color variables
+txtund=$(tput sgr 0 1)          # Underline
+txtbld=$(tput bold)             # Bold
+bldred=${txtbld}$(tput setaf 1) #  red
+bldgre=${txtbld}$(tput setaf 2) #  red
+bldblu=${txtbld}$(tput setaf 4) #  blue
+bldwht=${txtbld}$(tput setaf 7) #  white
+txtrst=$(tput sgr0)             # Reset
+info=${bldwht}*${txtrst}        # Feedback
+pass=${bldblu}*${txtrst}
+warn=${bldred}*${txtrst}
+ques=${bldblu}?${txtrst}
+
+echoblue () {
+  echo "${bldblu}$1${txtrst}"
+}
+echored () {
+  echo "${bldred}$1${txtrst}"
+}
+echogreen () {
+  echo "${bldgre}$1${txtrst}"
+}
+
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echogreen "Begin running...."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo
+
+URLERROR=0
+
+for REMOTE in $ALFREPOWAR $ALFSHAREWAR $ALFSHARESERVICES $ALFMMTJAR $AOS_VTI $AOS_SERVER_ROOT $AOS_AMP \
+				$SOLR4_WAR_DOWNLOAD $GOOGLEDOCSREPO $GOOGLEDOCSSHARE $LIBREOFFICE $GHOSTSCRIPTURL
+do
+        wget --spider $REMOTE --no-check-certificate >& /dev/null
+        if [ $? != 0 ]
+        then
+                echored "Please fix this URL: $REMOTE and try again later"
+                URLERROR=1
+        fi
+done
+
+if [ $URLERROR = 1 ]
+then
+    echo
+    echored "Please fix the above errors and rerun."
+    echo
+    exit
+fi
+
+cd /tmp
+if [ ! -d "$TMP_INSTALL" ]; then
+  mkdir -p $TMP_INSTALL
+fi
+  
+cd $TMP_INSTALL
+
+
+if [ "`which systemctl`" = "" ]; then
+  export ISON1604=n
+  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+  echo "You are installing for version 14.04 (using upstart for services)."
+  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+  read -e -p "Is this correct [y/n] " -i "$DEFAULTYESNO" useupstart
+  if [ "$useupstart" = "n" ]; then
+    export ISON1604=y
+  fi
+else 
+  export ISON1604=y
+  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+  echo "You are installing for version 16.04 or later (using systemd for services)."
+  echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+  read -e -p "Is this correct [y/n] " -i "$DEFAULTYESNO" useupstart
+  if [ "$useupstart" = "n" ]; then
+    export ISON1604=n
+  fi
+fi
+
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Ubuntu default for number of allowed open files in the file system is too low"
+echo "for alfresco use and tomcat may because of this stop with the error"
+echo "\"too many open files\". You should update this value if you have not done so."
+echo "Read more at http://wiki.alfresco.com/wiki/Too_many_open_files"
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+
+count=$(grep -o "alfresco  soft  nofile  8192" /etc/security/limits.conf | wc -l)
+if [ $count != 0 ]; then
+	echo "limits.conf is already updated, so skipping updating it."
+else
+	read -e -p "Add limits.conf${ques} [y/n] " -i "$DEFAULTYESNO" updatelimits
+	if [ "$updatelimits" = "y" ]; then
+	  echo "alfresco  soft  nofile  8192" | sudo tee -a /etc/security/limits.conf
+	  echo "alfresco  hard  nofile  65536" | sudo tee -a /etc/security/limits.conf
+	  echo
+	  echogreen "Updated /etc/security/limits.conf"
+	  echo
+	  echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session
+	  echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session-noninteractive
+	  echo
+	  echogreen "Updated /etc/security/common-session*"
+	  echo
+	else
+	  echo "Skipped updating limits.conf"
+	  echo
+	fi
+fi
+
+##
+# Ghostscript
+##
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Ghostscript is used in conjunction with ImageMagick to manipulate images for previewing"
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+if [ ! -f "/usr/bin/gs" ]; then
+  echogreen "Installing Ghostscript"
+  echo "Downloading Ghostscript..."
+  curl -# -o $TMP_INSTALL/ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64.tgz $GHOSTSCRIPTURL
+  echo "Extracting..."
+  sudo tar -xf $TMP_INSTALL/ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64.tgz -C $TMP_INSTALL
+  sudo mv $TMP_INSTALL/ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64/gs-918-linux_x86_64 /usr/bin/gs
+  sudo ln -s /usr/bin/gs /usr/bin/ghostscript
+  echo
+  echogreen "Finished installing Ghostscript"
+  echo  
+else
+  echo "Ghostscript is already installed. Skipping install of Ghostscript"
+  echo
+fi
+
+##
+# LibreOffice
+##
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Install LibreOffice."
+echo "This will download and install the latest LibreOffice from libreoffice.org"
+echo "Newer version of Libreoffice has better document filters, and produce better"
+echo "transformations. If you prefer to use Ubuntu standard packages you can skip"
+echo "this install."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Install LibreOffice${ques} [y/n] " -i "$DEFAULTYESNO" installibreoffice
+if [ "$installibreoffice" = "y" ]; then
+
+  cd $TMP_INSTALL
+  if [ ! -f "$TMP_INSTALL/LibreOffice_5.1.6.2_Linux_x86-64_deb.tar.gz" ]; then
+	echo "Downloading LibreOffice..."
+	curl -# -L -O $LIBREOFFICE
+  fi
+  tar xf LibreOffice*.tar.gz
+  cd "$(find . -type d -name "LibreOffice*")"
+  cd DEBS
+  rm *gnome-integration*.deb &&\
+  rm *kde-integration*.deb &&\
+  rm *debian-menus*.deb &&\
+  sudo dpkg -i *.deb
+  echo
+  echoblue "Installing some support fonts for better transformations."
+  # libxinerama1 libglu1-mesa needed to get LibreOffice 4.4 to work. Add the libraries that Alfresco mention in documentatinas required.
+
+  ###1604 fonts-droid not available, use fonts-noto instead
+  if [ "$ISON1604" = "y" ]; then
+    sudo apt-get $APTVERBOSITY install ttf-mscorefonts-installer fonts-noto fontconfig libcups2 libfontconfig1 libglu1-mesa libice6 libsm6 libxinerama1 libxrender1 libxt6
+  else
+    sudo apt-get $APTVERBOSITY install ttf-mscorefonts-installer fonts-droid fontconfig libcups2 libfontconfig1 libglu1-mesa libice6 libsm6 libxinerama1 libxrender1 libxt6
+  fi
+  echo
+  echogreen "Finished installing LibreOffice"
+  echo
+else
+  echo
+  echo "Skipping install of LibreOffice"
+  echored "If you install LibreOffice/OpenOffice separetely, remember to update alfresco-global.properties"
+  echored "Also run: sudo apt-get install ttf-mscorefonts-installer fonts-droid libxinerama1"
+  echo
+fi
+
+# Check if tomcat has been installed in which alfresco configuration should be created
+if [ -d "$CATALINA_HOME" ]; then
+	
+	# Increase cache to support alfresco static resources
+	sudo sed -i '/<\/Context>/i \
+    <Resources	\
+        cachingAllowed="true"	\
+        cacheMaxSize="102400"	\
+        cacheObjectMaxSize="1536" \/> ' $CATALINA_HOME/conf/context.xml
+	
+	# Insert classes and libs need to be loaded during startup
+	sudo sed -i 's/\(^shared\.loader=\).*/\1"\$\{catalina\.base\}\/shared\/classes","\$\{catalina\.base\}\/shared\/lib\/\*\.jar"/' catalina.properties
+	
+	# Check if camunda exists in current server.xml (camunda has been installed in previous step)
+	camunda_found=$(grep -o "camunda" server.xml | wc -l $CATALINA_HOME/conf/server.xml)
+	
+	##
+	# TODO, alfresco and camunda are using the same tomcat server configuration file, we need to find a way to insert alfresco
+	# configuration into existing one without overwite the existing file and re-insert camunda config
+	##
+	# Copy alfresco tomcat server.xml
+	sudo rsync -avz $BASE_INSTALL/tomcat/server.xml $CATALINA_HOME/conf/
+	sudo sed -i "s/@@ALFRESCO_DATA_HOME@@/$ALFRESCO_DATA_HOME_PATH/g" $CATALINA_HOME/conf/server.xml
+	
+	# There is already camunda installed
+	if [ $count != 0 ]; then
+	
+		# Insert Camunda configuration into server.xml
+		sudo sed -i '/<Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" \/>/s/.*/&\n<Listener className="org.camunda.bpm.container.impl.tomcat.TomcatBpmPlatformBootstrap" \/>/' $CATALINA_HOME/conf/server.xml
+		sudo sed -i '/<\/GlobalNamingResources>/i \
+		<Resource name="jdbc\/ProcessEngine"\
+				  auth="Container"\
+				  type="javax.sql.DataSource"\
+				  factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"\
+				  uniqueResourceName="process-engine"\
+				  driverClassName="@@DB_DRIVER@@"\
+				  url="jdbc:@@DB_CONNECTOR@@:\/\/localhost:@@DB_PORT@@\/camunda@@DB_SUFFIX@@"\
+				  username="@@DB_USERNAME@@"\
+				  password="@@DB_PASSWORD@@"\
+				  maxActive="20"\
+				  minIdle="5"\/> ' $CATALINA_HOME/conf/server.xml
+
+		sudo sed -i '/<\/GlobalNamingResources>/i \
+		<Resource name="global\/camunda-bpm-platform\/process-engine\/ProcessEngineService\!org.camunda.bpm.ProcessEngineService"\
+				  auth="Container"\
+				  type="org.camunda.bpm.ProcessEngineService"\
+				  description="camunda BPM platform Process Engine Service"\
+				  factory="org.camunda.bpm.container.impl.jndi.ProcessEngineServiceObjectFactory" \/> ' $CATALINA_HOME/conf/server.xml				  
+		sudo sed -i '/<\/GlobalNamingResources>/i \
+		<Resource name="global/camunda-bpm-platform/process-engine/ProcessApplicationService!org.camunda.bpm.ProcessApplicationService"\
+				  auth="Container"\
+				  type="org.camunda.bpm.ProcessApplicationService"\
+				  description="camunda BPM platform Process Application Service"\
+				  factory="org.camunda.bpm.container.impl.jndi.ProcessApplicationServiceObjectFactory"\/> ' $CATALINA_HOME/conf/server.xml
+				  
+		# Replace database configuration, use default value if variable is not set (in case of running this script independently)
+		  if [ -n "$CAMUNDA_USER" ]; then
+			  sudo sed -i "s/@@DB_USERNAME@@/$CAMUNDA_USER/g" $CATALINA_HOME/conf/server.xml  
+			  sudo sed -i "s/@@DB_PASSWORD@@/$CAMUNDA_PASSWORD/g" $CATALINA_HOME/conf/server.xml
+		  else
+			  sudo sed -i "s/@@DB_USERNAME@@/$CAMUNDA_DB_USERNAME_DEFAULT/g" $CATALINA_HOME/conf/server.xml  
+			  sudo sed -i "s/@@DB_PASSWORD@@/$CAMUNDA_DB_PASSWORD_DEFAULT/g" $CATALINA_HOME/conf/server.xml
+		  fi
+		  
+		   if [ -n "$DB_DRIVER" ]; then
+			  sudo sed -i "s/@@DB_DRIVER@@/$DB_DRIVER/g" $CATALINA_HOME/conf/server.xml
+			  sudo sed -i "s/@@DB_PORT@@/$DB_PORT/g" $CATALINA_HOME/conf/server.xml
+			  sudo sed -i "s/@@DB_CONNECTOR@@/$DB_CONNECTOR/g" $CATALINA_HOME/conf/server.xml
+			  sudo sed -i "s/@@DB_SUFFIX@@/$DB_SUFFIX/g" $CATALINA_HOME/conf/server.xml
+		  else
+			  sudo sed -i "s/@@DB_DRIVER@@/$CAMUNDA_DB_DRIVER_DEFAULT/g" $CATALINA_HOME/conf/server.xml
+			  sudo sed -i "s/@@DB_PORT@@/$CAMUNDA_DB_PORT_DEFAULT/g" $CATALINA_HOME/conf/server.xml
+			  sudo sed -i "s/@@DB_CONNECTOR@@/$CAMUNDA_DB_CONNECTOR_DEFAULT/g" $CATALINA_HOME/conf/server.xml
+			  sudo sed -i "s/@@DB_SUFFIX@@/$CAMUNDA_DB_SUFFIX_DEFAULT/g" $CATALINA_HOME/conf/server.xml
+		  fi		  
+	fi
+	
+    # Create /shared
+	sudo mkdir -p $CATALINA_HOME/shared/classes/alfresco/extension
+	sudo mkdir -p $CATALINA_HOME/shared/classes/alfresco/web-extension
+	sudo mkdir -p $CATALINA_HOME/shared/lib
+	
+	# Add endorsed dir
+	sudo mkdir -p $CATALINA_HOME/endorsed
+
+	echo
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "You need to add the dns name, port and protocol for your server(s)."
+	echo "It is important that this is is a resolvable server name."
+	echo "This information will be added to default configuration files."
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	read -e -p "Please enter the public host name for Share server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" SHARE_HOSTNAME
+	read -e -p "Please enter the protocol to use for public Share server (http or https)${ques} [http] " -i "http" SHARE_PROTOCOL
+	
+	SHARE_PORT=80
+	if [ "${SHARE_PROTOCOL,,}" = "https" ]; then
+		SHARE_PORT=443
+	fi
+	read -e -p "Please enter the host name for Alfresco Repository server (fully qualified domain name) as shown to users${ques} [$SHARE_HOSTNAME] " -i "$SHARE_HOSTNAME" REPO_HOSTNAME
+	read -e -p "Please enter the host name for Alfresco Repository server that Share will use to talk to repository${ques} [localhost] " -i "localhost" SHARE_TO_REPO_HOSTNAME
+	
+	# Add default alfresco-global.propertis
+	ALFRESCO_GLOBAL_TMP_PATH=$TMP_INSTALL
+	ALFRESCO_GLOBAL_PROPERTIES=$ALFRESCO_GLOBAL_TMP_PATH/alfresco-global.properties
+	
+	sudo rsync -avz $BASE_INSTALL/tomcat/alfresco-global.properties $ALFRESCO_GLOBAL_TMP_PATH
+	sudo sed -i "s/@@ALFRESCO_SHARE_SERVER@@/$SHARE_HOSTNAME/g" $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/@@ALFRESCO_SHARE_SERVER_PORT@@/$SHARE_PORT/g" $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/@@ALFRESCO_SHARE_SERVER_PROTOCOL@@/$SHARE_PROTOCOL/g" $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/@@ALFRESCO_REPO_SERVER@@/$REPO_HOSTNAME/g" $ALFRESCO_GLOBAL_PROPERTIES
+  
+	sudo sed -i "s/@@ALFRESCO_DATA_HOME@@/$ALFRESCO_DATA_HOME_PATH/g" $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/@@ALFRESCO_HOME@@/$ALFRESCO_HOME_PATH/g" $ALFRESCO_GLOBAL_PROPERTIES
+  
+	#Enable smart folder funtionality
+	sudo sed -i "s/@@SF_ENABLE@@/$SF_ENABLE/g" $ALFRESCO_GLOBAL_PROPERTIES
+  
+	sudo mv $ALFRESCO_GLOBAL_PROPERTIES $CATALINA_HOME/shared/classes/
+  
+
+	read -e -p "Install Share config file (recommended)${ques} [y/n] " -i "$DEFAULTYESNO" installshareconfig
+	if [ "$installshareconfig" = "y" ]; then
+		SHARE_CONFIG_CUSTOM_TMP_PATH=$TMP_INSTALL
+		SHARE_CONFIG_CUSTOM=$SHARE_CONFIG_CUSTOM_TMP_PATH/share-config-custom.xml
+		sudo rsync -avz $BASE_INSTALL/tomcat/share-config-custom.xml $SHARE_CONFIG_CUSTOM_TMP_PATH
+		sudo sed -i "s/@@ALFRESCO_SHARE_SERVER@@/$SHARE_HOSTNAME/g" $SHARE_CONFIG_CUSTOM
+		sudo sed -i "s/@@SHARE_TO_REPO_SERVER@@/$SHARE_TO_REPO_HOSTNAME/g" $SHARE_CONFIG_CUSTOM
+		sudo mv $SHARE_CONFIG_CUSTOM $CATALINA_HOME/shared/classes/alfresco/web-extension/
+	fi
+  
+	echo "Installing configuration for alfresco on nginx..."
+	sudo mkdir -p /var/cache/nginx/alfresco
+  
+	sudo chown -R www-data:root /var/cache/nginx/alfresco
+	
+	if [ "$SHARE_PORT" = 443 ]; then 
+		sudo rsync -avz $NGINX_CONF/conf.d/alfresco.conf.ssl /etc/nginx/sites-available/
+		mv /etc/nginx/sites-available/alfresco.conf.ssl		/etc/nginx/sites-available/alfresco.conf
+	else
+		sudo rsync -avz $NGINX_CONF/conf.d/alfresco.conf /etc/nginx/sites-available/
+	fi
+	sudo ln -s /etc/nginx/sites-available/alfresco.conf /etc/nginx/sites-enabled/
+  
+	#escape for sed
+	WEB_ROOT_PATH="${WEB_ROOT//\//\\/}"
+	
+	#sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$hostname.conf
+	sudo sed -i "s/@@DNS_DOMAIN@@/$SHARE_HOSTNAME/g" /etc/nginx/sites-available/alfresco.conf
+	sudo sed -i "s/@@PORT@@/$SHARE_PORT/g" /etc/nginx/sites-available/alfresco.conf
+fi
+
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Install ImageMagick."
+echo "This will ImageMagick from Ubuntu packages."
+echo "It is recommended that you install ImageMagick."
+echo "If you prefer some other way of installing ImageMagick, skip this step."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Install ImageMagick${ques} [y/n] " -i "$DEFAULTYESNO" installimagemagick
+if [ "$installimagemagick" = "y" ]; then
+	echoblue "Installing ImageMagick. Fetching packages..."
+	sudo apt-get $APTVERBOSITY install imagemagick ghostscript libgs-dev libjpeg62 libpng3
+	echo
+	if [ "$ISON1604" = "y" ]; then
+		echoblue "Creating symbolic link for ImageMagick-6."
+		sudo ln -s /etc/ImageMagick-6 /etc/ImageMagick
+	fi
+	
+	echo
+	echogreen "Finished installing ImageMagick"
+	echo
+else
+	echo
+	echo "Skipping install of ImageMagick"
+	echored "Remember to install ImageMagick later. It is needed for thumbnail transformations."
+	echo
+fi
+
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Patching ImageMagick for CVE-2016–3714."
+echo "This is all automatic if present."
+echo "More info at https://imagetragick.com/"
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+
+###16.04 already Patched
+if [ "$ISON1604" = "n" ]; then
+	IMAGEMAGICKPOLICYFILE="/etc/ImageMagick/policy.xml"
+
+	if [ -f "$IMAGEMAGICKPOLICYFILE" ]; then
+		if grep -q "rights=\"none\" pattern=\"EPHEMERAL\"" "$IMAGEMAGICKPOLICYFILE"; then
+			echogreen "The policy file looks like it already contains the patch: $IMAGEMAGICKPOLICYFILE"
+		else 
+			sudo sed -i '/<policymap>/a \
+			  <policy domain="coder" rights="none" pattern="EPHEMERAL" /> \
+			  <policy domain="coder" rights="none" pattern="URL" /> \
+			  <policy domain="coder" rights="none" pattern="HTTPS" /> \
+			  <policy domain="coder" rights="none" pattern="MVG" /> \
+			  <policy domain="coder" rights="none" pattern="MSL" /> \
+			  <policy domain="coder" rights="none" pattern="TEXT" /> \
+			  <policy domain="coder" rights="none" pattern="SHOW" /> \
+			  <policy domain="coder" rights="none" pattern="WIN" /> \
+			  <policy domain="coder" rights="none" pattern="PLT" />' $IMAGEMAGICKPOLICYFILE
+          
+			echogreen "Patched file: $IMAGEMAGICKPOLICYFILE" 
+		fi
+	else
+		echored "Could not find file to patch: $IMAGEMAGICKPOLICYFILE"
+	fi
+fi
+
+echo
+echoblue "Adding basic support files. Always installed if not present."
+echo
+	
+# Always add the addons dir and scripts
+sudo mkdir -p $DEVOPS_HOME/addons/war
+sudo mkdir -p $DEVOPS_HOME/addons/share
+sudo mkdir -p $DEVOPS_HOME/addons/alfresco
+	
+if [ ! -f "$DEVOPS_HOME/addons/apply.sh" ]; then
+	echo "Downloading apply.sh script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/apply.sh $DEVOPS_HOME/addons/
+	sudo chmod u+x $DEVOPS_HOME/addons/apply.sh
+fi
+	
+if [ ! -f "$DEVOPS_HOME/addons/alfresco-mmt.jar" ]; then
+	sudo curl -# -o $DEVOPS_HOME/addons/alfresco-mmt.jar $ALFMMTJAR
+fi
+
+# Add the jar modules dir
+sudo mkdir -p $DEVOPS_HOME/modules/platform
+sudo mkdir -p $DEVOPS_HOME/modules/share
+
+sudo mkdir -p $DEVOPS_HOME/bin
+if [ ! -f "$DEVOPS_HOME/bin/alfresco-pdf-renderer" ]; then
+	echo "Downloading Alfresco PDF Renderer binary alfresco-pdf-renderer..."
+    sudo curl -# -o $TMP_INSTALL/alfresco-pdf-renderer.tgz $ALFRESCO_PDF_RENDERER
+    sudo tar -xf $TMP_INSTALL/alfresco-pdf-renderer.tgz -C $TMP_INSTALL
+    sudo mv $TMP_INSTALL/alfresco-pdf-renderer $DEVOPS_HOME/bin/
+fi
+
+sudo mkdir -p $DEVOPS_HOME/scripts
+if [ ! -f "$DEVOPS_HOME/scripts/mariadb.sh" ]; then
+    echo "Copying mariadb.sh install and setup script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/mariadb.sh $DEVOPS_HOME/scripts/
+fi
+
+if [ ! -f "$DEVOPS_HOME/scripts/postgresql.sh" ]; then
+    echo "Copying postgresql.sh install and setup script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/postgresql.sh $DEVOPS_HOME/scripts/
+fi
+
+if [ ! -f "$DEVOPS_HOME/scripts/mysql.sh" ]; then
+    echo "Copying mysql.sh install and setup script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/mysql.sh $DEVOPS_HOME/scripts/
+fi
+
+if [ ! -f "$DEVOPS_HOME/scripts/limitconvert.sh" ]; then
+    echo "Copying limitconvert.sh script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/limitconvert.sh $DEVOPS_HOME/scripts/
+fi
+
+if [ ! -f "$DEVOPS_HOME/scripts/createssl.sh" ]; then
+    echo "Copying createssl.sh script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/createssl.sh $DEVOPS_HOME/scripts/
+ fi
+ 
+if [ ! -f "$DEVOPS_HOME/scripts/libreoffice.sh" ]; then
+    echo "Copying libreoffice.sh script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/libreoffice.sh $DEVOPS_HOME/scripts/
+    sudo sed -i "s/@@LOCALESUPPORT@@/$LOCALESUPPORT/g" $DEVOPS_HOME/scripts/libreoffice.sh
+fi
+
+ if [ ! -f "$DEVOPS_HOME/scripts/iptables.sh" ]; then
+    echo "Copying iptables.sh script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/iptables.sh $DEVOPS_HOME/scripts/
+fi
+
+if [ ! -f "$DEVOPS_HOME/scripts/alfresco-iptables.conf" ]; then
+    echo "Copying alfresco-iptables.conf upstart script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/alfresco-iptables.conf $DEVOPS_HOME/scripts/
+fi
+
+if [ ! -f "$DEVOPS_HOME/scripts/ams.sh" ]; then
+    echo "Copying maintenance shutdown script..."
+	sudo rsync -avz $BASE_INSTALL/scripts/ams.sh $DEVOPS_HOME/scripts/
+fi
+
+sudo chmod 755 $DEVOPS_HOME/scripts/*.sh
+
+# Keystore
+sudo mkdir -p $ALFRESCO_DATA_HOME/keystore
+
+# Only check for precesence of one file, assume all the rest exists as well if so.
+if [ ! -f " $ALFRESCO_DATA_HOME/keystore/ssl.keystore" ]; then
+    echo "Downloading keystore files..."
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/browser.p12 $KEYSTOREBASE/browser.p12
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/generate_keystores.sh $KEYSTOREBASE/generate_keystores.sh
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/keystore $KEYSTOREBASE/keystore
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/keystore-passwords.properties $KEYSTOREBASE/keystore-passwords.properties
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl-keystore-passwords.properties $KEYSTOREBASE/ssl-keystore-passwords.properties
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl-truststore-passwords.properties $KEYSTOREBASE/ssl-truststore-passwords.properties
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl.keystore $KEYSTOREBASE/ssl.keystore
+    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl.truststore $KEYSTOREBASE/ssl.truststore
+fi
+
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Install Alfresco war files."
+echo "Download war files and optional addons."
+echo "If you have already downloaded your war files you can skip this step and add "
+echo "them manually."
+echo
+echo "If you use separate Alfresco and Share server, only install the needed for each"
+echo "server. Alfresco Repository will need Share Services if you use Share."
+echo
+echo "This install place downloaded files in the $DEVOPS_HOME/addons and then use the"
+echo "apply.sh script to add them to tomcat/webapps. Se this script for more info."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Add Alfresco Repository war file${ques} [y/n] " -i "$DEFAULTYESNO" installwar
+if [ "$installwar" = "y" ]; then
+
+  if [ ! -f "$TMP_INSTALL/alfresco.war" ]; then
+	echo "Downloading alfresco.war..."
+	sudo curl -# -o $TMP_INSTALL/alfresco.war $ALFREPOWAR
+  fi	
+  sudo rsync -avz $TMP_INSTALL/alfresco.war	$DEVOPS_HOME/addons/war/
+  #sudo curl -# -o $DEVOPS_HOME/addons/war/alfresco.war $ALFREPOWAR
+  echo
+
+  # Add default alfresco and share modules classloader config files
+  #sudo curl -# -o $CATALINA_HOME/conf/Catalina/localhost/alfresco.xml $BASE_INSTALL/tomcat/alfresco.xml
+  sudo rsync -avz $BASE_INSTALL/tomcat/alfresco.xml $CATALINA_HOME/conf/Catalina/localhost/
+
+  echogreen "Finished adding Alfresco Repository war file"
+  echo
+else
+  echo
+  echo "Skipping adding Alfresco Repository war file and addons"
+  echo
+fi
+
+read -e -p "Add Share Client war file${ques} [y/n] " -i "$DEFAULTYESNO" installsharewar
+if [ "$installsharewar" = "y" ]; then
+
+  if [ ! -f "$TMP_INSTALL/share.war" ]; then
+	echo "Downloading share.war..."
+	sudo curl -# -o $TMP_INSTALL/share.war $ALFSHAREWAR
+  fi	
+  sudo rsync -avz $TMP_INSTALL/share.war	$DEVOPS_HOME/addons/war/
+
+  echogreen "Downloading Share war file..."
+  #sudo curl -# -o $DEVOPS_HOME/addons/war/share.war $ALFSHAREWAR
+  sudo rsync -avz $TMP_INSTALL/share.war	$DEVOPS_HOME/addons/war/
+
+  # Add default alfresco and share modules classloader config files
+  #sudo curl -# -o $CATALINA_HOME/conf/Catalina/localhost/share.xml $BASE_INSTALL/tomcat/share.xml
+  sudo rsync -avz $BASE_INSTALL/tomcat/share.xml $CATALINA_HOME/conf/Catalina/localhost/
+
+  echo
+  echogreen "Finished adding Share war file"
+  echo
+else
+  echo
+  echo "Skipping adding Alfresco Share war file"
+  echo
+fi
+
+if [ "$installwar" = "y" ] || [ "$installsharewar" = "y" ]; then
+cd $TMP_INSTALL
+
+if [ "$installwar" = "y" ]; then
+    echored "You must install Share Services if you intend to use Share Client."
+    read -e -p "Add Share Services plugin${ques} [y/n] " -i "$DEFAULTYESNO" installshareservices
+    if [ "$installshareservices" = "y" ]; then
+      echo "Downloading Share Services addon..."
+      curl -# -O $ALFSHARESERVICES
+      sudo mv alfresco-share-services*.amp $DEVOPS_HOME/addons/alfresco/
+    fi
+fi
+
+read -e -p "Add Google docs integration${ques} [y/n] " -i "$DEFAULTYESNO" installgoogledocs
+if [ "$installgoogledocs" = "y" ]; then
+  echo "Downloading Google docs addon..."
+  if [ "$installwar" = "y" ]; then
+    curl -# -O $GOOGLEDOCSREPO
+    sudo mv alfresco-googledocs-repo*.amp $DEVOPS_HOME/addons/alfresco/
+  fi
+  if [ "$installsharewar" = "y" ]; then
+    curl -# -O $GOOGLEDOCSSHARE
+    sudo mv alfresco-googledocs-share* $DEVOPS_HOME/addons/share/
+  fi
+fi
+fi
+
+
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Install Alfresco Office Services (Sharepoint protocol emulation)."
+echo "This allows you to open and save Microsoft Office documents online."
+echored "This module is not Open Source (Alfresco proprietary)."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Install Alfresco Office Services integration${ques} [y/n] " -i "$DEFAULTYESNO" installssharepoint
+if [ "$installssharepoint" = "y" ]; then
+    echogreen "Installing Alfresco Offices Services bundle..."
+    echogreen "Downloading Alfresco Office Services amp file"
+    # Sub shell to keep the file name
+    (cd $DEVOPS_HOME/addons/alfresco;sudo curl -# -O $AOS_AMP)
+    echogreen "Downloading _vti_bin.war into tomcat/webapps"
+    sudo curl -# -o $DEVOPS_HOME/tomcat/webapps/_vti_bin.war $AOS_VTI
+    echogreen "Downloading ROOT.war into tomcat/webapps"
+    sudo curl -# -o $DEVOPS_HOME/tomcat/webapps/ROOT.war $AOS_SERVER_ROOT
+fi
+
+# Install of war and addons complete, apply them to war file
+if [ "$installwar" = "y" ] || [ "$installsharewar" = "y" ] || [ "$installssharepoint" = "y" ]; then
+    # Check if Java is installed before trying to apply
+    if type -p java; then
+        _java=java
+    elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
+        _java="$JAVA_HOME/bin/java"
+        echored "No JDK installed. When you have installed JDK, run "
+        echored "$DEVOPS_HOME/addons/apply.sh all"
+        echored "to install addons with Alfresco or Share."
+    fi
+    if [[ "$_java" ]]; then
+        sudo $DEVOPS_HOME/addons/apply.sh all
+    fi
+fi
+
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Install Solr4 indexing engine."
+echo "You can run Solr4 on a separate server, unless you plan to do that you should"
+echo "install the Solr4 indexing engine on the same server as your repository server."
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Install Solr4 indexing engine${ques} [y/n] " -i "$DEFAULTYESNO" installsolr
+if [ "$installsolr" = "y" ]; then
+
+  # Make sure we have unzip available
+  sudo apt-get $APTVERBOSITY install unzip
+
+  # Check if we have an old install
+  if [ -d "$DEVOPS_HOME/solr4" ]; then
+     sudo mv $DEVOPS_HOME/solr4 $DEVOPS_HOME/solr4_BACKUP_`eval date +%Y%m%d%H%M`
+  fi
+  sudo mkdir -p $DEVOPS_HOME/solr4
+  cd $DEVOPS_HOME/solr4
+  
+  if [ ! -f "$TMP_INSTALL/solr4.war" ]; then
+	echo "Downloading solr4.war..."
+	sudo curl -# -o $TMP_INSTALL/solr4.war	$SOLR4_WAR_DOWNLOAD
+  fi	
+  sudo rsync -avz $TMP_INSTALL/solr4.war	$CATALINA_HOME/webapps/
+
+
+  echogreen "Downloading solr4.war file..."
+  #sudo curl -# -o $CATALINA_HOME/webapps/solr4.war $SOLR4_WAR_DOWNLOAD
+
+  echogreen "Copying config file..."
+  #sudo curl -# -o $DEVOPS_HOME/solr4/solrconfig.zip $SOLR4_CONFIG
+  sudo rsync -avz $SOLR4_CONFIG $DEVOPS_HOME/solr4
+  
+  echogreen "Expanding config file..."
+  #sudo unzip -q solrconfig.zip
+  sudo unzip -q $DEVOPS_HOME/solr4/$SOLR4_CONFIG_FILE -d $DEVOPS_HOME/solr4/
+  
+  sudo rm $DEVOPS_HOME/solr4/$SOLR4_CONFIG_FILE
+
+  echogreen "Configuring..."
+
+  # Make sure dir exist
+  sudo mkdir -p $ALFRESCO_DATA_HOME/solr4
+  mkdir -p $TMP_INSTALL
+
+  # Remove old config if exists
+  if [ -f "$CATALINA_HOME/conf/Catalina/localhost/solr.xml" ]; then
+     sudo rm $CATALINA_HOME/conf/Catalina/localhost/solr.xml
+  fi
+
+  # Set the solr data path
+  SOLRDATAPATH="$ALFRESCO_DATA_HOME/solr4"
+  # Escape for sed
+  SOLRDATAPATH="${SOLRDATAPATH//\//\\/}"
+
+  sudo mv $DEVOPS_HOME/solr4/workspace-SpacesStore/conf/solrcore.properties $DEVOPS_HOME/solr4/workspace-SpacesStore/conf/solrcore.properties.orig
+  sudo mv $DEVOPS_HOME/solr4/archive-SpacesStore/conf/solrcore.properties $DEVOPS_HOME/solr4/archive-SpacesStore/conf/solrcore.properties.orig
+  sudo sed "s/@@ALFRESCO_SOLR4_DATA_DIR@@/$SOLRDATAPATH/g" $DEVOPS_HOME/solr4/workspace-SpacesStore/conf/solrcore.properties.orig >  $TMP_INSTALL/solrcore.properties
+  sudo mv  $TMP_INSTALL/solrcore.properties $DEVOPS_HOME/solr4/workspace-SpacesStore/conf/solrcore.properties
+  sudo sed "s/@@ALFRESCO_SOLR4_DATA_DIR@@/$SOLRDATAPATH/g" $DEVOPS_HOME/solr4/archive-SpacesStore/conf/solrcore.properties.orig >  $TMP_INSTALL/solrcore.properties
+  sudo mv  $TMP_INSTALL/solrcore.properties $DEVOPS_HOME/solr4/archive-SpacesStore/conf/solrcore.properties
+
+  echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>" > $TMP_INSTALL/solr4.xml
+  echo "<Context debug=\"0\" crossContext=\"true\">" >> $TMP_INSTALL/solr4.xml
+  echo "  <Environment name=\"solr/home\" type=\"java.lang.String\" value=\"$DEVOPS_HOME/solr4\" override=\"true\"/>" >> $TMP_INSTALL/solr4.xml
+  echo "  <Environment name=\"solr/model/dir\" type=\"java.lang.String\" value=\"$DEVOPS_HOME/solr4/alfrescoModels\" override=\"true\"/>" >> $TMP_INSTALL/solr4.xml
+  echo "  <Environment name=\"solr/content/dir\" type=\"java.lang.String\" value=\"$ALFRESCO_DATA_HOME/solr4/content\" override=\"true\"/>" >> $TMP_INSTALL/solr4.xml
+  echo "</Context>" >> $TMP_INSTALL/solr4.xml
+  sudo mv $TMP_INSTALL/solr4.xml $CATALINA_HOME/conf/Catalina/localhost/solr4.xml
+  
+  sudo sed -i "s/@@ALFRESCO_SOLR4_DIR@@/$DEVOPS_HOME_PATH\/solr4/g" $DEVOPS_HOME/solr4/context.xml  
+  sudo sed -i "s/@@ALFRESCO_SOLR4_MODEL_DIR@@/$ALFRESCO_DATA_HOME_PATH\/solr4\/model/g" $DEVOPS_HOME/solr4/context.xml 
+  sudo sed -i "s/@@ALFRESCO_SOLR4_CONTENT_DIR@@/$ALFRESCO_DATA_HOME_PATH\/solr4\/content/g" $DEVOPS_HOME/solr4/context.xml
+  
+  
+  if [ ! -f "$CATALINA_HOME/conf/Catalina/localhost/solr4.xml" ]; then
+	mv $DEVOPS_HOME/solr4/context.xml $CATALINA_HOME/conf/Catalina/localhost/solr4.xml
+  fi
+
+  echogreen "Setting permissions..."
+  #sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $CATALINA_HOME/webapps
+  #sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $ALFRESCO_DATA_HOME/solr4
+  #sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $DEVOPS_HOME/solr4
+
+  echo
+  echogreen "Finished installing Solr4 engine."
+  echored "Verify your setting in alfresco-global.properties."
+  echo "Set property value index.subsystem.name=solr4"
+  echo
+else
+  echo
+  echo "Skipping installing Solr4."
+  echo "You can always install Solr4 at a later time."
+  echo
+fi
+
+
+
