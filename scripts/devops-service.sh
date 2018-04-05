@@ -1,6 +1,7 @@
 #!/bin/bash
 # -------
 # Script for starting/stopping Camunda & Alfresco Tomcat from systemd
+#
 # -------
 
 export LC_ALL=@@LOCALESUPPORT@@
@@ -64,25 +65,25 @@ cleanup(){
     SHUTDOWN_PORT=`netstat -vatn|grep LISTEN|grep 8005|wc -l`
 
     if [ $SHUTDOWN_PORT -ne 0 ]; then
-        logger -is -t "DevOps (Camunda, Alfresco) Tomcat" "Warning: started, cannot clean tomcat."
+        logger -is -t " (Camunda, Alfresco) Tomcat" "Warning: started, cannot clean tomcat."
     else
         # cleanup temp directory before starting
         {
             sudo rm -rf $CATALINA_TMPDIR/*
         } || {
-            logger -i -t "DevOps (Camunda, Alfresco) Tomcat" "Warning: Failed to clean tomcat tempdirectory."
+            logger -i -t " (Camunda, Alfresco) Tomcat" "Warning: Failed to clean tomcat tempdirectory."
         }
 
         {
             sudo rm -rf $CATALINA_HOME/work/*
         } || {
-            logger -i -t "DevOps (Camunda, Alfresco) Tomcat" "Warning: Failed to clean tomcat work directory."
+            logger -i -t " (Camunda, Alfresco) Tomcat" "Warning: Failed to clean tomcat work directory."
         }
 
         {
             sudo rm -rf $CATALINA_HOME/logs/*
         } || {
-            logger -i -t "DevOps (Camunda, Alfresco) Tomcat" "Warning: Failed to clean tomcat log directory."
+            logger -i -t " (Camunda, Alfresco) Tomcat" "Warning: Failed to clean tomcat log directory."
         }
     fi
 

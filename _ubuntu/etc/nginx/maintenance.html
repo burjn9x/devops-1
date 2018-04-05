@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
 
-<title>DevOps Maintenance</title>
+<title>Workforce Maintenance</title>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 <script type="text/javascript" src="/downtime.js"></script>
@@ -64,7 +64,7 @@
         if (getPercent() === 100)
         {
             console.log('All done');
-            $(".progressmessage").html('Since we have run out of expected downtime, something was clearly harder to fix than we anticipated. But we are working hard to get the system up and running. In fact, we may already be done. Try hitting Load DevOps Now button.');
+            $(".progressmessage").html('Since we have run out of expected downtime, something was clearly harder to fix than we anticipated. But we are working hard to get the system up and running. In fact, we may already be done. Try hitting Load Workforce Now button.');
         }
         else
         {
@@ -82,7 +82,7 @@
                     window.location = reloadURL;
                 }
             }, 10000);
-            $(".progressmessage").html('I know the DevOps System administrators sometimes are very quick. Therefore I will hit the Load DevOps Now button to see if they are done!');
+            $(".progressmessage").html('I know the Workforce System administrators sometimes are very quick. Therefore I will hit the Load Workforce Now button to see if they are done!');
         }
 
     }
@@ -282,7 +282,7 @@
 <body onload="initialize()">
 
 <div id="page-wrap">
-    <h1>DevOps down for maintenance</h1>
+    <h1>Workforce down for maintenance</h1>
 
     <p class="specialMessage"></p>
 
@@ -294,7 +294,7 @@
 
     <p class="progressmessage"></p>
 
-    <p><a href="/share/" onclick="window.location.reload(true);" class="loadnowbutton">Load DevOps Now</a></p>
+    <p><a href="/share/" onclick="window.location.reload(true);" class="loadnowbutton">Load Workforce Now</a></p>
 
 </div>
 

@@ -4,28 +4,31 @@
 # -------
 
 GHOSTSCRIPT_VERSION=9.18
-export DEVOPS_HOME=/opt/devops
+export DEVOPS_HOME=/home/devops
 export CATALINA_HOME=$DEVOPS_HOME/tomcat
 export ALF_DATA_HOME=$DEVOPS_HOME/alf_data
 export BASE_INSTALL=/home/ubuntu/devops
+export NGINX_CONF=$BASE_INSTALL/_ubuntu/etc/nginx
 export TMP_INSTALL=/tmp/devops-install
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"
+export SOLR4_CONFIG_FILE=alfresco-solr4-5.2.g-config-ssl.zip
+export TOMCAT_HTTP_PORT_DEFAULT=8080
 
 export CATALINA_HOME=$DEVOPS_HOME/tomcat
 
 export ALF_DB_USERNAME_DEFAULT=alfresco
 export ALF_DB_PASSWORD_DEFAULT=alfresco
+export ALF_DB_NAME_DEFAULT=alfresco
 export ALF_DB_PORT_DEFAULT=5432
 export ALF_DB_DRIVER_DEFAULT=org.postgresql.Driver
 export ALF_DB_CONNECTOR_DEFAULT=postgresql
+export ALF_DB_SUFFIX_DEFAULT=''
 
-export CAMUNDA_DB_USERNAME_DEFAULT=camunda
-export CAMUNDA_DB_PASSWORD_DEFAULT=camunda
-export CAMUNDA_DB_PORT_DEFAULT=3306
-export CAMUNDA_DB_DRIVER_DEFAULT=com.mysql.jdbc.Driver
-export CAMUNDA_DB_CONNECTOR_DEFAULT=mysql
-export CAMUNDA_DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
+export MYSQL_DB_PORT_DEFAULT=3306
+export MYSQL_DB_DRIVER_DEFAULT=com.mysql.jdbc.Driver
+export MYSQL_DB_CONNECTOR_DEFAULT=mysql
+export MYSQL_DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
 #export DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
 
 
@@ -37,6 +40,7 @@ export ALFMMTJAR=https://artifacts.alfresco.com/nexus/content/repositories/publi
 export SOLR4_WAR_DOWNLOAD=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-solr4/5.2.g/alfresco-solr4-5.2.g.war
 export LIBREOFFICE=http://downloadarchive.documentfoundation.org/libreoffice/old/5.1.6.2/deb/x86_64/LibreOffice_5.1.6.2_Linux_x86-64_deb.tar.gz
 export ALFRESCO_PDF_RENDERER=https://artifacts.alfresco.com/nexus/service/local/repositories/releases/content/org/alfresco/alfresco-pdf-renderer/1.0/alfresco-pdf-renderer-1.0-linux.tgz
+export KEYSTOREBASE=https://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/repository/config/alfresco/keystore
 
 export GHOSTSCRIPTURL=http://downloads.ghostscript.com/public/binaries/ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64.tgz
 
@@ -49,7 +53,7 @@ export AOS_AMP=https://artifacts.alfresco.com/nexus/content/repositories/public/
 export SOLR4_CONFIG=$BASE_INSTALL/_addons/solr4/$SOLR4_CONFIG_FILE
 
 # Escape for sed
-ALFRESCO_DATA_HOME_PATH="${ALF_DATA_HOME//\//\\/}"
+ALF_DATA_HOME_PATH="${ALF_DATA_HOME//\//\\/}"
 ALFRESCO_HOME_PATH="${DEVOPS_HOME//\//\\/}"
 
 #Enable Smart Folder or not
@@ -236,82 +240,31 @@ fi
 
 # Check if tomcat has been installed in which alfresco configuration should be created
 if [ -d "$CATALINA_HOME" ]; then
-	
-	# Increase cache to support alfresco static resources
-	sudo sed -i '/<\/Context>/i \
-    <Resources	\
-        cachingAllowed="true"	\
-        cacheMaxSize="102400"	\
-        cacheObjectMaxSize="1536" \/> ' $CATALINA_HOME/conf/context.xml
+	caching_found=$(grep -o "caching" $CATALINA_HOME/conf/context.xml | wc -l)
+	if [ $caching_found = 0 ]; then
+		# Increase cache to support alfresco static resources
+		sudo sed -i '/<\/Context>/i \
+		<Resources	\
+			cachingAllowed="true"	\
+			cacheMaxSize="102400"	\
+			cacheObjectMaxSize="1536" \/> ' $CATALINA_HOME/conf/context.xml
+	fi
 	
 	# Insert classes and libs need to be loaded during startup
-	sudo sed -i 's/\(^shared\.loader=\).*/\1"\$\{catalina\.base\}\/shared\/classes","\$\{catalina\.base\}\/shared\/lib\/\*\.jar"/' catalina.properties
+	sudo sed -i 's/\(^shared\.loader=\).*/\1"\$\{catalina\.base\}\/shared\/classes","\$\{catalina\.base\}\/shared\/lib\/\*\.jar"/' $CATALINA_HOME/conf/catalina.properties
 	
 	# Check if camunda exists in current server.xml (camunda has been installed in previous step)
-	camunda_found=$(grep -o "camunda" server.xml | wc -l $CATALINA_HOME/conf/server.xml)
-	
+	camunda_found=$(grep -o "camunda" $CATALINA_HOME/conf/server.xml | wc -l)
+		
 	##
 	# TODO, alfresco and camunda are using the same tomcat server configuration file, we need to find a way to insert alfresco
 	# configuration into existing one without overwite the existing file and re-insert camunda config
 	##
 	# Copy alfresco tomcat server.xml
 	sudo rsync -avz $BASE_INSTALL/tomcat/server.xml $CATALINA_HOME/conf/
-	sudo sed -i "s/@@ALFRESCO_DATA_HOME@@/$ALFRESCO_DATA_HOME_PATH/g" $CATALINA_HOME/conf/server.xml
+	sudo sed -i "s/@@ALF_DATA_HOME@@/$ALF_DATA_HOME_PATH/g" $CATALINA_HOME/conf/server.xml
 	
-	# There is already camunda installed
-	if [ $count != 0 ]; then
-	
-		# Insert Camunda configuration into server.xml
-		sudo sed -i '/<Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" \/>/s/.*/&\n<Listener className="org.camunda.bpm.container.impl.tomcat.TomcatBpmPlatformBootstrap" \/>/' $CATALINA_HOME/conf/server.xml
-		sudo sed -i '/<\/GlobalNamingResources>/i \
-		<Resource name="jdbc\/ProcessEngine"\
-				  auth="Container"\
-				  type="javax.sql.DataSource"\
-				  factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"\
-				  uniqueResourceName="process-engine"\
-				  driverClassName="@@DB_DRIVER@@"\
-				  url="jdbc:@@DB_CONNECTOR@@:\/\/localhost:@@DB_PORT@@\/camunda@@DB_SUFFIX@@"\
-				  username="@@DB_USERNAME@@"\
-				  password="@@DB_PASSWORD@@"\
-				  maxActive="20"\
-				  minIdle="5"\/> ' $CATALINA_HOME/conf/server.xml
-
-		sudo sed -i '/<\/GlobalNamingResources>/i \
-		<Resource name="global\/camunda-bpm-platform\/process-engine\/ProcessEngineService\!org.camunda.bpm.ProcessEngineService"\
-				  auth="Container"\
-				  type="org.camunda.bpm.ProcessEngineService"\
-				  description="camunda BPM platform Process Engine Service"\
-				  factory="org.camunda.bpm.container.impl.jndi.ProcessEngineServiceObjectFactory" \/> ' $CATALINA_HOME/conf/server.xml				  
-		sudo sed -i '/<\/GlobalNamingResources>/i \
-		<Resource name="global/camunda-bpm-platform/process-engine/ProcessApplicationService!org.camunda.bpm.ProcessApplicationService"\
-				  auth="Container"\
-				  type="org.camunda.bpm.ProcessApplicationService"\
-				  description="camunda BPM platform Process Application Service"\
-				  factory="org.camunda.bpm.container.impl.jndi.ProcessApplicationServiceObjectFactory"\/> ' $CATALINA_HOME/conf/server.xml
-				  
-		# Replace database configuration, use default value if variable is not set (in case of running this script independently)
-		  if [ -n "$CAMUNDA_USER" ]; then
-			  sudo sed -i "s/@@DB_USERNAME@@/$CAMUNDA_USER/g" $CATALINA_HOME/conf/server.xml  
-			  sudo sed -i "s/@@DB_PASSWORD@@/$CAMUNDA_PASSWORD/g" $CATALINA_HOME/conf/server.xml
-		  else
-			  sudo sed -i "s/@@DB_USERNAME@@/$CAMUNDA_DB_USERNAME_DEFAULT/g" $CATALINA_HOME/conf/server.xml  
-			  sudo sed -i "s/@@DB_PASSWORD@@/$CAMUNDA_DB_PASSWORD_DEFAULT/g" $CATALINA_HOME/conf/server.xml
-		  fi
-		  
-		   if [ -n "$DB_DRIVER" ]; then
-			  sudo sed -i "s/@@DB_DRIVER@@/$DB_DRIVER/g" $CATALINA_HOME/conf/server.xml
-			  sudo sed -i "s/@@DB_PORT@@/$DB_PORT/g" $CATALINA_HOME/conf/server.xml
-			  sudo sed -i "s/@@DB_CONNECTOR@@/$DB_CONNECTOR/g" $CATALINA_HOME/conf/server.xml
-			  sudo sed -i "s/@@DB_SUFFIX@@/$DB_SUFFIX/g" $CATALINA_HOME/conf/server.xml
-		  else
-			  sudo sed -i "s/@@DB_DRIVER@@/$CAMUNDA_DB_DRIVER_DEFAULT/g" $CATALINA_HOME/conf/server.xml
-			  sudo sed -i "s/@@DB_PORT@@/$CAMUNDA_DB_PORT_DEFAULT/g" $CATALINA_HOME/conf/server.xml
-			  sudo sed -i "s/@@DB_CONNECTOR@@/$CAMUNDA_DB_CONNECTOR_DEFAULT/g" $CATALINA_HOME/conf/server.xml
-			  sudo sed -i "s/@@DB_SUFFIX@@/$CAMUNDA_DB_SUFFIX_DEFAULT/g" $CATALINA_HOME/conf/server.xml
-		  fi		  
-	fi
-	
-    # Create /shared
+	# Create /shared
 	sudo mkdir -p $CATALINA_HOME/shared/classes/alfresco/extension
 	sudo mkdir -p $CATALINA_HOME/shared/classes/alfresco/web-extension
 	sudo mkdir -p $CATALINA_HOME/shared/lib
@@ -344,9 +297,45 @@ if [ -d "$CATALINA_HOME" ]; then
 	sudo sed -i "s/@@ALFRESCO_SHARE_SERVER_PORT@@/$SHARE_PORT/g" $ALFRESCO_GLOBAL_PROPERTIES
 	sudo sed -i "s/@@ALFRESCO_SHARE_SERVER_PROTOCOL@@/$SHARE_PROTOCOL/g" $ALFRESCO_GLOBAL_PROPERTIES
 	sudo sed -i "s/@@ALFRESCO_REPO_SERVER@@/$REPO_HOSTNAME/g" $ALFRESCO_GLOBAL_PROPERTIES
-  
-	sudo sed -i "s/@@ALFRESCO_DATA_HOME@@/$ALFRESCO_DATA_HOME_PATH/g" $ALFRESCO_GLOBAL_PROPERTIES
-	sudo sed -i "s/@@ALFRESCO_HOME@@/$ALFRESCO_HOME_PATH/g" $ALFRESCO_GLOBAL_PROPERTIES
+	
+	sudo sed -i "s/@@ALF_DATA_HOME@@/$ALF_DATA_HOME_PATH/g" $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/@@ALF_HOME@@/$ALFRESCO_HOME_PATH/g" $ALFRESCO_GLOBAL_PROPERTIES
+	
+	# Replace database configuration, use default value if variable is not set (in case of running this script independently)
+	if [ -n "$ALFRESCO_USER" ]; then
+		sudo sed -i "s/@@DB_USERNAME@@/$ALFRESCO_USER/g"		$ALFRESCO_GLOBAL_PROPERTIES  
+		sudo sed -i "s/@@DB_PASSWORD@@/$ALFRESCO_PASSWORD/g" $ALFRESCO_GLOBAL_PROPERTIES
+	else
+		sudo sed -i "s/@@DB_USERNAME@@/$ALF_DB_USERNAME_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES  
+		sudo sed -i "s/@@DB_PASSWORD@@/$ALF_DB_PASSWORD_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+	fi
+	
+	if [ $DB_SELECTION = 'MA' ] || [ $DB_SELECTION = 'MY' ] ; then	#mysql
+		sudo sed -i "s/@@DB_DRIVER@@/$MYSQL_DB_DRIVER_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+		sudo sed -i "s/@@DB_PORT@@/$MYSQL_DB_PORT_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+		sudo sed -i "s/@@DB_CONNECTOR@@/$MYSQL_DB_CONNECTOR_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+		sudo sed -i "s/@@DB_SUFFIX@@/$MYSQL_DB_SUFFIX_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+	else	#postgres
+		sudo sed -i "s/@@DB_DRIVER@@/$ALF_DB_DRIVER_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+		sudo sed -i "s/@@DB_PORT@@/$ALF_DB_PORT_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+		sudo sed -i "s/@@DB_CONNECTOR@@/$ALF_DB_CONNECTOR_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+		sudo sed -i "s/@@DB_SUFFIX@@/$ALF_DB_SUFFIX_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+	fi
+	
+	if [ -n "$ALFRESCO_DB" ]; then
+		sudo sed -i "s/@@DB_NAME@@/$ALFRESCO_DB/g" $ALFRESCO_GLOBAL_PROPERTIES
+	else
+		sudo sed -i "s/@@DB_NAME@@/$ALF_DB_NAME_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
+	fi
+	
+	# Check if tomcat ports have been changed previously, 
+	# so we will roll back to original state when server.xml is overwritten after installing alfresco 
+	if [ -n "$TOMCAT_HTTP_PORT" ]; then
+		# Change server default port
+		sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" $CATALINA_HOME/conf/server.xml
+		sudo sed -i "s/8005/$TOMCAT_SHUTDOWN_PORT/g" $CATALINA_HOME/conf/server.xml
+		sudo sed -i "s/8009/$TOMCAT_AJP_PORT/g" $CATALINA_HOME/conf/server.xml
+	fi
   
 	#Enable smart folder funtionality
 	sudo sed -i "s/@@SF_ENABLE@@/$SF_ENABLE/g" $ALFRESCO_GLOBAL_PROPERTIES
@@ -370,10 +359,10 @@ if [ -d "$CATALINA_HOME" ]; then
 	sudo chown -R www-data:root /var/cache/nginx/alfresco
 	
 	if [ "$SHARE_PORT" = 443 ]; then 
-		sudo rsync -avz $NGINX_CONF/conf.d/alfresco.conf.ssl /etc/nginx/sites-available/
+		sudo rsync -avz $NGINX_CONF/sites-available/alfresco.conf.ssl /etc/nginx/sites-available/
 		mv /etc/nginx/sites-available/alfresco.conf.ssl		/etc/nginx/sites-available/alfresco.conf
 	else
-		sudo rsync -avz $NGINX_CONF/conf.d/alfresco.conf /etc/nginx/sites-available/
+		sudo rsync -avz $NGINX_CONF/sites-available/alfresco.conf /etc/nginx/sites-available/
 	fi
 	sudo ln -s /etc/nginx/sites-available/alfresco.conf /etc/nginx/sites-enabled/
   
@@ -382,8 +371,13 @@ if [ -d "$CATALINA_HOME" ]; then
 	
 	#sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$hostname.conf
 	sudo sed -i "s/@@DNS_DOMAIN@@/$SHARE_HOSTNAME/g" /etc/nginx/sites-available/alfresco.conf
-	sudo sed -i "s/@@PORT@@/$SHARE_PORT/g" /etc/nginx/sites-available/alfresco.conf
-fi
+	
+	if [ -n "$TOMCAT_HTTP_PORT" ]; then
+		sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/alfresco.conf
+	else
+		sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT_DEFAULT/g" /etc/nginx/sites-available/alfresco.conf
+	fi
+fi	
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -525,19 +519,19 @@ fi
 sudo chmod 755 $DEVOPS_HOME/scripts/*.sh
 
 # Keystore
-sudo mkdir -p $ALFRESCO_DATA_HOME/keystore
+sudo mkdir -p $ALF_DATA_HOME/keystore
 
 # Only check for precesence of one file, assume all the rest exists as well if so.
-if [ ! -f " $ALFRESCO_DATA_HOME/keystore/ssl.keystore" ]; then
+if [ ! -f " $ALF_DATA_HOME/keystore/ssl.keystore" ]; then
     echo "Downloading keystore files..."
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/browser.p12 $KEYSTOREBASE/browser.p12
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/generate_keystores.sh $KEYSTOREBASE/generate_keystores.sh
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/keystore $KEYSTOREBASE/keystore
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/keystore-passwords.properties $KEYSTOREBASE/keystore-passwords.properties
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl-keystore-passwords.properties $KEYSTOREBASE/ssl-keystore-passwords.properties
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl-truststore-passwords.properties $KEYSTOREBASE/ssl-truststore-passwords.properties
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl.keystore $KEYSTOREBASE/ssl.keystore
-    sudo curl -# -o $ALFRESCO_DATA_HOME/keystore/ssl.truststore $KEYSTOREBASE/ssl.truststore
+    sudo curl -# -o $ALF_DATA_HOME/keystore/browser.p12 $KEYSTOREBASE/browser.p12
+    sudo curl -# -o $ALF_DATA_HOME/keystore/generate_keystores.sh $KEYSTOREBASE/generate_keystores.sh
+    sudo curl -# -o $ALF_DATA_HOME/keystore/keystore $KEYSTOREBASE/keystore
+    sudo curl -# -o $ALF_DATA_HOME/keystore/keystore-passwords.properties $KEYSTOREBASE/keystore-passwords.properties
+    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl-keystore-passwords.properties $KEYSTOREBASE/ssl-keystore-passwords.properties
+    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl-truststore-passwords.properties $KEYSTOREBASE/ssl-truststore-passwords.properties
+    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl.keystore $KEYSTOREBASE/ssl.keystore
+    sudo curl -# -o $ALF_DATA_HOME/keystore/ssl.truststore $KEYSTOREBASE/ssl.truststore
 fi
 
 echo
@@ -706,7 +700,7 @@ if [ "$installsolr" = "y" ]; then
   echogreen "Configuring..."
 
   # Make sure dir exist
-  sudo mkdir -p $ALFRESCO_DATA_HOME/solr4
+  sudo mkdir -p $ALF_DATA_HOME/solr4
   mkdir -p $TMP_INSTALL
 
   # Remove old config if exists
@@ -715,7 +709,7 @@ if [ "$installsolr" = "y" ]; then
   fi
 
   # Set the solr data path
-  SOLRDATAPATH="$ALFRESCO_DATA_HOME/solr4"
+  SOLRDATAPATH="$ALF_DATA_HOME/solr4"
   # Escape for sed
   SOLRDATAPATH="${SOLRDATAPATH//\//\\/}"
 
@@ -730,23 +724,18 @@ if [ "$installsolr" = "y" ]; then
   echo "<Context debug=\"0\" crossContext=\"true\">" >> $TMP_INSTALL/solr4.xml
   echo "  <Environment name=\"solr/home\" type=\"java.lang.String\" value=\"$DEVOPS_HOME/solr4\" override=\"true\"/>" >> $TMP_INSTALL/solr4.xml
   echo "  <Environment name=\"solr/model/dir\" type=\"java.lang.String\" value=\"$DEVOPS_HOME/solr4/alfrescoModels\" override=\"true\"/>" >> $TMP_INSTALL/solr4.xml
-  echo "  <Environment name=\"solr/content/dir\" type=\"java.lang.String\" value=\"$ALFRESCO_DATA_HOME/solr4/content\" override=\"true\"/>" >> $TMP_INSTALL/solr4.xml
+  echo "  <Environment name=\"solr/content/dir\" type=\"java.lang.String\" value=\"$ALF_DATA_HOME/solr4/content\" override=\"true\"/>" >> $TMP_INSTALL/solr4.xml
   echo "</Context>" >> $TMP_INSTALL/solr4.xml
   sudo mv $TMP_INSTALL/solr4.xml $CATALINA_HOME/conf/Catalina/localhost/solr4.xml
   
   sudo sed -i "s/@@ALFRESCO_SOLR4_DIR@@/$DEVOPS_HOME_PATH\/solr4/g" $DEVOPS_HOME/solr4/context.xml  
-  sudo sed -i "s/@@ALFRESCO_SOLR4_MODEL_DIR@@/$ALFRESCO_DATA_HOME_PATH\/solr4\/model/g" $DEVOPS_HOME/solr4/context.xml 
-  sudo sed -i "s/@@ALFRESCO_SOLR4_CONTENT_DIR@@/$ALFRESCO_DATA_HOME_PATH\/solr4\/content/g" $DEVOPS_HOME/solr4/context.xml
+  sudo sed -i "s/@@ALFRESCO_SOLR4_MODEL_DIR@@/$ALF_DATA_HOME_PATH\/solr4\/model/g" $DEVOPS_HOME/solr4/context.xml 
+  sudo sed -i "s/@@ALFRESCO_SOLR4_CONTENT_DIR@@/$ALF_DATA_HOME_PATH\/solr4\/content/g" $DEVOPS_HOME/solr4/context.xml
   
   
   if [ ! -f "$CATALINA_HOME/conf/Catalina/localhost/solr4.xml" ]; then
 	mv $DEVOPS_HOME/solr4/context.xml $CATALINA_HOME/conf/Catalina/localhost/solr4.xml
   fi
-
-  echogreen "Setting permissions..."
-  #sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $CATALINA_HOME/webapps
-  #sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $ALFRESCO_DATA_HOME/solr4
-  #sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $DEVOPS_HOME/solr4
 
   echo
   echogreen "Finished installing Solr4 engine."

@@ -1,17 +1,18 @@
 #!/bin/bash
 # -------
-# Script for install of Postgresql to be used with DevOps
+# Script for install of Postgresql
+#
 # -------
 
-export DEVOPS_DB=devops
-export DEVOPS_USER=devops
-DB_USERNAME=$DEVOPS_USER
-DB_NAME=$DEVOPS_DB
+export ALFRESCO_DB=alfresco
+export ALFRESCO_USER=alfresco
+export CAMUNDA_DB=camunda
+export CAMUNDA_USER=camunda
 
 echo
 echo "--------------------------------------------"
 echo "This script will install PostgreSQL."
-echo "and create DevOps database and user."
+echo "and create Devops database and user."
 echo "You may be prompted for sudo password."
 echo "--------------------------------------------"
 echo
@@ -34,12 +35,19 @@ if [ "$installpg" = "y" ]; then
   echo
 fi
 
-read -e -p "Create DevOps Database and user? [y/n] " -i "n" createdb
+read -e -p "Create Alfresco Database and user? [y/n] " -i "n" createdb
 if [ "$createdb" = "y" ]; then
-  sudo -u postgres createuser -D -A -P $DEVOPS_USER
-  sudo -u postgres createdb -O $DEVOPS_USER $DEVOPS_DB
+  sudo -u postgres createuser -D -A -P $ALFRESCO_USER
+  sudo -u postgres createdb -O $ALFRESCO_USER $ALFRESCO_DB
   echo
-  echo "Remember to update alfresco-global.properties with the DevOps database password"
+  echo
+fi
+
+read -e -p "Create Camunda Database and user? [y/n] " -i "n" createdb
+if [ "$createdb" = "y" ]; then
+  sudo -u postgres createuser -D -A -P $CAMUNDA_USER
+  sudo -u postgres createdb -O $CAMUNDA_USER $CAMUNDA_DB
+  echo
   echo
 fi
 

@@ -1,6 +1,9 @@
 #!/bin/bash
 # -------
 # Script for apply AMPs to installed WAR
+#
+# 
+# Distributed under the Creative Commons Attribution-ShareAlike 3.0 Unported License (CC BY-SA 3.0)
 # -------
 export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
 export JRE_HOME=$JAVA_HOME/jre

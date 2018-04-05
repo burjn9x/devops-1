@@ -1,7 +1,7 @@
-# DevOps Tomcat (Camunda, Alfresco) Systemd Startup script
+# (Camunda, Alfresco) Tomcat Systemd Startup script
 
 [Unit]
-Description=DevOps Tomcat Web-Server for Camunda-BPM and Alfresco-ECM
+Description=Apache Tomcat Web Server for Camunda-BPM and Alfresco-ECM
 After=network.target
 
 [Service]

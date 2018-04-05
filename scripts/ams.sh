@@ -1,6 +1,7 @@
 #!/bin/bash
 # -------
 # Script for maintenance shutdown of Alfresco
+#
 # -------
 
 USER=www-data
@@ -30,7 +31,7 @@ echo "var specialMessage = '$2';" | sudo tee -a ${DEVOPS_HOME_WWW}/downtime.js
 sudo chown -R ${USER}:nogroup ${DEVOPS_HOME_WWW}
 echo
 echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo "Stopping the DevOps tomcat instance"
+echo "Stopping the Devops tomcat instance"
 echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
 sudo service devops stop

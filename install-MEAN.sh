@@ -4,15 +4,17 @@
 #
 # -------
 
-export DEVOPS_HOME=/opt/devops
+#export DEVOPS_HOME=/opt/devops
 export BASE_INSTALL=/home/ubuntu/devops
 export NGINX_CONF=$BASE_INSTALL/_ubuntu/etc/nginx
+export TMP_INSTALL=/tmp/devops-install
 
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"
 
 export NVMURL=https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh
 export NODEJSURL=https://deb.nodesource.com/setup_6.x
+
 
 
 # size of swapfile in megabytes = 2X
@@ -68,6 +70,13 @@ then
     echo
     exit
 fi
+
+# Create temporary folder for storing downloaded files
+if [ ! -d "$TMP_INSTALL" ]; then
+  mkdir -p $TMP_INSTALL
+fi
+
+
 ##
 # Nginx
 ##
@@ -103,31 +112,31 @@ if [ "$installnginx" = "y" ]; then
   # Enable Nginx to auto start when Ubuntu is booted
   sudo systemctl enable nginx
   # Check Nginx status
-  systemctl status nginx
+  #systemctl status nginx
   
   #TODO: sudo service nginx stop
-  sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
+  #sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
   #sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.sample
   
-  #WEB_ROOT=$DEVOPS_HOME/www
+  #WEB_ROOT=$WORKFORCE_HOME/www
   
   # Make the ssl dir as this is what is used in sample config
   #TODO: sudo mkdir -p /etc/nginx/ssl
   
   # Compatible with Apache, we check if there is already existing apache web root. If it is, we use it by default. 
-  # If not, $DEVOPS_HOME should be a folder contains webroot
+  # If not, $WORKFORCE_HOME should be a folder contains webroot
   #if [ ! -d "/var/www" ]; then
-	#sudo mkdir -p $DEVOPS_HOME/www
+	#sudo mkdir -p $WORKFORCE_HOME/www
   #else
 	#WEB_ROOT="/var/www"
   #fi
   
-#  sudo mkdir -p /var/cache/nginx/devops
+#  sudo mkdir -p /var/cache/nginx/workforce
   #if [ ! -f "$WEB_ROOT/www/maintenance.html" ]; then
   #  echo "Copying maintenance html page..."
 #	sudo rsync -avz $NGINX_CONF/maintenance.html $WEB_ROOT
 #  fi
-#  sudo chown -R www-data:root /var/cache/nginx/devops
+#  sudo chown -R www-data:root /var/cache/nginx/workforce
 #  sudo chown -R www-data:root $WEB_ROOT
   #TODO: sudo chown -R www-data:root /usr/share/nginx
   
@@ -142,8 +151,8 @@ if [ "$installnginx" = "y" ]; then
   
   #escape for sed
 #  WEB_ROOT_PATH="${WEB_ROOT//\//\\/}"
-#  sed -i "s/@@WEB_ROOT@@/$WEB_ROOT_PATH/g" /etc/nginx/conf.d/devops.conf
-#  sed -i "s/@@WEB_ROOT@@/$WEB_ROOT_PATH/g" /etc/nginx/conf.d/devops.conf.ssl
+#  sed -i "s/@@WEB_ROOT@@/$WEB_ROOT_PATH/g" /etc/nginx/conf.d/workforce.conf
+#  sed -i "s/@@WEB_ROOT@@/$WEB_ROOT_PATH/g" /etc/nginx/conf.d/workforce.conf.ssl
 
   # Insert config for letsencrypt
   if [ ! -d "/opt/letsencrypt/.well-known" ]; then
@@ -166,7 +175,35 @@ if [ "$installnginx" = "y" ]; then
   
   ## Reload config file
   #TODO: sudo service nginx start
-  #sudo systemctl status nginx
+  sudo systemctl restart nginx
+  
+  sudo ufw enable
+  if [ ! -f "/etc/ufw/applications.d/nginx.ufw.profile" ]; then
+	echo "There is no profile for nginx within ufw, so we decide to create it."
+	sudo cat <<EOF >/etc/ufw/applications.d/nginx.ufw.profile
+[Nginx HTTP]
+title=Web Server (Nginx, HTTP)
+description=Small, but very powerful and efficient web server
+ports=80/tcp
+
+[Nginx HTTPS]
+title=Web Server (Nginx, HTTPS)
+description=Small, but very powerful and efficient web server
+ports=443/tcp
+
+[Nginx Full]
+title=Web Server (Nginx, HTTP + HTTPS)
+description=Small, but very powerful and efficient web server
+ports=80,443/tcp
+EOF
+
+	sudo ufw app update nginx
+  fi
+
+  sudo ufw allow 'Nginx HTTP'
+  sudo ufw allow 'Nginx HTTPS'
+  sudo ufw allow 'OpenSSH'
+
 
   echo
   echogreen "Finished installing nginx"
@@ -328,25 +365,26 @@ if [ "$installssl" = "y" ]; then
 	if [[ $hostname =~ ^(([a-zA-Z]|[a-zA-Z][a-zA-Z\-]*[a-zA-Z])\.)*([A-Za-z]|[A-Za-z][A-Za-z\-]*[A-Za-z])$ ]]; then
 		#sudo letsencrypt certonly --webroot -w /opt/letsencrypt -d $hostname --email digital@smartbiz.vn --agree-tos
 	#fi
-		echo "SSL for domain : $local_domain is being created with port : $local_port"
-		if [ ! -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
+		echo "SSL for domain : $hostname is being created with port : $local_port"
+		if [ ! -f "/etc/letsencrypt/live/$hostname/fullchain.pem" ]; then
 			# sudo letsencrypt certonly --webroot -w /opt/letsencrypt -d $local_domain --email digital@smartbiz.vn --agree-tos
 			sudo certbot certonly --authenticator standalone --installer nginx -d $hostname --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx"
 		fi
 		
-		if [ -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
-			  
-			sudo rsync -avz $NGINX_CONF/sites-available/domainSSL /etc/nginx/sites-available/$hostname.conf
+		if [ -f "/etc/letsencrypt/live/$hostname/fullchain.pem" ]; then
+		
+			sudo rsync -avz $NGINX_CONF/snippets/ /etc/nginx/snippets/
+			sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$hostname.conf
 			sudo ln -s /etc/nginx/sites-available/$hostname.conf /etc/nginx/sites-enabled/
 			  
 			sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$hostname.conf
 			sudo sed -i "s/@@DNS_DOMAIN@@/$hostname/g" /etc/nginx/sites-available/$hostname.conf
 
 			# Replace nginx ssl config with generated keys
-			sudo sed -i "s/@@CERTIFICATE@@/\/etc\/letsencrypt\/live\/$hostname\/fullchain.pem/g" /etc/nginx/sites-available/$hostname.conf 
-			sudo sed -i "s/@@CERTIFICATE_KEY@@/\/etc\/letsencrypt\/live\/$hostname\/privkey.pem/g" /etc/nginx/sites-available/$hostname.conf
+			#sudo sed -i "s/@@CERTIFICATE@@/\/etc\/letsencrypt\/live\/$hostname\/fullchain.pem/g" /etc/nginx/sites-available/$hostname.conf 
+			#sudo sed -i "s/@@CERTIFICATE_KEY@@/\/etc\/letsencrypt\/live\/$hostname\/privkey.pem/g" /etc/nginx/sites-available/$hostname.conf
 			  
-			sudo sed -i "s/@@PORT@@/$local_port/g" /etc/nginx/sites-available/$hostname.conf
+			sudo sed -i "s/@@PORT@@/8080/g" /etc/nginx/sites-available/$hostname.conf
 			  
 			echo "SSL for domain : $hostname has been creater successfully."
 			  

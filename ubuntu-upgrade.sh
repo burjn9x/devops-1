@@ -1,6 +1,6 @@
 #!/bin/bash
 # -------
-# Script to check and initialize all necessary stuffs before installing devops
+# Script to check and initialize all necessary stuffs before running devops
 #
 # -------
 
@@ -135,3 +135,4 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echo "Begin setting up TimeZone..."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 sudo timedatectl set-timezone $TIME_ZONE
+

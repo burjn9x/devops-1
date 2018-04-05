@@ -1,6 +1,8 @@
 #!/bin/bash
 # -------
 # Script to set up iptables for Alfresco use
+#
+# 
 # -------
 
 # Change to public ip-adress on alfresco server

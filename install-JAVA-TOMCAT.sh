@@ -4,10 +4,10 @@
 #
 # -------
 
-TOMCAT8_VERSION=8.5.27
+TOMCAT8_VERSION=8.5.29
 MAVEN_VERSION=3.3.9
-ANT_VERSION=1.9.9
-export DEVOPS_HOME=/opt/devops
+ANT_VERSION=1.9.10
+export DEVOPS_HOME=/home/devops
 export BASE_INSTALL=/home/ubuntu/devops
 export TMP_INSTALL=/tmp/devops-install
 export CATALINA_HOME=$DEVOPS_HOME/tomcat
@@ -16,7 +16,7 @@ export DEVOPS_USER=devops
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"
 
-export TOMCAT_DOWNLOAD=http://www-us.apache.org/dist/tomcat/tomcat-8/v$TOMCAT8_VERSION/bin/apache-tomcat-$TOMCAT8_VERSION.tar.gz
+export TOMCAT_DOWNLOAD=http://mirrors.viethosting.com/apache/tomcat/tomcat-8/v$TOMCAT8_VERSION/bin/apache-tomcat-$TOMCAT8_VERSION.tar.gz
 export JDBCPOSTGRESURL=https://jdbc.postgresql.org/download
 export JDBCPOSTGRES=postgresql-42.1.4.jar
 export JDBCMYSQLURL=https://dev.mysql.com/get/Downloads/Connector-J
@@ -24,6 +24,7 @@ export JDBCMYSQL=mysql-connector-java-5.1.43.tar.gz
 
 export APACHEMAVEN=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 export APACHEANT=https://www.apache.org/dist/ant/binaries/apache-ant-$ANT_VERSION-bin.tar.gz
+export JAVA8URL=http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161
 
 
 # Color variables
@@ -87,6 +88,7 @@ if [ ! -d "$DEVOPS_HOME" ]; then
   mkdir -p $DEVOPS_HOME
 fi
 
+cd $TMP_INSTALL
 
 ##
 # MAVEN 3.3.9
@@ -235,14 +237,15 @@ if [ "$installtomcat" = "y" ]; then
   echogreen "Installing Tomcat"
   if [ ! -f "$TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION.tar.gz" ]; then
 	echo "Downloading tomcat..."
-	curl -# -L -O $TOMCAT_DOWNLOAD
+	curl -# -o $TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION.tar.gz $TOMCAT_DOWNLOAD
   fi
   # Make sure install dir exists, including logs dir
   sudo mkdir -p $DEVOPS_HOME/logs
   sudo mkdir -p $CATALINA_HOME
   echo "Extracting..."
-  tar xf $TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION.tar.gz
-  sudo mv $TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION $CATALINA_HOME
+  tar xf $TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION.tar.gz -C $TMP_INSTALL
+  sudo mv $TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION $TMP_INSTALL/tomcat
+  sudo rsync -avz $TMP_INSTALL/tomcat $DEVOPS_HOME
   
   # Remove apps not needed
   sudo rm -rf $CATALINA_HOME/webapps/{docs,examples}
@@ -251,7 +254,13 @@ if [ "$installtomcat" = "y" ]; then
   sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" $CATALINA_HOME/conf/server.xml
   sudo sed -i "s/8005/$TOMCAT_SHUTDOWN_PORT/g" $CATALINA_HOME/conf/server.xml
   sudo sed -i "s/8009/$TOMCAT_AJP_PORT/g" $CATALINA_HOME/conf/server.xml
-  sudo sed -i "s/443/$TOMCAT_HTTPS_PORT/g"  $CATALINA_HOME/conf/server.xml
+  #sudo sed -i "s/443/$TOMCAT_HTTPS_PORT/g"  $CATALINA_HOME/conf/server.xml
+  
+  # Change domain tomcat port in nginx config
+  hostname=$(basename /etc/letsencrypt/live/*/)
+  if [ "$hostname" != "" ]; then
+	  sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/$hostname.conf
+  fi
   
   # Create Tomcat conf folder
   sudo mkdir -p $CATALINA_HOME/conf/Catalina/localhost
@@ -312,6 +321,7 @@ read -e -p "Please select on of these : [P]osgresql, [MY]sql, [MA]riadb, [Q]uit 
         *) echo invalid option;;
     esac
 
+export DB_SELECTION=$installdb
 	
 ##
 # Jenkins
@@ -325,6 +335,11 @@ read -e -p "Install Jenkins automation server${ques} [y/n] " -i "$DEFAULTYESNO" 
 if [ "$installjenkins" = "y" ]; then
 	wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
 	sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+	sudo apt-get update
 	sudo apt-get -qq -y install jenkins
 	sudo systemctl start jenkins
 fi
+
+
+
+
