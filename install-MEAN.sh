@@ -385,8 +385,11 @@ if [ "$installssl" = "y" ]; then
 			#sudo sed -i "s/@@CERTIFICATE_KEY@@/\/etc\/letsencrypt\/live\/$hostname\/privkey.pem/g" /etc/nginx/sites-available/$hostname.conf
 			  
 			sudo sed -i "s/@@PORT@@/8080/g" /etc/nginx/sites-available/$hostname.conf
+			
+			sudo mkdir -p /var/cache/nginx/devops
+			sudo chown -R www-data:root /var/cache/nginx/devops
 			  
-			echo "SSL for domain : $hostname has been creater successfully."
+			echo "SSL for domain : $hostname has been created successfully."
 			  
 		else
 			  echored "There is an error in generating keys for domain $hostname."

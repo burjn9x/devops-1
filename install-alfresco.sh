@@ -278,15 +278,26 @@ if [ -d "$CATALINA_HOME" ]; then
 	echo "It is important that this is is a resolvable server name."
 	echo "This information will be added to default configuration files."
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-	read -e -p "Please enter the public host name for Share server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" SHARE_HOSTNAME
-	read -e -p "Please enter the protocol to use for public Share server (http or https)${ques} [http] " -i "http" SHARE_PROTOCOL
 	
-	SHARE_PORT=80
-	if [ "${SHARE_PROTOCOL,,}" = "https" ]; then
+	# Extract domain name from SSL key path
+	hostname=$(basename /etc/letsencrypt/live/*/)
+	
+	if [ "$hostname" = "" ]; then
+		read -e -p "Please enter the public host name for Share server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" SHARE_HOSTNAME
+		read -e -p "Please enter the protocol to use for public Share server (http or https)${ques} [http] " -i "http" SHARE_PROTOCOL
+		
+		SHARE_PORT=80
+		if [ "${SHARE_PROTOCOL,,}" = "https" ]; then
+			SHARE_PORT=443
+		fi
+		read -e -p "Please enter the host name for Alfresco Repository server (fully qualified domain name) as shown to users${ques} [$SHARE_HOSTNAME] " -i "$SHARE_HOSTNAME" REPO_HOSTNAME
+		read -e -p "Please enter the host name for Alfresco Repository server that Share will use to talk to repository${ques} [localhost] " -i "localhost" SHARE_TO_REPO_HOSTNAME
+	else 
+		SHARE_HOSTNAME=$hostname
 		SHARE_PORT=443
+		REPO_HOSTNAME=$hostname
+		SHARE_TO_REPO_HOSTNAME=localhost
 	fi
-	read -e -p "Please enter the host name for Alfresco Repository server (fully qualified domain name) as shown to users${ques} [$SHARE_HOSTNAME] " -i "$SHARE_HOSTNAME" REPO_HOSTNAME
-	read -e -p "Please enter the host name for Alfresco Repository server that Share will use to talk to repository${ques} [localhost] " -i "localhost" SHARE_TO_REPO_HOSTNAME
 	
 	# Add default alfresco-global.propertis
 	ALFRESCO_GLOBAL_TMP_PATH=$TMP_INSTALL
@@ -335,6 +346,8 @@ if [ -d "$CATALINA_HOME" ]; then
 		sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" $CATALINA_HOME/conf/server.xml
 		sudo sed -i "s/8005/$TOMCAT_SHUTDOWN_PORT/g" $CATALINA_HOME/conf/server.xml
 		sudo sed -i "s/8009/$TOMCAT_AJP_PORT/g" $CATALINA_HOME/conf/server.xml
+	else
+		TOMCAT_HTTP_PORT=8080;
 	fi
   
 	#Enable smart folder funtionality
@@ -353,30 +366,37 @@ if [ -d "$CATALINA_HOME" ]; then
 		sudo mv $SHARE_CONFIG_CUSTOM $CATALINA_HOME/shared/classes/alfresco/web-extension/
 	fi
   
-	echo "Installing configuration for alfresco on nginx..."
-	sudo mkdir -p /var/cache/nginx/alfresco
-  
-	sudo chown -R www-data:root /var/cache/nginx/alfresco
+	#echo "Installing configuration for alfresco on nginx..."
 	
-	if [ "$SHARE_PORT" = 443 ]; then 
-		sudo rsync -avz $NGINX_CONF/sites-available/alfresco.conf.ssl /etc/nginx/sites-available/
-		mv /etc/nginx/sites-available/alfresco.conf.ssl		/etc/nginx/sites-available/alfresco.conf
-	else
-		sudo rsync -avz $NGINX_CONF/sites-available/alfresco.conf /etc/nginx/sites-available/
-	fi
-	sudo ln -s /etc/nginx/sites-available/alfresco.conf /etc/nginx/sites-enabled/
+	#if [ -f "/etc/nginx/sites-available/$SHARE_HOSTNAME.conf" ]; then
+	#	sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+		
+		# Insert alfresco configuration content before the last line in domain.conf in nginx
+	#	sudo sed -i "$e cat $NGINX_CONF/sites-available/alfresco.conf" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+	#fi
+	#sudo mkdir -p /var/cache/nginx/alfresco
+  
+	#sudo chown -R www-data:root /var/cache/nginx/alfresco
+	
+	#if [ "$SHARE_PORT" = 443 ]; then 
+	#	sudo rsync -avz $NGINX_CONF/sites-available/alfresco.conf.ssl /etc/nginx/sites-available/
+	#	mv /etc/nginx/sites-available/alfresco.conf.ssl		/etc/nginx/sites-available/alfresco.conf
+	#else
+	#	sudo rsync -avz $NGINX_CONF/sites-available/alfresco.conf /etc/nginx/sites-available/
+	#fi
+	#sudo ln -s /etc/nginx/sites-available/alfresco.conf /etc/nginx/sites-enabled/
   
 	#escape for sed
-	WEB_ROOT_PATH="${WEB_ROOT//\//\\/}"
+	#WEB_ROOT_PATH="${WEB_ROOT//\//\\/}"
 	
 	#sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$hostname.conf
-	sudo sed -i "s/@@DNS_DOMAIN@@/$SHARE_HOSTNAME/g" /etc/nginx/sites-available/alfresco.conf
+	#sudo sed -i "s/@@DNS_DOMAIN@@/$SHARE_HOSTNAME/g" /etc/nginx/sites-available/alfresco.conf
 	
-	if [ -n "$TOMCAT_HTTP_PORT" ]; then
-		sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/alfresco.conf
-	else
-		sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT_DEFAULT/g" /etc/nginx/sites-available/alfresco.conf
-	fi
+	#if [ -n "$TOMCAT_HTTP_PORT" ]; then
+	#	sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/alfresco.conf
+	#else
+	#	sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT_DEFAULT/g" /etc/nginx/sites-available/alfresco.conf
+	#fi
 fi	
 
 echo

@@ -165,26 +165,33 @@ if [ "$installcamundawar" = "y" ]; then
 	fi  
    
   
-  if [ "${GLOBAL_PROTOCOL,,}" = "https" ]; then 
-	  sudo rsync -avz $NGINX_CONF/sites-available/camunda.conf.ssl /etc/nginx/sites-available/
-	  mv /etc/nginx/sites-available/camunda.conf.ssl		/etc/nginx/sites-available/camunda.conf
-  else
-	  sudo rsync -avz $NGINX_CONF/sites-available/camunda.conf /etc/nginx/sites-available/
-  fi
-  sudo ln -s /etc/nginx/sites-available/camunda.conf /etc/nginx/sites-enabled/
+  #if [ "${GLOBAL_PROTOCOL,,}" = "https" ]; then 
+	#  sudo rsync -avz $NGINX_CONF/sites-available/camunda.conf.ssl /etc/nginx/sites-available/
+	 # mv /etc/nginx/sites-available/camunda.conf.ssl		/etc/nginx/sites-available/camunda.conf
+  #else
+	#  sudo rsync -avz $NGINX_CONF/sites-available/camunda.conf /etc/nginx/sites-available/
+#  fi
+ # sudo ln -s /etc/nginx/sites-available/camunda.conf /etc/nginx/sites-enabled/
   
-  # Extract domain name from generated folder during creating SSL key
+  # Extract domain name from SSL key path
   hostname=$(basename /etc/letsencrypt/live/*/)
   
-  sudo sed -i "s/@@DNS_DOMAIN@@/$hostname/g" /etc/nginx/sites-available/camunda.conf
-  if [ -n "$TOMCAT_HTTP_PORT" ]; then
-		sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/camunda.conf
-  else
-		sudo sed -i "s/@@TOMCAT_HTTP_PORT@@/$TOMCAT_HTTP_PORT_DEFAULT/g" /etc/nginx/sites-available/camunda.conf
+  # Check if variable TOMCAT_HTTP_PORT is set, if not, we use the default value as 8080
+  if [ -z "$TOMCAT_HTTP_PORT" ]; then
+	 TOMCAT_HTTP_PORT=8080
   fi
   
-  sudo mkdir -p /var/cache/nginx/camunda
-  sudo chown -R www-data:root /var/cache/nginx/camunda
+  #echo "Installing configuration for camunda on nginx..."
+	
+  #if [ -f "/etc/nginx/sites-available/$hostname.conf" ]; then
+#	 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$hostname.conf
+		
+		# Insert camunda configuration content before the last line in domain.conf in nginx
+#	 sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
+#  fi
+  
+  #sudo mkdir -p /var/cache/nginx/camunda
+  #sudo chown -R www-data:root /var/cache/nginx/camunda
 	
   echogreen "Finished installing Camunda BPM"
   echo
