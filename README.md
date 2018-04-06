@@ -1,4 +1,4 @@
-# Installing & Configuring DevOps Server in Amazon AWS Ubuntu 16.04 LTS.
+# Installing & Configuring DevOps Ubuntu 16.04 LTS.
 =======================
 
 ## 1. 3rd-Party Software Packagess
@@ -10,7 +10,7 @@
 | x | 03 | Oracle Java  		| 1.8.0_161          | java -version        | /etc/java-8-oracle/ |
 | x | 04 | MAVEN        		| 3.3.9              | mvn -v               | /usr/share/maven    |
 | x | 05 | ANT          		| 1.9.6              | ant -v               | /usr/share/ant      |
-| x | 06 | MariaDB      		| 9.4.11             | mysql --version      | DigitalBusiness2018 |
+| x | 06 | MariaDB      		| 9.4.11             | mysql --version      |  |
 | x | 07 | Tomcat       		| 8.5.29             |         			 	|                     |
 | x | 08 | SSL          		|                    |                      |                     |
 | - | 09 | Camunda BPM          |                    |                      |                     |
@@ -21,11 +21,25 @@
 | - | 14 | Alf PDF Renderer 	| 1.0      			 |             			|                     |
 
 
-| ## | *.conf          | DNS:Port                          | Version				|					|
-| -- | --------------- | --------------------------------- | ----------------------- | ------------------- |
-| 01 | camunda         | camunda.smartbiz.vn               | 7.7.0					|					|
-| 02 | alfresco        | alfresco.smartbiz.vn:5555         | 5.2					|					|
+> Checklist
 
+```
+lsb_release -a               &&
+timedatectl                  &&
+free -h                      &&
+service nginx status         &&
+sudo ufw status numbered     &&
+node -v                      &&
+npm -v                       &&
+pm2 list                     &&
+redis-server -v              &&
+mongo -version               &&
+java -version                &&
+mvn -v                       &&
+ant -v                       &&
+sudo certbot renew --dry-run &&
+sudo systemctl status jenkins 
+```
 
 Current version : ** [Alfresco 201704 Community](https://community.alfresco.com/docs/DOC-6829-draft-alfresco-community-edition-201704-ga-release-draft)**  
 Ubuntu Version :  **16.04 LTS** and compatible to **14.04**
