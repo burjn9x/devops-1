@@ -93,33 +93,39 @@ if [ "$installcamundawar" = "y" ]; then
   
   #sed -i "s/@@WORKFORCE_DATA_HOME@@/$WORKFORCE_DATA_HOME_PATH/g" $CATALINA_HOME/conf/server.xml
   
-  # Insert Camunda configuration into server.xml
-  sudo sed -i '/<Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" \/>/s/.*/&\n<Listener className="org.camunda.bpm.container.impl.tomcat.TomcatBpmPlatformBootstrap" \/>/' $CATALINA_HOME/conf/server.xml
-  sudo sed -i '/<\/GlobalNamingResources>/i \
-    <Resource name="jdbc\/ProcessEngine"\
-			  auth="Container"\
-			  type="javax.sql.DataSource"\
-			  factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"\
-			  uniqueResourceName="process-engine"\
-			  driverClassName="@@DB_DRIVER@@"\
-			  url="jdbc:@@DB_CONNECTOR@@:\/\/localhost:@@DB_PORT@@\/camunda@@DB_SUFFIX@@"\
-			  username="@@DB_USERNAME@@"\
-			  password="@@DB_PASSWORD@@"\
-			  maxActive="20"\
-			  minIdle="5"\/> ' $CATALINA_HOME/conf/server.xml
+  # Check if camunda config exists in tomcat server.xml
+  camunda_found=$(grep -o "camunda" $CATALINA_HOME/conf/server.xml | wc -l)
+  
+  if [ $camunda_found = 0 ]; then
+  
+	  # Insert Camunda configuration into server.xml
+	  sudo sed -i '/<Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" \/>/s/.*/&\n<Listener className="org.camunda.bpm.container.impl.tomcat.TomcatBpmPlatformBootstrap" \/>/' $CATALINA_HOME/conf/server.xml
+	  sudo sed -i '/<\/GlobalNamingResources>/i \
+		<Resource name="jdbc\/ProcessEngine"\
+				  auth="Container"\
+				  type="javax.sql.DataSource"\
+				  factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"\
+				  uniqueResourceName="process-engine"\
+				  driverClassName="@@DB_DRIVER@@"\
+				  url="jdbc:@@DB_CONNECTOR@@:\/\/localhost:@@DB_PORT@@\/camunda@@DB_SUFFIX@@"\
+				  username="@@DB_USERNAME@@"\
+				  password="@@DB_PASSWORD@@"\
+				  maxActive="20"\
+				  minIdle="5"\/> ' $CATALINA_HOME/conf/server.xml
 
-  sudo sed -i '/<\/GlobalNamingResources>/i \
-    <Resource name="global\/camunda-bpm-platform\/process-engine\/ProcessEngineService\!org.camunda.bpm.ProcessEngineService"\
-              auth="Container"\
-              type="org.camunda.bpm.ProcessEngineService"\
-              description="camunda BPM platform Process Engine Service"\
-              factory="org.camunda.bpm.container.impl.jndi.ProcessEngineServiceObjectFactory" \/> ' $CATALINA_HOME/conf/server.xml				  
-  sudo sed -i '/<\/GlobalNamingResources>/i \
-    <Resource name="global/camunda-bpm-platform/process-engine/ProcessApplicationService!org.camunda.bpm.ProcessApplicationService"\
-              auth="Container"\
-              type="org.camunda.bpm.ProcessApplicationService"\
-              description="camunda BPM platform Process Application Service"\
-              factory="org.camunda.bpm.container.impl.jndi.ProcessApplicationServiceObjectFactory"\/> ' $CATALINA_HOME/conf/server.xml				  
+	  sudo sed -i '/<\/GlobalNamingResources>/i \
+		<Resource name="global\/camunda-bpm-platform\/process-engine\/ProcessEngineService\!org.camunda.bpm.ProcessEngineService"\
+				  auth="Container"\
+				  type="org.camunda.bpm.ProcessEngineService"\
+				  description="camunda BPM platform Process Engine Service"\
+				  factory="org.camunda.bpm.container.impl.jndi.ProcessEngineServiceObjectFactory" \/> ' $CATALINA_HOME/conf/server.xml				  
+	  sudo sed -i '/<\/GlobalNamingResources>/i \
+		<Resource name="global/camunda-bpm-platform/process-engine/ProcessApplicationService!org.camunda.bpm.ProcessApplicationService"\
+				  auth="Container"\
+				  type="org.camunda.bpm.ProcessApplicationService"\
+				  description="camunda BPM platform Process Application Service"\
+				  factory="org.camunda.bpm.container.impl.jndi.ProcessApplicationServiceObjectFactory"\/> ' $CATALINA_HOME/conf/server.xml
+  fi
 
   # Insert Camunda libs and webapps into tomcat
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/camunda*.jar $CATALINA_HOME/lib
