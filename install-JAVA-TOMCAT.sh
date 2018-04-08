@@ -12,6 +12,7 @@ export BASE_INSTALL=/home/ubuntu/devops
 export TMP_INSTALL=/tmp/devops-install
 export CATALINA_HOME=$DEVOPS_HOME/tomcat
 export DEVOPS_USER=devops
+export DEFAULTDB=MA
 
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"

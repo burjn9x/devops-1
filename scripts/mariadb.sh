@@ -18,7 +18,7 @@ echo "type the default root password for MariaDB."
 echo "--------------------------------------------"
 echo
 
-read -e -p "Install MariaDB? [y/n] " -i "n" installmariadb
+read -e -p "Install MariaDB? [y/n] " -i "y" installmariadb
 if [ "$installmariadb" = "y" ]; then
   sudo apt-get remove --purge *mysql\*
   sudo apt-get autoremove
