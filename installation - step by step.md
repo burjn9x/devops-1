@@ -94,11 +94,11 @@ sudo apt-get -qq -y update && sudo apt-get -qq -y install python-certbot-nginx
 ```
 sudo rsync -avz /home/ubuntu/DevOps/_ubuntu/etc/nginx/snippets/ /etc/nginx/snippets/
 
-sudo certbot certonly --authenticator standalone --installer nginx -d o2oprotocol.com --email o2oprotocol101@gmail.com --pre-hook "sudo service nginx stop" --post-hook "sudo service nginx start" &&
-sudo rsync -avz /home/ubuntu/DevOps/_ubuntu/etc/nginx/sites-available/domainSSL /etc/nginx/sites-available/demo.o2oprotocol.com.conf &&
-sudo ln -s /etc/nginx/sites-available/demo.o2oprotocol.com.conf /etc/nginx/sites-enabled/                                            &&
-sudo sed -i "s/@@DNS_DOMAIN@@/demo.o2oprotocol.com/g" /etc/nginx/sites-available/demo.o2oprotocol.com.conf                           &&
-sudo sed -i "s/@@PORT@@/5000/g" /etc/nginx/sites-available/o2oprotocol.com.conf                                                      && 
+sudo certbot certonly --authenticator standalone --installer nginx -d devops-serverless.o2oprotocol.io --email o2oprotocol101@gmail.com --pre-hook "sudo service nginx stop" --post-hook "sudo service nginx start" &&
+sudo rsync -avz /home/ubuntu/DevOps/_ubuntu/etc/nginx/sites-available/domainSSL /etc/nginx/sites-available/devops-serverless.o2oprotocol.io.conf &&
+sudo ln -s /etc/nginx/sites-available/devops-serverless.o2oprotocol.io.conf /etc/nginx/sites-enabled/                                            &&
+sudo sed -i "s/@@DNS_DOMAIN@@/devops-serverless.o2oprotocol.io/g" /etc/nginx/sites-available/devops-serverless.o2oprotocol.io.conf                           &&
+sudo sed -i "s/@@PORT@@/5000/g" /etc/nginx/sites-available/devops-serverless.o2oprotocol.io.conf                                                      && 
 sudo service nginx reload
 ```
 
