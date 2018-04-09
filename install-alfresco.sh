@@ -366,14 +366,22 @@ if [ -d "$CATALINA_HOME" ]; then
 		sudo mv $SHARE_CONFIG_CUSTOM $CATALINA_HOME/shared/classes/alfresco/web-extension/
 	fi
   
-	#echo "Installing configuration for alfresco on nginx..."
+	echo "Installing configuration for alfresco on nginx..."
 	
-	#if [ -f "/etc/nginx/sites-available/$SHARE_HOSTNAME.conf" ]; then
-	#	sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+	if [ -f "/etc/nginx/sites-available/$SHARE_HOSTNAME.conf" ]; then
+		
+		# Insert cache config
+		sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/devops levels=1 keys_zone=devopscache:256m max_size=512m inactive=1440m;\n' $SHARE_HOSTNAME.conf
+		
+		sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
 		
 		# Insert alfresco configuration content before the last line in domain.conf in nginx
-	#	sudo sed -i "$e cat $NGINX_CONF/sites-available/alfresco.conf" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
-	#fi
+		#sudo sed -i "$e cat $NGINX_CONF/sites-available/alfresco.conf" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+		sudo mkdir temp
+		sudo cp $NGINX_CONF/sites-available/alfresco.snippet	temp/
+		sudo sed -e '/##ALFRESCO##/ {' -e 'r temp/alfresco.snippet' -e 'd' -e '}' -i $SHARE_HOSTNAME.conf
+		sudo rm -rf temp
+	fi
 	#sudo mkdir -p /var/cache/nginx/alfresco
   
 	#sudo chown -R www-data:root /var/cache/nginx/alfresco

@@ -188,12 +188,17 @@ if [ "$installcamundawar" = "y" ]; then
   
   #echo "Installing configuration for camunda on nginx..."
 	
-  #if [ -f "/etc/nginx/sites-available/$hostname.conf" ]; then
-#	 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$hostname.conf
+  if [ -f "/etc/nginx/sites-available/$hostname.conf" ]; then
+	 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$hostname.conf
+	 
+	 # Insert camunda configuration content before the last line in domain.conf in nginx
+	 #sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
+	 sudo mkdir temp
+	 sudo cp $NGINX_CONF/sites-available/camunda.snippet	temp/
+	 sudo sed -e '/##CAMUNDA##/ {' -e 'r temp/camunda.snippet' -e 'd' -e '}' -i $hostname.conf
+	 sudo rm -rf temp
 		
-		# Insert camunda configuration content before the last line in domain.conf in nginx
-#	 sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
-#  fi
+  fi
   
   #sudo mkdir -p /var/cache/nginx/camunda
   #sudo chown -R www-data:root /var/cache/nginx/camunda
