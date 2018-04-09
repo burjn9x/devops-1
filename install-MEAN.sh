@@ -362,7 +362,7 @@ read -e -p "Install ssl${ques} [y/n] " -i "$DEFAULTYESNO" installssl
 if [ "$installssl" = "y" ]; then
 	local_port=443
 	read -e -p "Please enter the public host name for your server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" hostname
-	if [[ $hostname =~ ^(([a-zA-Z]|[a-zA-Z][a-zA-Z\-]*[a-zA-Z])\.)*([A-Za-z]|[A-Za-z][A-Za-z\-]*[A-Za-z])$ ]]; then
+	#if [[ $hostname =~ ^(([a-zA-Z]|[a-zA-Z][a-zA-Z\-]*[a-zA-Z])\.)*([A-Za-z]|[A-Za-z][A-Za-z\-]*[A-Za-z])$ ]]; then
 		#sudo letsencrypt certonly --webroot -w /opt/letsencrypt -d $hostname --email digital@smartbiz.vn --agree-tos
 	#fi
 		echo "SSL for domain : $hostname is being created with port : $local_port"
@@ -398,7 +398,7 @@ if [ "$installssl" = "y" ]; then
 		else
 			  echored "There is an error in generating keys for domain $hostname."
 		fi
-	else
-		echored "$hostname is not a valid hostname, please check and try again."
-	fi
+	#else
+	#	echored "$hostname is not a valid hostname, please check and try again."
+	#fi
 fi
