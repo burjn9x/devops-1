@@ -390,8 +390,8 @@ if [ "$installssl" = "y" ]; then
 			sudo chown -R www-data:root /var/cache/nginx/devops
 			
 			# Add cron job to renew key
-		    line="15 3 * /usr/bin/certbot renew --quiet > /var/log/certbot-renew.log"
-		    crontab -l | { cat; echo "15 3 * /usr/bin/certbot renew --quiet > certbot-renew.log"; } | crontab -
+		    #line="15 3 * /usr/bin/certbot renew --quiet > /var/log/certbot-renew.log"
+		    crontab -l | { cat; echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" > /var/log/certbot-renew.log'; } | crontab -
 			  
 			echo "SSL for domain : $hostname has been created successfully."
 			  
