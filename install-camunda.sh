@@ -91,7 +91,6 @@ if [ "$installcamundawar" = "y" ]; then
   sudo unzip -q $TMP_INSTALL/camunda-bpm-tomcat-*.zip -d $TMP_INSTALL/camunda-bpm-tomcat
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/conf/bpm-platform.xml $CATALINA_HOME/conf
   
-  #sed -i "s/@@WORKFORCE_DATA_HOME@@/$WORKFORCE_DATA_HOME_PATH/g" $CATALINA_HOME/conf/server.xml
   
   # Check if camunda config exists in tomcat server.xml
   camunda_found=$(grep -o "camunda" $CATALINA_HOME/conf/server.xml | wc -l)
