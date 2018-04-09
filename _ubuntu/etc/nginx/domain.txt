@@ -1,0 +1,13 @@
+| ## | Domain                    | Port | Description           |
+|----|---------------------------|------|-----------------------|
+| 01 | prudential.tctav.com      | 6661 | Prudential            |
+| 02 | generali.tctav.com        | 6662 | LeadGenerationChatbot |
+| 03 | aviva.tctav.com           | 6663 | Aviva                 | x
+| 04 | samsung.tctav.com         | 6665 | Samsung               | x
+| 05 | chatbotcommerce.tctav.com | 6666 | Chatbotcommerce       |
+| 06 | workforce.tctav.com       | 8080 | WorkforceChatbot      | x
+| 07 | eforms.tctav.com          | 8881 | eForms                |
+| 08 | faq.tctav.com             | 8881 | FAQ Bot               | 
+| 09 | itsm.tctav.com            | 8881 | ITSM Github           |
+| 10 | servicedesk.tctav.com     | 8881 | ServiceNow            | x
+| 10 | jenkins.tctav.com         | 8000 | ServiceNow            | x
