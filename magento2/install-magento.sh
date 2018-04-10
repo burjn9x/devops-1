@@ -1,13 +1,9 @@
 #!/bin/bash
 # -------
-# This is standalone script which configure and install magento
+# This is standalone script which configure and install magento project
 # -------
 
 MAGENTO_VERSION_DEFAULT=2.2.3
-PHP_VERSION=7.0
-export AUTHENTICATE_USERNAME=007f25476809ae9622729d03224f7dc6
-export AUTHENTICATE_PASSWORD=b2c2b1fabd3ddde44179c03f453e22da
-export AUTHENTICATE_FILE=~/.composer/auth.json
 export TIME_ZONE="Asia/Ho_Chi_Minh"
 export DEVOPS_HOME=/home/devops
 export BASE_INSTALL=/home/ubuntu/devops/magento2
@@ -16,17 +12,12 @@ export TMP_INSTALL=/tmp
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"
 
-export COMPOSERURL=https://getcomposer.org/installer
 
 export MAGENTO_DB_DEFAULT=magento
 export MAGENTO_USER_DEFAULT=magento
 export MAGENTO_DB=$MAGENTO_DB_DEFAULT
 export MAGENTO_USER=$MAGENTO_USER_DEFAULT
 
-#export MYSQL_DB_PORT_DEFAULT=3306
-#export MYSQL_DB_DRIVER_DEFAULT=com.mysql.jdbc.Driver
-#export MYSQL_DB_CONNECTOR_DEFAULT=mysql
-#export MYSQL_DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
 
 export WEB_ROOT=/var/www/m2
 
@@ -62,67 +53,6 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echogreen "Begin running...."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
-
-# Create temporary folder for storing downloaded files
-if [ ! -d "$TMP_INSTALL" ]; then
-  mkdir -p $TMP_INSTALL
-fi
-
-# Install php
-if [ "`which php`" = "" ]; then
-	
-	sudo apt-get $APTVERBOSITY install php$PHP_VERSION-fpm php$PHP_VERSION-mcrypt php$PHP_VERSION-curl php$PHP_VERSION-cli php$PHP_VERSION-mysql php$PHP_VERSION-gd php$PHP_VERSION-xsl php$PHP_VERSION-json php$PHP_VERSION-intl php-pear php$PHP_VERSION-dev php$PHP_VERSION-common php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-soap
-fi
-
-# Install composer
-if [ "`which composer`" = "" ]; then
-	
-  echo "Downloading Composer to temporary folder..."
-  curl -# -o $TMP_INSTALL/composer COMPOSERURL
-  sudo php $TMP_INSTALL/composer
-  
-  # Install composer globally	
-  if [ -f "$BASE_INSTALL/composer.phar" ]; then
-	sudo mv $BASE_INSTALL/composer.phar /usr/local/bin/composer
-  else
-	echo "There is an error while installing composer"
-	exit 1
-  fi
-
-fi
-	
-# Add php config
-if [ -f "/etc/php/$PHP_VERSION/fpm/php.ini" ]; then
-	sudo sed -i "s/\(^memory_limit =\).*/\1 1024M/" /etc/php/$PHP_VERSION/fpm/php.ini
-	sudo sed -i "s/\(^max_execution_time =\).*/\1 1800/" /etc/php/$PHP_VERSION/fpm/php.ini
-	sudo sed -i "s/\(^zlib.output_compression =\).*/\1 On/" /etc/php/$PHP_VERSION/fpm/php.ini
-	
-	sudo systemctl restart php7.0-fpm
-else
-	echo "There is no file php.ini, please check if php is installed correctly."
-fi
-
-if [ ! -d "$WEB_ROOT" ]; then
-	sudo mkdir -p $WEB_ROOT
-fi
-
-# Create authentication file for magento
-if [ ! -f "$AUTHENTICATE_FILE" ]; then
-	echo "Generating magento authentication json."
-	sudo cat <<EOF >$AUTHENTICATE_FILE
-{
-   "http-basic": {
-     "repo.magento.com": {
-        "username":"@@AUTHENTICATE_USERNAME@@",
-        "password":"@@AUTHENTICATE_PASSWORD@@"
-     }
-   }
-} 
-EOF
-
-	sudo sed -i "s/@@AUTHENTICATE_USERNAME@@/$AUTHENTICATE_USERNAME/g" 		$AUTHENTICATE_FILE
-	sudo sed -i "s/@@AUTHENTICATE_PASSWORD@@/$AUTHENTICATE_PASSWORD/g" 		$AUTHENTICATE_FILE
-fi
 
 read -e -p "Please enter the project name${ques} " PROJECT_NAME
 
