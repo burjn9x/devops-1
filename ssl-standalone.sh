@@ -79,7 +79,7 @@ do
 		#if [[ $domain =~ ^(([a-zA-Z]|[a-zA-Z][a-zA-Z\-]*[a-zA-Z])\.)*([A-Za-z]|[A-Za-z][A-Za-z\-]*[A-Za-z])$ ]]; then
 			# echo $domain;
 			# sudo systemctl reload nginx
-			create_ssl $domain $port &
+			create_ssl $domain $port
 		#else
 		#	echo "$domain is an invalid name, please check again."
 		#fi
