@@ -267,7 +267,7 @@ if [ "$installpm2" = "y" ]; then
 	
     # Launch PM2 and its managed processes on server boots
     pm2 startup systemd
-    sudo chown ubuntu:ubuntu /home/ubuntu/.pm2/rpc.sock /home/ubuntu/.pm2/pub.sock
+    sudo chown $USER:$USER ~/.pm2/rpc.sock ~/.pm2/pub.sock
     pm2 list
 fi
 
