@@ -185,6 +185,24 @@ echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session &&
 echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session-noninteractive
 ```
 
+## Install Serverless
+
+### Install Python & Pip
+
+```
+sudo apt-get update &&
+sudo apt-get install --yes python &&
+sudo apt-get install --yes python-pip   &&
+python --version     			  &&
+pip --version
+```
+
+### Install AWSCLI & Serverless
+
+```
+
+```
+
 ## Test
 
 ```
