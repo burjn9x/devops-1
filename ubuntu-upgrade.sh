@@ -84,6 +84,30 @@ if [ "`which git`" = "" ]; then
 	sudo apt-get $APTVERBOSITY install git;
 fi
 
+
+if [ "`which python`" = "" ]; then
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "You need to install python."
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	sudo apt-get $APTVERBOSITY install python;
+fi
+
+if [ "`which pip`" = "" ]; then
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "You need to install python pip."
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	sudo apt-get $APTVERBOSITY install python-pip;
+	sudo pip install awscli --upgrade --user
+	sudo pip install --upgrade pip
+fi
+
+if [ "`which aws`" = "" ]; then
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "You need to install awscli."
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	sudo apt-get $APTVERBOSITY install awscli;
+fi
+
 ##
 # Swap File
 ##

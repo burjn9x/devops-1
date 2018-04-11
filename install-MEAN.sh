@@ -108,7 +108,8 @@ if [ "$installnginx" = "y" ]; then
   #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8D0DC64F
 #EOF
 
-  sudo apt-get $APTVERBOSITY update && sudo apt-get $APTVERBOSITY install nginx
+  sudo apt-get $APTVERBOSITY update
+  sudo apt-get $APTVERBOSITY install nginx
   # Enable Nginx to auto start when Ubuntu is booted
   sudo systemctl enable nginx
   # Check Nginx status
@@ -341,7 +342,7 @@ if [ "$installcertbot" = "y" ]; then
   echo  
   sudo add-apt-repository ppa:certbot/certbot
   sudo apt-get $APTVERBOSITY update
-  sudo apt-get $APTVERBOSITY install python-certbot-nginx
+  sudo apt-get $APTVERBOSITY install -y python-certbot-nginx
   echo
   echogreen "Finished installing Certbot"
   echo

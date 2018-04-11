@@ -78,7 +78,7 @@ if [ -n "$PROJECT_NAME" ]; then
 		echo "Creating Magento database and user."
 		echo "You must supply the root user password for MariaDB:"
 		mysql -u root -p << EOF
-	#create workforce db
+	#create magento db
 	CREATE DATABASE $MAGENTO_DB DEFAULT CHARACTER SET utf8;
 	DELETE FROM mysql.user WHERE User = '$MAGENTO_USER';
 	CREATE USER '$MAGENTO_USER'@'localhost' IDENTIFIED BY '$MAGENTO_PASSWORD';

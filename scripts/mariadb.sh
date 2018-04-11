@@ -31,7 +31,7 @@ if [ "$installmariadb" = "y" ]; then
   sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
   sudo add-apt-repository "deb [arch=amd64,i386,ppc64el] http://ftp.ddg.lth.se/mariadb/repo/10.1/ubuntu $(lsb_release -cs) main"
   sudo apt-get update
-  sudo apt-get install mariadb-server
+  sudo apt-get install -y mariadb-server
   sudo mysql_secure_installation
   #Tuning database by setting config
   echo "key_buffer_size         = 128M" >> /etc/mysql/conf.d/mariadb.cnf
