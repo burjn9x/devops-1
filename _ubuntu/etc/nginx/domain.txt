@@ -9,7 +9,7 @@
 | 21 | workflow.o2oprotocol.io         | 8888 | Tomcat Server         |
 | 22 | camunda.o2oprotocol.io          | 8888 | Camunda BPM           |
 | 23 | alfresco.o2oprotocol.io         | 8888 | Alfresco ECM          |
-| 24 | eforms-builder.o2oprotocol.io   | 7777 | eForms eWorkflow      |
+| 24 | eforms-builder.o2oprotocol.io   | 3333 | eForms eWorkflow      |
 | 25 | eforms.o2oprotocol.io           | 7777 | eForms eWorkflow      |
 | 31 | dapp-boilerplate.o2oprotocol.io | 8088 | DApp Real Estate      |
 | 32 | o2omall.o2oprotocol.io          | 3000 | O2O Mall              |
