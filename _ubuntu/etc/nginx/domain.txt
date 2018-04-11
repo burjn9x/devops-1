@@ -5,7 +5,7 @@
 | 03 | devops.o2oprotocol.io           | 5000 | DevOps                |
 | 11 | chatbot.o2oprotocol.io          | 6666 | Chatbot               |
 | 12 | servicedesk.o2oprotocol.io      | 8866 | Service Desk          |
-| 15 | magento2.o2oprotocol.io         | 80   | Magento 2.            |
+| 15 | magento2.o2oprotocol.io         | 80   | Magento 2             |
 | 21 | workflow.o2oprotocol.io         | 8888 | Tomcat Server         |
 | 22 | camunda.o2oprotocol.io          | 8888 | Camunda BPM           |
 | 23 | alfresco.o2oprotocol.io         | 8888 | Alfresco ECM          |
