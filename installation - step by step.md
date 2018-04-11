@@ -189,18 +189,41 @@ echo "session required pam_limits.so" | sudo tee -a /etc/pam.d/common-session-no
 
 ### Install Python & Pip
 
+> $ `sudo -i`
+
 ```
-sudo apt-get update &&
-sudo apt-get install --yes python &&
-sudo apt-get install --yes python-pip   &&
+apt-get update &&
+apt-get install --yes python &&
+apt-get install --yes python-pip   &&
 python --version     			  &&
 pip --version
+```
+
+### //Locale:
+
+> $ `sudo -i`
+
+```
+// sudo locale-gen && sudo dpkg-reconfigure locales
+// sudo locale-gen en_US en_US.UTF-8 && sudo dpkg-reconfigure locales
+// `en_US.UTF-8 UTF-8` >> `en_US.utf8` for both prompts
+```
+
+### Install MkDocs & MkDocs-Material
+
+> $ `sudo -i`
+
+```
+export LC_ALL=C.   &&
+pip install mkdocs &&
+pip install mkdocs-material
 ```
 
 ### Install AWSCLI & Serverless
 
 ```
-
+pip install awscli --upgrade --user &&
+aws --version
 ```
 
 ## Test
