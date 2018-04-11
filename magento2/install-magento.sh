@@ -14,6 +14,7 @@ export MAGENTO_DB_DEFAULT=magento
 export MAGENTO_USER_DEFAULT=magento
 export MAGENTO_DB=$MAGENTO_DB_DEFAULT
 export MAGENTO_USER=$MAGENTO_USER_DEFAULT
+export MAGENTO_ADMIN_PASSWORD_DEFAULT=admin123
 
 
 export WEB_ROOT=/var/www/m2
@@ -60,8 +61,9 @@ if [ -n "$PROJECT_NAME" ]; then
 	sudo composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition:$MAGENTO_VERSION $PROJECT_NAME
 	
 	# Install database and setup username password based on project name
-	read -e -p "Create Magento Database and user? [y/n] " -i "y" createdbmagento
-	if [ "$createdbmagento" = "y" ]; then
+	#read -e -p "Create Magento Database and user? [y/n] " -i "y" createdbmagento
+	#if [ "$createdbmagento" = "y" ]; then
+	  echo "Installing and configuring magento database and user......"
 	  read -s -p "Enter the Magento database password:"  MAGENTO_PASSWORD
 	  echo ""
 	  read -s -p "Re-Enter the Magento database password:" MAGENTO_PASSWORD2
@@ -75,6 +77,9 @@ if [ -n "$PROJECT_NAME" ]; then
 		echo "Creating Magento database and user."
 		echo "You must supply the root user password for MariaDB:"
 		mysql -u root -p << EOF
+	# Drop user and database if exists
+	DROP USER IF EXISTS '$MAGENTO_USER'@'localhost';
+	DROP DATABASE IF EXISTS $MAGENTO_DB;
 	#create magento db
 	CREATE DATABASE $MAGENTO_DB DEFAULT CHARACTER SET utf8;
 	DELETE FROM mysql.user WHERE User = '$MAGENTO_USER';
@@ -85,7 +90,7 @@ EOF
 	  echo "Remember to update configuration with the Magento database password"
 	  echo
 	  #fi
-	fi
+	#fi
 	
 	# Setup magento
 	read -e -p "Please enter your public host name on this server${ques} " HOSTNAME
@@ -94,7 +99,7 @@ EOF
 		#echo "DB USER : $MAGENTO_USER, DB PASSWORD : $MAGENTO_PASSWORD DB : $MAGENTO_DB"
 		sudo php $WEB_ROOT/$PROJECT_NAME/bin/magento setup:install --base-url=$PROTOCOL://$HOSTNAME --backend-frontname=admin --db-host=127.0.0.1 --db-name=$MAGENTO_DB \
 						--db-password=$MAGENTO_PASSWORD --db-user=$MAGENTO_USER --admin-firstname=admin --admin-lastname=admin --admin-email=admin@mycompany.com \
-						--admin-user=admin --admin-password=$MAGENTO_PASSWORD --language=en_US --currency=USD --timezone=$TIME_ZONE --use-rewrites=1
+						--admin-user=admin --admin-password=$MAGENTO_ADMIN_PASSWORD_DEFAULT --language=en_US --currency=USD --timezone=$TIME_ZONE --use-rewrites=1
 						
 		# Set permission on project folder
 		cd $WEB_ROOT/$PROJECT_NAME
@@ -152,6 +157,7 @@ EOF
 			# Replace template with configuration value created in previous step
 			sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" 		/etc/nginx/sites-available/$HOSTNAME.conf
 			sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
+			sudo ln -s /etc/nginx/sites-available/$HOSTNAME.conf /etc/nginx/sites-enabled/
 				
 			# Add cron job to renew key
 			crontab -l | { cat; echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" > /var/log/certbot-renew.log'; } | crontab -
@@ -180,6 +186,8 @@ EOF
 		# Replace template with configuration value created in previous step
 		sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" 		/etc/nginx/sites-available/$HOSTNAME.conf
 		sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
+		sudo ln -s /etc/nginx/sites-available/$HOSTNAME.conf /etc/nginx/sites-enabled/
+		
 		sudo service nginx restart
 	fi
 
@@ -187,4 +195,17 @@ else
 	echo "Please input valid name for creating project"
 fi
 	
-
+echo
+echogreen "- - - - - - - - - - - - - - - - -"
+echo "Scripted install complete"
+echo
+echored "Magento has been installed with following database info : "
+echored " DB Name : $MAGENTO_DB"
+echored " DB Username : $MAGENTO_USER"
+echored " DB Password : $MAGENTO_PASSWORD"
+echo
+echo "Magento web app can be accessed via URL : "
+echored " $PROTOCOL://$HOSTNAME"
+echo
+echored "Below is admin information which can be used to login into administration page"
+echored "admin username : admin and admin password : $MAGENTO_ADMIN_PASSWORD_DEFAULT"
