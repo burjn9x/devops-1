@@ -7,7 +7,7 @@ PHP_VERSION=7.0
 export AUTHENTICATE_USERNAME=007f25476809ae9622729d03224f7dc6
 export AUTHENTICATE_PASSWORD=b2c2b1fabd3ddde44179c03f453e22da
 export AUTHENTICATE_FILE=~/.composer/auth.json
-export BASE_INSTALL=/home/ubuntu/devops/magento2
+#export BASE_INSTALL=/home/ubuntu/devops/magento2
 export TMP_INSTALL=/tmp
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"
@@ -155,8 +155,8 @@ if [ "`which composer`" = "" ]; then
   sudo php $TMP_INSTALL/composer
   
   # Install composer globally	
-  if [ -f "$BASE_INSTALL/composer.phar" ]; then
-	sudo mv $BASE_INSTALL/composer.phar /usr/local/bin/composer
+  if [ -f "composer.phar" ]; then
+	sudo mv composer.phar /usr/local/bin/composer
   else
 	echo "There is an error while installing composer"
 	exit 1

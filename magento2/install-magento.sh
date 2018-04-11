@@ -5,9 +5,6 @@
 
 MAGENTO_VERSION_DEFAULT=2.2.3
 export TIME_ZONE="Asia/Ho_Chi_Minh"
-export DEVOPS_HOME=/home/devops
-export BASE_INSTALL=/home/ubuntu/devops/magento2
-export NGINX_CONF=$BASE_INSTALL/_ubuntu/etc/nginx
 export TMP_INSTALL=/tmp
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"
