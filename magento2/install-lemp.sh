@@ -54,6 +54,13 @@ if [ ! -d "$TMP_INSTALL" ]; then
   mkdir -p $TMP_INSTALL
 fi
 
+if [ "`which curl`" = "" ]; then
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "You need to install curl. Curl is used for downloading components to install."
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	sudo apt-get $APTVERBOSITY install curl;
+fi
+
 ##
 # Nginx
 ##

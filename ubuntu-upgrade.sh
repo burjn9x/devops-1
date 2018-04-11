@@ -97,8 +97,13 @@ if [ "`which pip`" = "" ]; then
 	echo "You need to install python pip."
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo apt-get $APTVERBOSITY install python-pip;
-	sudo pip install awscli --upgrade --user
 	sudo pip install --upgrade pip
+	sudo pip install awscli --upgrade --user
+
+	# Install MkDocs & MkDocs-Material 
+	export LC_ALL=C.
+	sudo pip install mkdocs
+	sudo pip install mkdocs-material
 fi
 
 if [ "`which aws`" = "" ]; then
