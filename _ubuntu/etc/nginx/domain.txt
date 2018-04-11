@@ -2,13 +2,14 @@
 |----|-----------------------------|------|-----------------------|
 | 01 | jenkins.company.io          | 8080 | Jenkins CI-CD         |
 | 02 | mkdocs.company.io           | 8000 | MkDocs                |
-| 03 | devops.company.io           | 8888 | DevOps                |
+| 03 | devops.company.io           | 5000 | DevOps                |
 | 11 | chatbot.company.io          | 6666 | Chatbot               |
 | 12 | servicedesk.company.io      | 8866 | Service Desk          |
+| 15 | magento2.company.io         | 80   | Magento 2.            |
 | 21 | workflow.company.io         | 8888 | Tomcat Server         |
 | 22 | camunda.company.io          | 8888 | Camunda BPM           |
 | 23 | alfresco.company.io         | 8888 | Alfresco ECM          |
-| 24 | eforms.company.io           | 8888 | eForms eWorkflow      |
+| 24 | eforms.company.io           | 7777 | eForms eWorkflow      |
 | 31 | dapp-boilerplate.company.io | 8088 | DApp Real Estate      |
-| 31 | o2omall.company.io          | 8088 | O2O Mall              |
+| 31 | o2omall.company.io          | 3000 | O2O Mall              |
 | 31 | ipfs.company.io             | 8088 | IPFS                  |
