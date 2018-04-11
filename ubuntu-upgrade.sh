@@ -154,6 +154,7 @@ sudo swapon --show
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 
 sudo locale-gen en_US.utf8
+sudo dpkg-reconfigure locales
 
 
 ##
