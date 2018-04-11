@@ -7,6 +7,7 @@
 export TIME_ZONE="Asia/Ho_Chi_Minh"
 export APTVERBOSITY="-qq -y"
 export DEFAULTYESNO="y"
+export LC_ALL="C"
 
 # size of swapfile in megabytes = 2X
 # default is 8192MB (8GBx1024); 16384MB (16GBx1024)
@@ -101,7 +102,6 @@ if [ "`which pip`" = "" ]; then
 	sudo pip install awscli --upgrade --user
 
 	# Install MkDocs & MkDocs-Material 
-	export LC_ALL=C.
 	sudo pip install mkdocs
 	sudo pip install mkdocs-material
 fi
