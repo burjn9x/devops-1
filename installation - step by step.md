@@ -204,8 +204,7 @@ pip --version
 > $ `sudo -i`
 
 ```
-// sudo locale-gen && sudo dpkg-reconfigure locales
-// sudo locale-gen en_US en_US.UTF-8 && sudo dpkg-reconfigure locales
+locale-gen && dpkg-reconfigure locales
 // `en_US.UTF-8 UTF-8` >> `en_US.utf8` for both prompts
 ```
 
@@ -214,7 +213,7 @@ pip --version
 > $ `sudo -i`
 
 ```
-export LC_ALL=C.   &&
+export LC_ALL=C    &&
 pip install mkdocs &&
 pip install mkdocs-material
 ```
