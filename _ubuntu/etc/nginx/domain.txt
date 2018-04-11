@@ -1,15 +1,15 @@
-| ## | Domain                      | Port | Description           |
-|----|-----------------------------|------|-----------------------|
-| 01 | jenkins.company.io          | 8080 | Jenkins CI-CD         |
-| 02 | mkdocs.company.io           | 8000 | MkDocs                |
-| 03 | devops.company.io           | 5000 | DevOps                |
-| 11 | chatbot.company.io          | 6666 | Chatbot               |
-| 12 | servicedesk.company.io      | 8866 | Service Desk          |
-| 15 | magento2.company.io         | 80   | Magento 2.            |
-| 21 | workflow.company.io         | 8888 | Tomcat Server         |
-| 22 | camunda.company.io          | 8888 | Camunda BPM           |
-| 23 | alfresco.company.io         | 8888 | Alfresco ECM          |
-| 24 | eforms.company.io           | 7777 | eForms eWorkflow      |
-| 31 | dapp-boilerplate.company.io | 8088 | DApp Real Estate      |
-| 31 | o2omall.company.io          | 3000 | O2O Mall              |
-| 31 | ipfs.company.io             | 8088 | IPFS                  |
+| ## | Domain                          | Port | Description           |
+|----|---------------------------------|------|-----------------------|
+| 01 | jenkins.o2oprotocol.io          | 8080 | Jenkins CI-CD         |
+| 02 | mkdocs.o2oprotocol.io           | 8000 | MkDocs                |
+| 03 | devops.o2oprotocol.io           | 5000 | DevOps                |
+| 11 | chatbot.o2oprotocol.io          | 6666 | Chatbot               |
+| 12 | servicedesk.o2oprotocol.io      | 8866 | Service Desk          |
+| 15 | magento2.o2oprotocol.io         | 80   | Magento 2.            |
+| 21 | workflow.o2oprotocol.io         | 8888 | Tomcat Server         |
+| 22 | camunda.o2oprotocol.io          | 8888 | Camunda BPM           |
+| 23 | alfresco.o2oprotocol.io         | 8888 | Alfresco ECM          |
+| 24 | eforms.o2oprotocol.io           | 7777 | eForms eWorkflow      |
+| 31 | dapp-boilerplate.o2oprotocol.io | 8088 | DApp Real Estate      |
+| 31 | o2omall.o2oprotocol.io          | 3000 | O2O Mall              |
+| 31 | ipfs.o2oprotocol.io             | 8088 | IPFS                  |
