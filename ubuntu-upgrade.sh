@@ -5,10 +5,10 @@
 # -------
 
 # Configure constants
-. $BASE_INSTALL/constants.sh
+. constants.sh
 
 # Configure colors
-. $BASE_INSTALL/colors.sh
+. colors.sh
 
 # size of swapfile in megabytes = 2X
 # default is 8192MB (8GBx1024); 16384MB (16GBx1024)

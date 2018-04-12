@@ -4,10 +4,10 @@
 # -------
 
 # Configure constants
-. $BASE_INSTALL/constants.sh
+. constants.sh
 
 # Configure colors
-. $BASE_INSTALL/colors.sh
+. colors.sh
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
