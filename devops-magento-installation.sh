@@ -5,10 +5,10 @@
 # -------
 
 # Configure constants
-. constants.sh
+. magento2/constants.sh
 
 # Configure colors
-. colors.sh
+. magento2/colors.sh
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -18,10 +18,10 @@ echo
 
 
 # Run initializing script to setup environment for magento (Nginx, Composer, PHP)
-. $BASE_INSTALL/magento2/install-lemp.sh
+. magento2/install-lemp.sh
 
 # Run script to generate and configure magento project
-. $BASE_INSTALL/magento2/install-magento.sh
+. magento2/install-magento.sh
 
 
 
