@@ -4,6 +4,7 @@
 #
 # -------
 
+
 # Run initializing script to setup environment for magento (Nginx, Composer, PHP)
 . magento2/install-lemp.sh
 
