@@ -4,10 +4,10 @@
 # -------
 
 # Configure constants
-. ../constants.sh
+. constants.sh
 
 # Configure colors
-. ../colors.sh
+. colors.sh
 
 MAGENTO_WEB_ROOT_PATH="${MAGENTO_MAGENTO_WEB_ROOT//\//\\/}"
 
@@ -17,6 +17,12 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echogreen "Begin running...."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
+
+if [ ! -d "$MAGENTO_WEB_ROOT" ]; then
+	echogreen "Please make sure you already have environment installed. If not, please run install-lemp.sh"
+	echo "Web root folder : $MAGENTO_WEB_ROOT does not exist. Please create $MAGENTO_WEB_ROOT before running this script."
+	exit 1
+fi
 
 read -e -p "Please enter the project name${ques} " PROJECT_NAME
 
