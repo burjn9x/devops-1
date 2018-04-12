@@ -3,6 +3,7 @@
 # This is script which defines constants
 # -------
 export MAGENTO_VERSION_DEFAULT=2.2.3
+export PHP_VERSION=7.0
 export TIME_ZONE="Asia/Ho_Chi_Minh"
 
 export AUTHENTICATE_USERNAME=007f25476809ae9622729d03224f7dc6
