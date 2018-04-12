@@ -9,7 +9,7 @@
 # Configure colors
 . colors.sh
 
-MAGENTO_WEB_ROOT_PATH="${MAGENTO_MAGENTO_WEB_ROOT//\//\\/}"
+MAGENTO_WEB_ROOT_PATH="${MAGENTO_WEB_ROOT//\//\\/}"
 
 
 echo
