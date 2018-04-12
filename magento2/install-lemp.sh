@@ -4,10 +4,10 @@
 # -------
 
 # Configure constants
-. ../constants.sh
+. constants.sh
 
 # Configure colors
-. ../colors.sh
+. colors.sh
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
