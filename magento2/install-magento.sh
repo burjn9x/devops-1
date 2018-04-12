@@ -35,7 +35,10 @@ if [ -n "$PROJECT_NAME" ]; then
 	  read -s -p "Re-Enter the Magento database password:" MAGENTO_PASSWORD2
 	  while [ "$MAGENTO_PASSWORD" != "$MAGENTO_PASSWORD2" ]
 	  do
-		   echo "Password does not match. Please try again"
+		  echo "Password does not match. Please try again"
+		  read -s -p "Enter the Magento database password:"  MAGENTO_PASSWORD
+		  echo ""
+		  read -s -p "Re-Enter the Magento database password:" MAGENTO_PASSWORD2
 	  done
 	  #if [ "$MAGENTO_PASSWORD" == "$MAGENTO_PASSWORD2" ]; then
 		MAGENTO_DB=$PROJECT_NAME
