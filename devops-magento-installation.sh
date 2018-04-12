@@ -4,19 +4,6 @@
 #
 # -------
 
-# Configure constants
-. magento2/constants.sh
-
-# Configure colors
-. magento2/colors.sh
-
-echo
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echogreen "Begin running...."
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo
-
-
 # Run initializing script to setup environment for magento (Nginx, Composer, PHP)
 . magento2/install-lemp.sh
 
