@@ -8,6 +8,7 @@ export AUTHENTICATE_USERNAME=007f25476809ae9622729d03224f7dc6
 export AUTHENTICATE_PASSWORD=b2c2b1fabd3ddde44179c03f453e22da
 export AUTHENTICATE_FILE=~/.composer/auth.json
 export MAGENTO_WEB_ROOT=/var/www/m2
+export TMP_INSTALL=/tmp
 
 export DEFAULTDB=MA
 
