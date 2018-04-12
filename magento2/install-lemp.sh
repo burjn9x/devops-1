@@ -34,54 +34,55 @@ fi
 ##
 # Nginx
 ##
-echo
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo "Nginx can be used as frontend to Tomcat."
-echo "This installation will add config default proxying to tomcat running behind."
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-read -e -p "Install nginx${ques} [y/n] " -i "$DEFAULTYESNO" installnginx
-if [ "$installnginx" = "y" ]; then
+if [ "`which nginx`" = "" ]; then
+	echo
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "Nginx can be used as frontend to Tomcat."
+	echo "This installation will add config default proxying to tomcat running behind."
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	read -e -p "Install nginx${ques} [y/n] " -i "$DEFAULTYESNO" installnginx
+	if [ "$installnginx" = "y" ]; then
 
-  # Remove nginx if already installed
-  if [ "`which nginx`" != "" ]; then
-	 sudo apt-get remove --auto-remove nginx nginx-common
-	 sudo apt-get purge --auto-remove nginx nginx-common
-  fi
-  echoblue "Installing nginx. Fetching packages..."
-  echo
+	  # Remove nginx if already installed
+	  if [ "`which nginx`" != "" ]; then
+		 sudo apt-get remove --auto-remove nginx nginx-common
+		 sudo apt-get purge --auto-remove nginx nginx-common
+	  fi
+	  echoblue "Installing nginx. Fetching packages..."
+	  echo
 
-#@Deprecated
-#sudo -s << EOF
-#  echo "deb http://nginx.org/packages/mainline/ubuntu $(lsb_release -cs) nginx" >> /etc/apt/sources.list
-#  sudo curl -# -o $TMP_INSTALL/nginx_signing.key http://nginx.org/keys/nginx_signing.key
-#  apt-key add $TMP_INSTALL/nginx_signing.key
-  #echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu $(lsb_release -cs) main" >> /etc/apt/sources.list
-  #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C
-  # Alternate with spdy support and more, change  apt install -> nginx-custom
-  #echo "deb http://ppa.launchpad.net/brianmercer/nginx/ubuntu $(lsb_release -cs) main" >> /etc/apt/sources.list
-  #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8D0DC64F
-#EOF
+	#@Deprecated
+	#sudo -s << EOF
+	#  echo "deb http://nginx.org/packages/mainline/ubuntu $(lsb_release -cs) nginx" >> /etc/apt/sources.list
+	#  sudo curl -# -o $TMP_INSTALL/nginx_signing.key http://nginx.org/keys/nginx_signing.key
+	#  apt-key add $TMP_INSTALL/nginx_signing.key
+	  #echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu $(lsb_release -cs) main" >> /etc/apt/sources.list
+	  #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C300EE8C
+	  # Alternate with spdy support and more, change  apt install -> nginx-custom
+	  #echo "deb http://ppa.launchpad.net/brianmercer/nginx/ubuntu $(lsb_release -cs) main" >> /etc/apt/sources.list
+	  #apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8D0DC64F
+	#EOF
 
-  sudo apt-get $APTVERBOSITY update && sudo apt-get $APTVERBOSITY install nginx
-  sudo systemctl enable nginx
+	  sudo apt-get $APTVERBOSITY update && sudo apt-get $APTVERBOSITY install nginx
+	  sudo systemctl enable nginx
 
-  echo "Inserting letsencrypt configuration for nginx..."
-  
-  # Insert config for letsencrypt
-  if [ -f "/etc/nginx/sites-available/default" ]; then
-	sudo sed -i '/^\(}\)/ i location \/\.well-known {\n  alias \/opt\/letsencrypt\/\.well-known\/;\n  allow all;	\n  }' /etc/nginx/sites-available/default
-  fi
-  
-  
-  ## Reload config file
-  #TODO: sudo service nginx start
-  sudo systemctl restart nginx
-  
-  sudo ufw enable
-  if [ ! -f "/etc/ufw/applications.d/nginx.ufw.profile" ]; then
-    echo "Setting up firewall configuration for nginx..."
-	echo "There is no profile for nginx within ufw, so we decide to create it."
-	sudo cat <<EOF >/etc/ufw/applications.d/nginx.ufw.profile
+	  echo "Inserting letsencrypt configuration for nginx..."
+	  
+	  # Insert config for letsencrypt
+	  if [ -f "/etc/nginx/sites-available/default" ]; then
+		sudo sed -i '/^\(}\)/ i location \/\.well-known {\n  alias \/opt\/letsencrypt\/\.well-known\/;\n  allow all;	\n  }' /etc/nginx/sites-available/default
+	  fi
+	  
+	  
+	  ## Reload config file
+	  #TODO: sudo service nginx start
+	  sudo systemctl restart nginx
+	  
+	  sudo ufw enable
+	  if [ ! -f "/etc/ufw/applications.d/nginx.ufw.profile" ]; then
+		echo "Setting up firewall configuration for nginx..."
+		echo "There is no profile for nginx within ufw, so we decide to create it."
+		sudo cat <<EOF >/etc/ufw/applications.d/nginx.ufw.profile
 [Nginx HTTP]
 title=Web Server (Nginx, HTTP)
 description=Small, but very powerful and efficient web server
@@ -98,19 +99,20 @@ description=Small, but very powerful and efficient web server
 ports=80,443/tcp
 EOF
 
-	sudo ufw app update nginx
-  fi
+		sudo ufw app update nginx
+	  fi
 
-  sudo ufw allow 'Nginx HTTP'
-  sudo ufw allow 'Nginx HTTPS'
-  sudo ufw allow 'OpenSSH'
+	  sudo ufw allow 'Nginx HTTP'
+	  sudo ufw allow 'Nginx HTTPS'
+	  sudo ufw allow 'OpenSSH'
 
 
-  echo
-  echogreen "Finished installing nginx"
-  echo
-else
-  echo "Skipping install of nginx"
+	  echo
+	  echogreen "Finished installing nginx"
+	  echo
+	else
+	  echo "Skipping install of nginx"
+	fi
 fi
 
 
