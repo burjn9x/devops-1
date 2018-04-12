@@ -3,48 +3,14 @@
 # This is standalone script which configure and install magento project
 # -------
 
-MAGENTO_VERSION_DEFAULT=2.2.3
-export TIME_ZONE="Asia/Ho_Chi_Minh"
-export TMP_INSTALL=/tmp
-export APTVERBOSITY="-qq -y"
-export DEFAULTYESNO="y"
+# Configure constants
+. ../constants.sh
 
+# Configure colors
+. ../colors.sh
 
-export MAGENTO_DB_DEFAULT="magento"
-export MAGENTO_USER_DEFAULT="magento"
-export MAGENTO_DB=$MAGENTO_DB_DEFAULT
-export MAGENTO_USER=$MAGENTO_USER_DEFAULT
-export MAGENTO_ADMIN_PASSWORD_DEFAULT="admin123"
+MAGENTO_WEB_ROOT_PATH="${MAGENTO_MAGENTO_WEB_ROOT//\//\\/}"
 
-
-export WEB_ROOT=/var/www/m2
-
-WEB_ROOT_PATH="${WEB_ROOT//\//\\/}"
-
-
-
-# Color variables
-txtund=$(tput sgr 0 1)          # Underline
-txtbld=$(tput bold)             # Bold
-bldred=${txtbld}$(tput setaf 1) #  red
-bldgre=${txtbld}$(tput setaf 2) #  red
-bldblu=${txtbld}$(tput setaf 4) #  blue
-bldwht=${txtbld}$(tput setaf 7) #  white
-txtrst=$(tput sgr0)             # Reset
-info=${bldwht}*${txtrst}        # Feedback
-pass=${bldblu}*${txtrst}
-warn=${bldred}*${txtrst}
-ques=${bldblu}?${txtrst}
-
-echoblue () {
-  echo "${bldblu}$1${txtrst}"
-}
-echored () {
-  echo "${bldred}$1${txtrst}"
-}
-echogreen () {
-  echo "${bldgre}$1${txtrst}"
-}
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -55,7 +21,7 @@ echo
 read -e -p "Please enter the project name${ques} " PROJECT_NAME
 
 if [ -n "$PROJECT_NAME" ]; then
-	cd $WEB_ROOT
+	cd $MAGENTO_WEB_ROOT
 	
 	read -e -p "Please enter the Magento version${ques} " -i "$MAGENTO_VERSION_DEFAULT" MAGENTO_VERSION
 	sudo composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition:$MAGENTO_VERSION $PROJECT_NAME
@@ -97,12 +63,12 @@ EOF
 	read -e -p "Please enter the protocol to use for public Share server (http or https)${ques} [https] " -i "https" PROTOCOL
 	if [ -n "$HOSTNAME" ]; then
 		#echo "DB USER : $MAGENTO_USER, DB PASSWORD : $MAGENTO_PASSWORD DB : $MAGENTO_DB"
-		sudo php $WEB_ROOT/$PROJECT_NAME/bin/magento setup:install --base-url=$PROTOCOL://$HOSTNAME --backend-frontname=admin --db-host=127.0.0.1 --db-name=$MAGENTO_DB \
+		sudo php $MAGENTO_WEB_ROOT/$PROJECT_NAME/bin/magento setup:install --base-url=$PROTOCOL://$HOSTNAME --backend-frontname=admin --db-host=127.0.0.1 --db-name=$MAGENTO_DB \
 						--db-password=$MAGENTO_PASSWORD --db-user=$MAGENTO_USER --admin-firstname=admin --admin-lastname=admin --admin-email=admin@mycompany.com \
 						--admin-user=admin --admin-password=$MAGENTO_ADMIN_PASSWORD_DEFAULT --language=en_US --currency=USD --timezone=$TIME_ZONE --use-rewrites=1
 						
 		# Set permission on project folder
-		cd $WEB_ROOT/$PROJECT_NAME
+		cd $MAGENTO_WEB_ROOT/$PROJECT_NAME
 		sudo find var vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
 		sudo find var vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
 		sudo chown -R :www-data .		
@@ -156,7 +122,7 @@ server {
 EOF
 			# Replace template with configuration value created in previous step
 			sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" 		/etc/nginx/sites-available/$HOSTNAME.conf
-			sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
+			sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$MAGENTO_WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
 			sudo ln -s /etc/nginx/sites-available/$HOSTNAME.conf /etc/nginx/sites-enabled/
 				
 			# Add cron job to renew key
@@ -185,7 +151,7 @@ upstream fastcgi_backend {
 EOF
 		# Replace template with configuration value created in previous step
 		sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" 		/etc/nginx/sites-available/$HOSTNAME.conf
-		sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
+		sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$MAGENTO_WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
 		sudo ln -s /etc/nginx/sites-available/$HOSTNAME.conf /etc/nginx/sites-enabled/
 		
 		sudo service nginx restart

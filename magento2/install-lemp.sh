@@ -3,44 +3,11 @@
 # This is standalone script which configure and install pre-environment
 # -------
 
-PHP_VERSION=7.0
-export AUTHENTICATE_USERNAME=007f25476809ae9622729d03224f7dc6
-export AUTHENTICATE_PASSWORD=b2c2b1fabd3ddde44179c03f453e22da
-export AUTHENTICATE_FILE=~/.composer/auth.json
-export TMP_INSTALL=/tmp
-export APTVERBOSITY="-qq -y"
-export DEFAULTYESNO="y"
+# Configure constants
+. ../constants.sh
 
-export COMPOSERURL=https://getcomposer.org/installer
-
-export WEB_ROOT=/var/www/m2
-
-#WEB_ROOT_PATH="${WEB_ROOT//\//\\/}"
-
-
-
-# Color variables
-txtund=$(tput sgr 0 1)          # Underline
-txtbld=$(tput bold)             # Bold
-bldred=${txtbld}$(tput setaf 1) #  red
-bldgre=${txtbld}$(tput setaf 2) #  red
-bldblu=${txtbld}$(tput setaf 4) #  blue
-bldwht=${txtbld}$(tput setaf 7) #  white
-txtrst=$(tput sgr0)             # Reset
-info=${bldwht}*${txtrst}        # Feedback
-pass=${bldblu}*${txtrst}
-warn=${bldred}*${txtrst}
-ques=${bldblu}?${txtrst}
-
-echoblue () {
-  echo "${bldblu}$1${txtrst}"
-}
-echored () {
-  echo "${bldred}$1${txtrst}"
-}
-echogreen () {
-  echo "${bldgre}$1${txtrst}"
-}
+# Configure colors
+. ../colors.sh
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -187,8 +154,8 @@ else
 	echo "There is no file php.ini, please check if php is installed correctly."
 fi
 
-if [ ! -d "$WEB_ROOT" ]; then
-	sudo mkdir -p $WEB_ROOT
+if [ ! -d "$MAGENTO_WEB_ROOT" ]; then
+	sudo mkdir -p $MAGENTO_WEB_ROOT
 fi
 
 # Create authentication file for magento
@@ -209,7 +176,48 @@ EOF
 	sudo sed -i "s/@@AUTHENTICATE_PASSWORD@@/$AUTHENTICATE_PASSWORD/g" 		$AUTHENTICATE_FILE
 fi
 
+##
+# Database
+##
 if [ "`which mysql`" = "" ]; then
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "Install Database"
+	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	read -e -p "Please select on of these : [PE]rcona, [MA]riadb, [Q]uit " -i "$DEFAULTDB" installdb
+
+    case $installdb in
+        "PE")
+			echo "Choosing Percona..."
+			sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A
+			sudo bash -c 'echo deb http://repo.percona.com/apt trusty main >> /etc/apt/sources.list'
+			sudo bash -c 'echo deb-src http://repo.percona.com/apt trusty main >> /etc/apt/sources.list'
+			sudo apt-get update
+			read -e -p "Please choose a version of Percona${ques} " -i "5.6" PERCONA_VERSION
+			echo "percona-server-server-$PERCONA_VERSION percona-server-server/root_password password root" | sudo debconf-set-selections
+			echo "percona-server-server-$PERCONA_VERSION percona-server-server/root_password_again password root" | sudo debconf-set-selections
+			sudo apt-get install -qq -y percona-server-server-$PERCONA_VERSION percona-server-client-$PERCONA_VERSION
+			echo "Database has been installed successfully with root information as following : "
+			echored "username : root & password : root"
+            ;;
+        "MA")
+		  echo "Choosing mariadb..."
+          sudo apt-get install software-properties-common
+		  sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+		  sudo add-apt-repository "deb [arch=amd64,i386,ppc64el] http://ftp.ddg.lth.se/mariadb/repo/10.1/ubuntu $(lsb_release -cs) main"
+		  sudo apt-get update
+		  sudo apt-get $APTVERBOSITY install mariadb-server
+		  sudo mysql_secure_installation
+		  #Tuning database by setting config
+		  echo "key_buffer_size         = 128M" >> /etc/mysql/conf.d/mariadb.cnf
+		  echo "max_allowed_packet      = 128M" >> /etc/mysql/conf.d/mariadb.cnf
+		  echo "thread_stack            = 1024K" >> /etc/mysql/conf.d/mariadb.cnf
+		  echo "innodb_log_file_size    = 128M" >> /etc/mysql/conf.d/mariadb.cnf
+            ;;
+		"Q")
+			echo "Quitting..."
+			;;
+        *) echo "invalid option";;
+    esac
 	read -e -p "Install MariaDB? [y/n] " -i "y" installmariadb
 	if [ "$installmariadb" = "y" ]; then
 	  sudo apt-get install software-properties-common

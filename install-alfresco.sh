@@ -3,54 +3,11 @@
 # This is standalone script which configure and install Alfresco ECM
 # -------
 
-GHOSTSCRIPT_VERSION=9.18
-export DEVOPS_HOME=/home/devops
-export CATALINA_HOME=$DEVOPS_HOME/tomcat
-export ALF_DATA_HOME=$DEVOPS_HOME/alf_data
-export BASE_INSTALL=/home/ubuntu/devops
-export NGINX_CONF=$BASE_INSTALL/_ubuntu/etc/nginx
-export TMP_INSTALL=/tmp/devops-install
-export APTVERBOSITY="-qq -y"
-export DEFAULTYESNO="y"
-export SOLR4_CONFIG_FILE=alfresco-solr4-5.2.g-config-ssl.zip
-export TOMCAT_HTTP_PORT_DEFAULT=8080
+# Configure constants
+. $BASE_INSTALL/constants.sh
 
-export CATALINA_HOME=$DEVOPS_HOME/tomcat
-
-export ALF_DB_USERNAME_DEFAULT=alfresco
-export ALF_DB_PASSWORD_DEFAULT=alfresco
-export ALF_DB_NAME_DEFAULT=alfresco
-export ALF_DB_PORT_DEFAULT=5432
-export ALF_DB_DRIVER_DEFAULT=org.postgresql.Driver
-export ALF_DB_CONNECTOR_DEFAULT=postgresql
-export ALF_DB_SUFFIX_DEFAULT=''
-
-export MYSQL_DB_PORT_DEFAULT=3306
-export MYSQL_DB_DRIVER_DEFAULT=com.mysql.jdbc.Driver
-export MYSQL_DB_CONNECTOR_DEFAULT=mysql
-export MYSQL_DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
-#export DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
-
-
-export ALFREPOWAR=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-platform/5.2.g/alfresco-platform-5.2.g.war
-export ALFSHAREWAR=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/share/5.2.f/share-5.2.f.war
-export ALFSHARESERVICES=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-share-services/5.2.f/alfresco-share-services-5.2.f.amp
-export ALFMMTJAR=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-mmt/5.2.g/alfresco-mmt-5.2.g.jar
-
-export SOLR4_WAR_DOWNLOAD=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-solr4/5.2.g/alfresco-solr4-5.2.g.war
-export LIBREOFFICE=http://downloadarchive.documentfoundation.org/libreoffice/old/5.1.6.2/deb/x86_64/LibreOffice_5.1.6.2_Linux_x86-64_deb.tar.gz
-export ALFRESCO_PDF_RENDERER=https://artifacts.alfresco.com/nexus/service/local/repositories/releases/content/org/alfresco/alfresco-pdf-renderer/1.0/alfresco-pdf-renderer-1.0-linux.tgz
-export KEYSTOREBASE=https://svn.alfresco.com/repos/alfresco-open-mirror/alfresco/HEAD/root/projects/repository/config/alfresco/keystore
-
-export GHOSTSCRIPTURL=http://downloads.ghostscript.com/public/binaries/ghostscript-$GHOSTSCRIPT_VERSION-linux-x86_64.tgz
-
-export GOOGLEDOCSREPO=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/integrations/alfresco-googledocs-repo/3.0.4.1/alfresco-googledocs-repo-3.0.4.1.amp
-export GOOGLEDOCSSHARE=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/integrations/alfresco-googledocs-share/3.0.4.1/alfresco-googledocs-share-3.0.4.1.amp
-
-export AOS_VTI=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/aos-module/alfresco-vti-bin/1.1.5/alfresco-vti-bin-1.1.5.war
-export AOS_SERVER_ROOT=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-server-root/5.2.g/alfresco-server-root-5.2.g.war
-export AOS_AMP=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/aos-module/alfresco-aos-module/1.1.6/alfresco-aos-module-1.1.6.amp
-export SOLR4_CONFIG=$BASE_INSTALL/_addons/solr4/$SOLR4_CONFIG_FILE
+# Configure colors
+. $BASE_INSTALL/colors.sh
 
 # Escape for sed
 ALF_DATA_HOME_PATH="${ALF_DATA_HOME//\//\\/}"
@@ -58,30 +15,6 @@ ALFRESCO_HOME_PATH="${DEVOPS_HOME//\//\\/}"
 
 #Enable Smart Folder or not
 SF_ENABLE=true
-
-
-# Color variables
-txtund=$(tput sgr 0 1)          # Underline
-txtbld=$(tput bold)             # Bold
-bldred=${txtbld}$(tput setaf 1) #  red
-bldgre=${txtbld}$(tput setaf 2) #  red
-bldblu=${txtbld}$(tput setaf 4) #  blue
-bldwht=${txtbld}$(tput setaf 7) #  white
-txtrst=$(tput sgr0)             # Reset
-info=${bldwht}*${txtrst}        # Feedback
-pass=${bldblu}*${txtrst}
-warn=${bldred}*${txtrst}
-ques=${bldblu}?${txtrst}
-
-echoblue () {
-  echo "${bldblu}$1${txtrst}"
-}
-echored () {
-  echo "${bldred}$1${txtrst}"
-}
-echogreen () {
-  echo "${bldgre}$1${txtrst}"
-}
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"

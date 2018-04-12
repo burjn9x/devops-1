@@ -4,37 +4,16 @@
 #
 # -------
 
-export TIME_ZONE="Asia/Ho_Chi_Minh"
-export APTVERBOSITY="-qq -y"
-export DEFAULTYESNO="y"
-export LC_ALL="C"
+# Configure constants
+. $BASE_INSTALL/constants.sh
+
+# Configure colors
+. $BASE_INSTALL/colors.sh
 
 # size of swapfile in megabytes = 2X
 # default is 8192MB (8GBx1024); 16384MB (16GBx1024)
 swapsize=16G
 
-# Color variables
-txtund=$(tput sgr 0 1)          # Underline
-txtbld=$(tput bold)             # Bold
-bldred=${txtbld}$(tput setaf 1) #  red
-bldgre=${txtbld}$(tput setaf 2) #  red
-bldblu=${txtbld}$(tput setaf 4) #  blue
-bldwht=${txtbld}$(tput setaf 7) #  white
-txtrst=$(tput sgr0)             # Reset
-info=${bldwht}*${txtrst}        # Feedback
-pass=${bldblu}*${txtrst}
-warn=${bldred}*${txtrst}
-ques=${bldblu}?${txtrst}
-
-echoblue () {
-  echo "${bldblu}$1${txtrst}"
-}
-echored () {
-  echo "${bldred}$1${txtrst}"
-}
-echogreen () {
-  echo "${bldgre}$1${txtrst}"
-}
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"

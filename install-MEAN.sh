@@ -4,45 +4,11 @@
 #
 # -------
 
-#export DEVOPS_HOME=/opt/devops
-export BASE_INSTALL=/home/ubuntu/devops
-export NGINX_CONF=$BASE_INSTALL/_ubuntu/etc/nginx
-export TMP_INSTALL=/tmp/devops-install
+# Configure constants
+. $BASE_INSTALL/constants.sh
 
-export APTVERBOSITY="-qq -y"
-export DEFAULTYESNO="y"
-
-export NVMURL=https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh
-export NODEJSURL=https://deb.nodesource.com/setup_6.x
-
-
-
-# size of swapfile in megabytes = 2X
-# default is 8192MB (8GBx1024); 16384MB (16GBx1024)
-swapsize=16G
-
-# Color variables
-txtund=$(tput sgr 0 1)          # Underline
-txtbld=$(tput bold)             # Bold
-bldred=${txtbld}$(tput setaf 1) #  red
-bldgre=${txtbld}$(tput setaf 2) #  red
-bldblu=${txtbld}$(tput setaf 4) #  blue
-bldwht=${txtbld}$(tput setaf 7) #  white
-txtrst=$(tput sgr0)             # Reset
-info=${bldwht}*${txtrst}        # Feedback
-pass=${bldblu}*${txtrst}
-warn=${bldred}*${txtrst}
-ques=${bldblu}?${txtrst}
-
-echoblue () {
-  echo "${bldblu}$1${txtrst}"
-}
-echored () {
-  echo "${bldred}$1${txtrst}"
-}
-echogreen () {
-  echo "${bldgre}$1${txtrst}"
-}
+# Configure colors
+. $BASE_INSTALL/colors.sh
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"

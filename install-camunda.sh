@@ -3,64 +3,11 @@
 # This is standalone script which configure and install Camunda BPM
 # -------
 
-CAMUNDA_VERSION=7.8
-export DEVOPS_HOME=/home/devops
-export CATALINA_HOME=$DEVOPS_HOME/tomcat
-export BASE_INSTALL=/home/ubuntu/devops
-export TMP_INSTALL=/tmp/devops-install
-export NGINX_CONF=$BASE_INSTALL/_ubuntu/etc/nginx
-export APTVERBOSITY="-qq -y"
-export DEFAULTYESNO="y"
+# Configure constants
+. $BASE_INSTALL/constants.sh
 
-export CATALINA_HOME=$DEVOPS_HOME/tomcat
-
-export DB_USERNAME_DEFAULT=camunda
-export DB_PASSWORD_DEFAULT=camunda
-export DB_NAME_DEFAULT=camunda
-export DB_PORT_DEFAULT=3306
-export DB_DRIVER_DEFAULT=com.mysql.jdbc.Driver
-export DB_CONNECTOR_DEFAULT=mysql
-export DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
-export CAMUNDA_PROTOCOL_DEFAULT=http
-export TOMCAT_HTTP_PORT_DEFAULT=8080
-
-
-export PG_DB_PORT_DEFAULT=5432
-export PG_DB_DRIVER_DEFAULT=org.postgresql.Driver
-export PG_DB_CONNECTOR_DEFAULT=postgresql
-export PG_DB_SUFFIX_DEFAULT=''
-
-export MYSQL_DB_PORT_DEFAULT=3306
-export MYSQL_DB_DRIVER_DEFAULT=com.mysql.jdbc.Driver
-export MYSQL_DB_CONNECTOR_DEFAULT=mysql
-export MYSQL_DB_SUFFIX_DEFAULT="\?useSSL=false\&amp;autoReconnect=true\&amp;useUnicode=yes\&amp;characterEncoding=utf8"
-
-
-export CAMUNDAURL=https://camunda.org/release/camunda-bpm/tomcat/$CAMUNDA_VERSION/camunda-bpm-tomcat-$CAMUNDA_VERSION.0.zip
-
-
-# Color variables
-txtund=$(tput sgr 0 1)          # Underline
-txtbld=$(tput bold)             # Bold
-bldred=${txtbld}$(tput setaf 1) #  red
-bldgre=${txtbld}$(tput setaf 2) #  red
-bldblu=${txtbld}$(tput setaf 4) #  blue
-bldwht=${txtbld}$(tput setaf 7) #  white
-txtrst=$(tput sgr0)             # Reset
-info=${bldwht}*${txtrst}        # Feedback
-pass=${bldblu}*${txtrst}
-warn=${bldred}*${txtrst}
-ques=${bldblu}?${txtrst}
-
-echoblue () {
-  echo "${bldblu}$1${txtrst}"
-}
-echored () {
-  echo "${bldred}$1${txtrst}"
-}
-echogreen () {
-  echo "${bldgre}$1${txtrst}"
-}
+# Configure colors
+. $BASE_INSTALL/colors.sh
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
