@@ -3,6 +3,7 @@
 # This is script which defines constants
 # -------
 export MAGENTO_VERSION_DEFAULT=2.2.3
+export TIME_ZONE="Asia/Ho_Chi_Minh"
 
 export AUTHENTICATE_USERNAME=007f25476809ae9622729d03224f7dc6
 export AUTHENTICATE_PASSWORD=b2c2b1fabd3ddde44179c03f453e22da
