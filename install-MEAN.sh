@@ -143,6 +143,25 @@ if [ "$installnginx" = "y" ]; then
 	sed -i '/^\(}\)/ i location \/\.well-known {\n  alias \/opt\/letsencrypt\/\.well-known\/;\n  allow all;	\n  }' /etc/nginx/sites-available/default
   fi
   
+  if [ ! -f "/etc/nginx/snippets/ssl.conf" ]; then
+	sudo cat <<EOF >/etc/nginx/snippets/ssl.conf
+ssl_session_timeout 1d;
+ssl_session_cache shared:SSL:50m;
+ssl_session_tickets off;
+
+ssl_protocols TLSv1.2;
+ssl_ciphers EECDH+AESGCM:EECDH+AES;
+ssl_ecdh_curve secp384r1;
+ssl_prefer_server_ciphers on;
+
+ssl_stapling on;
+ssl_stapling_verify on;
+
+add_header Strict-Transport-Security "max-age=15768000; includeSubdomains; preload";
+add_header X-Frame-Options DENY;
+add_header X-Content-Type-Options nosniff;
+EOF
+  fi
   
   ## Reload config file
   #TODO: sudo service nginx start
