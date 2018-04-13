@@ -82,9 +82,17 @@ EOF
 						
 		# Set permission on project folder
 		cd $MAGENTO_WEB_ROOT/$PROJECT_NAME
-		sudo find var vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
-		sudo find var vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
-		sudo chown -R :www-data .		
+		compareVersion=2.2
+		var=$(awk 'BEGIN{ print "'$MAGENTO_VERSION'"<"'$compareVersion'" }')
+		if [ "$var" -eq 1 ]; then
+			sudo find var vendor pub/static pub/media app/etc -type f -exec chmod g+w {} \;
+			sudo find var vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} \;
+		else
+			sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod u+w {} \;
+			sudo find var vendor generated pub/static pub/media app/etc -type d -exec chmod u+w {} \;
+		fi
+		sudo chmod u+x bin/magento
+		sudo chown -R :www-data .
 	else
 		echo "Please input valid hostname"
 	fi
