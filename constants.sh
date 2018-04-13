@@ -70,7 +70,7 @@ export MAGENTO_ADMIN_PASSWORD_DEFAULT="admin123"
 export NVMURL=https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh
 export NODEJSURL=https://deb.nodesource.com/setup_6.x
 
-export TOMCAT_DOWNLOAD=http://mirrors.viethosting.com/apache/tomcat/tomcat-8/v$TOMCAT8_VERSION/bin/apache-tomcat-$TOMCAT8_VERSION.tar.gz
+export TOMCAT_DOWNLOAD=https://archive.apache.org/dist/tomcat/tomcat-8/v$TOMCAT8_VERSION/bin/apache-tomcat-$TOMCAT8_VERSION.tar.gz
 export JDBCPOSTGRESURL=https://jdbc.postgresql.org/download
 export JDBCPOSTGRES=postgresql-42.1.4.jar
 export JDBCMYSQLURL=https://dev.mysql.com/get/Downloads/Connector-J

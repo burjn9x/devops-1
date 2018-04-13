@@ -4,10 +4,14 @@
 # -------
 
 # Configure constants
-. constants.sh
+if [ -f "constants.sh" ]; then
+	. constants.sh
+fi
 
 # Configure colors
-. colors.sh
+if [ -f "colors.sh" ]; then
+	. colors.sh
+fi
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -126,23 +130,39 @@ if [ "$installcamundawar" = "y" ]; then
  # sudo ln -s /etc/nginx/sites-available/camunda.conf /etc/nginx/sites-enabled/
   
   # Extract domain name from SSL key path
-  hostname=$(basename /etc/letsencrypt/live/*/)
+  #hostname=$(basename /etc/letsencrypt/live/*/)
+  
+  read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
+	
+	if [ -f "$NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf" ] && [ "$CAMUNDA_HOSTNAME" != "$SHARE_HOSTNAME" ]; then
+		# Remove old configuration
+		rm $NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf
+	fi
+
+	
   
   # Check if variable TOMCAT_HTTP_PORT is set, if not, we use the default value as 8080
   if [ -z "$TOMCAT_HTTP_PORT" ]; then
 	 TOMCAT_HTTP_PORT=8080
   fi
   
+  # Create a new one to remove common snippet
+  if [ -f "$BASE_INSTALL/ssl.sh" ]; then
+	.	$BASE_INSTALL/ssl.sh $CAMUNDA_HOSTNAME
+  else
+	. ssl.sh $CAMUNDA_HOSTNAME
+  fi
+  
   #echo "Installing configuration for camunda on nginx..."
 	
-  if [ -f "/etc/nginx/sites-available/$hostname.conf" ]; then
-	 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$hostname.conf
+  if [ -f "/etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
+	 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
 	 
 	 # Insert camunda configuration content before the last line in domain.conf in nginx
 	 #sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
 	 sudo mkdir temp
 	 sudo cp $NGINX_CONF/sites-available/camunda.snippet	temp/
-	 sudo sed -e '/##CAMUNDA##/ {' -e 'r temp/camunda.snippet' -e 'd' -e '}' -i $hostname.conf
+	 sudo sed -e '/##CAMUNDA##/ {' -e 'r temp/camunda.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
 	 sudo rm -rf temp
 		
   fi

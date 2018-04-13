@@ -5,10 +5,14 @@
 # -------
 
 # Configure constants
-. constants.sh
+if [ -f "constants.sh" ]; then
+	. constants.sh
+fi
 
 # Configure colors
-. colors.sh
+if [ -f "colors.sh" ]; then
+	. colors.sh
+fi
 
 # size of swapfile in megabytes = 2X
 # default is 8192MB (8GBx1024); 16384MB (16GBx1024)

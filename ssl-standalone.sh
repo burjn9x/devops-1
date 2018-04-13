@@ -15,6 +15,8 @@ echogreen "Begin running...."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
 
+sudo mkdir temp
+
 create_ssl() {
 	local_domain=$1
 	local_port=$2
@@ -31,10 +33,11 @@ create_ssl() {
 		  
 		#sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$local_domain.conf
 		sudo sed -i "s/@@DNS_DOMAIN@@/$local_domain/g" /etc/nginx/sites-available/$local_domain.conf
-
-		# Replace nginx ssl config with generated keys
-		#sudo sed -i "s/@@CERTIFICATE@@/\/etc\/letsencrypt\/live\/$local_domain\/fullchain.pem/g" /etc/nginx/sites-available/$local_domain.conf 
-		#sudo sed -i "s/@@CERTIFICATE_KEY@@/\/etc\/letsencrypt\/live\/$local_domain\/privkey.pem/g" /etc/nginx/sites-available/$local_domain.conf
+		
+		
+		sudo cp $NGINX_CONF/sites-available/common.snippet	temp/
+		sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$local_domain.conf
+		
 		  
 		sudo sed -i "s/@@PORT@@/$local_port/g" /etc/nginx/sites-available/$local_domain.conf
 		  
@@ -67,6 +70,8 @@ done < $NGINX_CONF/domain.txt
 
 sudo systemctl restart nginx
 echogreen "Finished installing SSL"
+
+sudo rm -rf temp
 
 # Add cron job to renew key
 crontab -l | { cat; echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" > /var/log/certbot-renew.log'; } | crontab -

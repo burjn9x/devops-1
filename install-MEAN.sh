@@ -5,10 +5,14 @@
 # -------
 
 # Configure constants
-. constants.sh
+if [ -f "constants.sh" ]; then
+	. constants.sh
+fi
 
 # Configure colors
-. colors.sh
+if [ -f "colors.sh" ]; then
+	. colors.sh
+fi
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -329,43 +333,15 @@ read -e -p "Install ssl${ques} [y/n] " -i "$DEFAULTYESNO" installssl
 if [ "$installssl" = "y" ]; then
 	local_port=443
 	read -e -p "Please enter the public host name for your server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" hostname
-	#if [[ $hostname =~ ^(([a-zA-Z]|[a-zA-Z][a-zA-Z\-]*[a-zA-Z])\.)*([A-Za-z]|[A-Za-z][A-Za-z\-]*[A-Za-z])$ ]]; then
-		#sudo letsencrypt certonly --webroot -w /opt/letsencrypt -d $hostname --email digital@smartbiz.vn --agree-tos
-	#fi
-		echo "SSL for domain : $hostname is being created with port : $local_port"
-		if [ ! -f "/etc/letsencrypt/live/$hostname/fullchain.pem" ]; then
-			# sudo letsencrypt certonly --webroot -w /opt/letsencrypt -d $local_domain --email digital@smartbiz.vn --agree-tos
-			sudo certbot certonly --authenticator standalone --installer nginx -d $hostname --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx"
-		fi
-		
-		if [ -f "/etc/letsencrypt/live/$hostname/fullchain.pem" ]; then
-		
-			sudo rsync -avz $NGINX_CONF/snippets/ /etc/nginx/snippets/
-			sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$hostname.conf
-			sudo ln -s /etc/nginx/sites-available/$hostname.conf /etc/nginx/sites-enabled/
-			  
-			sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$hostname.conf
-			sudo sed -i "s/@@DNS_DOMAIN@@/$hostname/g" /etc/nginx/sites-available/$hostname.conf
-
-			# Replace nginx ssl config with generated keys
-			#sudo sed -i "s/@@CERTIFICATE@@/\/etc\/letsencrypt\/live\/$hostname\/fullchain.pem/g" /etc/nginx/sites-available/$hostname.conf 
-			#sudo sed -i "s/@@CERTIFICATE_KEY@@/\/etc\/letsencrypt\/live\/$hostname\/privkey.pem/g" /etc/nginx/sites-available/$hostname.conf
-			  
-			sudo sed -i "s/@@PORT@@/8080/g" /etc/nginx/sites-available/$hostname.conf
-			
-			sudo mkdir -p /var/cache/nginx/devops
-			sudo chown -R www-data:root /var/cache/nginx/devops
-			
-			# Add cron job to renew key
-		    #line="15 3 * /usr/bin/certbot renew --quiet > /var/log/certbot-renew.log"
-		    crontab -l | { cat; echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" > /var/log/certbot-renew.log'; } | crontab -
-			  
-			echo "SSL for domain : $hostname has been created successfully."
-			  
-		else
-			  echored "There is an error in generating keys for domain $hostname."
-		fi
-	#else
-	#	echored "$hostname is not a valid hostname, please check and try again."
-	#fi
+	
+	if [ -f "$BASE_INSTALL/ssl.sh" ]; then
+		.	$BASE_INSTALL/ssl.sh $hostname
+	else
+		. 	ssl.sh $hostname
+	fi
+	sudo mkdir temp
+	sudo cp $NGINX_CONF/sites-available/common.snippet	temp/
+	sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$hostname.conf
+	sudo sed -i "s/@@PORT@@/8080/g" /etc/nginx/sites-available/$local_domain.conf
+	sudo rm -rf temp
 fi
