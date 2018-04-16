@@ -330,7 +330,7 @@ if [ -d "$CATALINA_HOME" ]; then
 	if [ -f "/etc/nginx/sites-available/$SHARE_HOSTNAME.conf" ]; then
 		
 		# Insert cache config
-		sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescoscache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+		sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescocache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
 		
 		sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
 		
