@@ -25,7 +25,7 @@ if [ -d "$TMP_INSTALL/workplacebpm" ]; then
 	sudo rm -rf $TMP_INSTALL/workplacebpm
 fi
 
-sudo git clone https://bitbucket.org/workplace101/workplacebpm 	$TMP_INSTALL/workplacebpm
+sudo git clone https://DigitalBusiness@bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 cd $TMP_INSTALL/workplacebpm/src/eForm
 source /etc/profile.d/maven.sh
 mvn clean install
