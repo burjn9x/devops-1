@@ -23,8 +23,8 @@ echogreen "Begin running...."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
 
-
-read -e -p "Please enter the public host name for Alfresco server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" SHARE_HOSTNAME
+read -e -p "Please enter the [OLD] public host name for Alfresco server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" OLD_SHARE_HOSTNAME
+read -e -p "Please enter the [NEW] public host name for Alfresco server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" SHARE_HOSTNAME
 	
 if [ -f "$NGINX_CONF/sites-available/$SHARE_HOSTNAME.conf" ]; then
 	# Remove old configuration
@@ -34,7 +34,7 @@ fi
 . $BASE_INSTALL/ssl.sh	$SHARE_HOSTNAME
 
 # Insert cache config
-sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescoscache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescocache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
 
 sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
 
@@ -50,13 +50,17 @@ sudo mkdir -p /var/cache/nginx/alfresco
   
 sudo chown -R www-data:root /var/cache/nginx/alfresco
 
+sudo sed -i "s/$OLD_SHARE_HOSTNAME/$SHARE_HOSTNAME/g"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+
+sudo sed -i "s/$OLD_SHARE_HOSTNAME/$SHARE_HOSTNAME/g"  $CATALINA_HOME/shared/classes/alfresco/web-extension/share/share-config-custom.xml
+
+
 read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
 
 if [ -f "$NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
 	# Remove old configuration
 	rm $NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf
 fi
-
 
 # Create a new one to remove common snippet
 .	$BASE_INSTALL/ssl.sh $CAMUNDA_HOSTNAME
@@ -67,7 +71,7 @@ fi
 if [ -f "/etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
  sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
  
- sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/share;/g" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+ sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/camunda;/g" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
  
  # Insert camunda configuration content before the last line in domain.conf in nginx
  #sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
