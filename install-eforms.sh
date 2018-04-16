@@ -1,6 +1,6 @@
 #!/bin/bash
 # -------
-# This is common script which will be called to generate SSL
+# This is script to setup eform workplace
 # -------
 
 # Configure constants
