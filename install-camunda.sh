@@ -158,6 +158,8 @@ if [ "$installcamundawar" = "y" ]; then
   if [ -f "/etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
 	 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
 	 
+	 sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/camunda;/g" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+	 
 	 # Insert camunda configuration content before the last line in domain.conf in nginx
 	 #sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
 	 sudo mkdir temp

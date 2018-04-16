@@ -185,10 +185,6 @@ fi
 ##
 # Tomcat
 ##
-export TOMCAT_HTTP_PORT=8888
-export TOMCAT_SHUTDOWN_PORT=8885
-export TOMCAT_AJP_PORT=8889
-export TOMCAT_HTTPS_PORT=8443
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo "Tomcat is a web application server."

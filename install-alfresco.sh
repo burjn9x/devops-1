@@ -334,6 +334,8 @@ if [ -d "$CATALINA_HOME" ]; then
 		
 		sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
 		
+		sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/share;/g" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+		
 		# Insert alfresco configuration content before the last line in domain.conf in nginx
 		#sudo sed -i "$e cat $NGINX_CONF/sites-available/alfresco.conf" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
 		sudo mkdir temp
