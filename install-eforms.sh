@@ -30,3 +30,16 @@ cd $TMP_INSTALL/workplacebpm/src/eForm
 source /etc/profile.d/maven.sh
 mvn clean install
 sudo rsync -avz $TMP_INSTALL/workplacebpm/src/eForm/gateway/target/eform.war $CATALINA_HOME/webapps
+
+read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
+	
+if [ -f "/etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
+	sudo sed -i "0,/server/s/server/upstream eform {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+ 
+ # Insert camunda configuration content before the last line in domain.conf in nginx
+ #sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
+ sudo mkdir temp
+ sudo cp $NGINX_CONF/sites-available/eform.snippet	temp/
+ sudo sed -e '/##EFORM##/ {' -e 'r temp/eform.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+ sudo rm -rf temp
+fi
