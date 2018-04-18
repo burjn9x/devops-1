@@ -43,3 +43,14 @@ if [ -f "/etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
  sudo sed -e '/##EFORM##/ {' -e 'r temp/eform.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
  sudo rm -rf temp
 fi
+
+echo "We are waiting for eform being deployed...."
+
+sleep 20
+
+sudo sed -i "s/\(^endpoint=\).*/\1https\:\/\/scaucwnkwa.execute-api.ap-southeast-1.amazonaws.com\/v1\/notify\/workchat/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/alfresco-global.properties
+sudo sed -i "s/\(^CmisBrowserUrl=\).*/\1http:\/\/$CAMUNDA_HOSTNAME\/alfresco\/api\/-default-\/public\/cmis\/versions\/1.1\/browser/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/alfresco-global.properties
+sudo sed -i "s/\(^CmisRepoId=\).*/\1-default-/"  $CATALINA_HOME/shared/classes/alfresco-global.properties 	$CATALINA_HOME/webapps/eform/WEB-INF/classes/alfresco-global.properties
+sudo sed -i "s/\(^CmisUser=\).*/\1admin/"  $CATALINA_HOME/shared/classes/alfresco-global.properties		$CATALINA_HOME/webapps/eform/WEB-INF/classes/alfresco-global.properties
+sudo sed -i "s/\(^CmisPassword=\).*/\1admin/"  $CATALINA_HOME/shared/classes/alfresco-global.properties		$CATALINA_HOME/webapps/eform/WEB-INF/classes/alfresco-global.properties
+sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/shared/classes/alfresco-global.properties	$CATALINA_HOME/webapps/eform/WEB-INF/classes/alfresco-global.properties
