@@ -6,7 +6,7 @@
 export CAMUNDA_VERSION=7.8
 export TOMCAT8_VERSION=8.5.29
 export MAVEN_VERSION=3.3.9
-export ANT_VERSION=1.9.10
+export ANT_VERSION=1.9.11
 export GHOSTSCRIPT_VERSION=9.18
 export TOMCAT_HTTP_PORT_DEFAULT=8080
 export TOMCAT_HTTP_PORT=8888
@@ -81,7 +81,7 @@ export JDBCMYSQLURL=https://dev.mysql.com/get/Downloads/Connector-J
 export JDBCMYSQL=mysql-connector-java-5.1.43.tar.gz
 
 export APACHEMAVEN=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-export APACHEANT=https://www.apache.org/dist/ant/binaries/apache-ant-$ANT_VERSION-bin.tar.gz
+export APACHEANT=http://mirrors.viethosting.com/apache//ant/binaries/apache-ant-$ANT_VERSION-bin.tar.gz
 export JAVA8URL=http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161
 
 
