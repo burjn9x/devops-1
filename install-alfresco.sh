@@ -292,6 +292,14 @@ if [ -d "$CATALINA_HOME" ]; then
 		sudo sed -i "s/@@DB_SUFFIX@@/$ALF_DB_SUFFIX_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
 	fi
 	
+	# OPENCMIS
+	sudo sed -i "s/\(^opencmis.context.override=\).*/\1true/"  $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/\(^opencmis.context.value=\).*/\1/"  $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/\(^opencmis.servletpath.override=\).*/\1true/"  $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/\(^opencmis.servletpath.value=\).*/\/"  $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/\(^opencmis.server.override=\).*/\1true/"  $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/\(^opencmis.server.value=\).*/\1https:\/\/$SHARE_HOSTNAME/"  $ALFRESCO_GLOBAL_PROPERTIES
+	
 	if [ -n "$ALFRESCO_DB" ]; then
 		sudo sed -i "s/@@DB_NAME@@/$ALFRESCO_DB/g" $ALFRESCO_GLOBAL_PROPERTIES
 	else

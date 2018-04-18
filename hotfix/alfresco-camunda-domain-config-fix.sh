@@ -54,6 +54,13 @@ sudo sed -i "s/$OLD_SHARE_HOSTNAME/$SHARE_HOSTNAME/g"  $CATALINA_HOME/shared/cla
 
 sudo sed -i "s/$OLD_SHARE_HOSTNAME/$SHARE_HOSTNAME/g"  $CATALINA_HOME/shared/classes/alfresco/web-extension/share/share-config-custom.xml
 
+sudo sed -i "s/\(^opencmis.context.override=\).*/\1true/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+sudo sed -i "s/\(^opencmis.context.value=\).*/\1/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+sudo sed -i "s/\(^opencmis.servletpath.override=\).*/\1true/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+sudo sed -i "s/\(^opencmis.servletpath.value=\).*/\/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+sudo sed -i "s/\(^opencmis.server.override=\).*/\1true/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+sudo sed -i "s/\(^opencmis.server.value=\).*/\1https:\/\/$SHARE_HOSTNAME/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+
 
 read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
 
