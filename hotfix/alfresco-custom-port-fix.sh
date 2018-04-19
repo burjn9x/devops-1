@@ -24,6 +24,7 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echo
 
 sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g"  $CATALINA_HOME/shared/classes/alfresco/web-extension/share-config-custom.xml
+sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g"  $CATALINA_HOME/shared/classes/alfresco-global.properties
 
 . $DEVOPS_HOME/devops-service.sh restart
 
