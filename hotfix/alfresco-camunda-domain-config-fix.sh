@@ -52,7 +52,7 @@ sudo chown -R www-data:root /var/cache/nginx/alfresco
 
 sudo sed -i "s/$OLD_SHARE_HOSTNAME/$SHARE_HOSTNAME/g"  $CATALINA_HOME/shared/classes/alfresco-global.properties
 
-sudo sed -i "s/$OLD_SHARE_HOSTNAME/$SHARE_HOSTNAME/g"  $CATALINA_HOME/shared/classes/alfresco/web-extension/share/share-config-custom.xml
+sudo sed -i "s/$OLD_SHARE_HOSTNAME/$SHARE_HOSTNAME/g"  $CATALINA_HOME/shared/classes/alfresco/web-extension/share-config-custom.xml
 
 sudo sed -i "s/\(^opencmis.context.override=\).*/\1true/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
 sudo sed -i "s/\(^opencmis.context.value=\).*/\1/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
