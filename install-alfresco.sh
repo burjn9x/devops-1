@@ -319,6 +319,9 @@ if [ -d "$CATALINA_HOME" ]; then
   
 	#Enable smart folder funtionality
 	sudo sed -i "s/@@SF_ENABLE@@/$SF_ENABLE/g" $ALFRESCO_GLOBAL_PROPERTIES
+	
+	# Change default port (8080)
+	sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g"  $ALFRESCO_GLOBAL_PROPERTIES
   
 	sudo mv $ALFRESCO_GLOBAL_PROPERTIES $CATALINA_HOME/shared/classes/
   
@@ -330,6 +333,7 @@ if [ -d "$CATALINA_HOME" ]; then
 		sudo rsync -avz $BASE_INSTALL/tomcat/share-config-custom.xml $SHARE_CONFIG_CUSTOM_TMP_PATH
 		sudo sed -i "s/@@ALFRESCO_SHARE_SERVER@@/$SHARE_HOSTNAME/g" $SHARE_CONFIG_CUSTOM
 		sudo sed -i "s/@@SHARE_TO_REPO_SERVER@@/$SHARE_TO_REPO_HOSTNAME/g" $SHARE_CONFIG_CUSTOM
+		sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g"  $SHARE_CONFIG_CUSTOM
 		sudo mv $SHARE_CONFIG_CUSTOM $CATALINA_HOME/shared/classes/alfresco/web-extension/
 	fi
   
