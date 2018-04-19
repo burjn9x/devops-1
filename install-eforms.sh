@@ -29,6 +29,10 @@ sudo git clone https://DigitalBusiness@bitbucket.org/workplace101/workplacebpm.g
 cd $TMP_INSTALL/workplacebpm/src/eForm
 source /etc/profile.d/maven.sh
 mvn clean install
+
+if [ -d "$CATALINA_HOME/webapps/eform" ]; then
+	sudo rm -rf $CATALINA_HOME/webapps/eform*
+fi
 sudo rsync -avz $TMP_INSTALL/workplacebpm/src/eForm/gateway/target/eform.war $CATALINA_HOME/webapps
 
 read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
