@@ -90,7 +90,7 @@ if [ "$installcamundawar" = "y" ]; then
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/slf4j-api-*.jar $CATALINA_HOME/lib
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/slf4j-jdk14-*.jar $CATALINA_HOME/lib
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/webapps/camunda 	$CATALINA_HOME/webapps
-  sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/webapps/camunda-welcome 	$CATALINA_HOME/webapps
+  #sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/webapps/camunda-welcome 	$CATALINA_HOME/webapps
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/webapps/engine-rest* 	$CATALINA_HOME/webapps
   
   # Replace database configuration, use default value if variable is not set (in case of running this script independently)
