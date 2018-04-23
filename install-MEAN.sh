@@ -255,10 +255,12 @@ if [ "$installpm2" = "y" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo npm install -g pm2
 	
-    # Launch PM2 and its managed processes on server boots
-    pm2 startup systemd
-    sudo chown $USER:$USER ~/.pm2/rpc.sock ~/.pm2/pub.sock
-    pm2 list
+  echo "Regis ubuntu's pm2 run on startup"
+  # Launch PM2 and its managed processes on server boots
+  # pm2 startup systemd
+  # pm2 list
+  sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
+  #sudo chown $USER:$USER ~/.pm2
 fi
 
 ##
