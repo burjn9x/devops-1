@@ -48,7 +48,8 @@ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | 
 export NVM_DIR="$HOME/.nvm" && \. "$NVM_DIR/nvm.sh"
 # close and reopen the terminal: $ `nvm --version && nvm ls`
 # v6.10.3 for AWS Lambda & Node 8.x
-nvm install v6.10.3       && 
+nvm install v6.10.3   &&
+nvm use 6.10.3		&&
 npm install -g npm@latest &&
 npm install -g serverless &&
 npm install -g pm2        &&
