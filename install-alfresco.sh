@@ -340,24 +340,29 @@ if [ -d "$CATALINA_HOME" ]; then
 	echo "Installing configuration for alfresco on nginx..."
 	
 	if [ -f "/etc/nginx/sites-available/$SHARE_HOSTNAME.conf" ]; then
-		
-		# Insert cache config
-		sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescocache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
-		
-		sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
-		
-		sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/share;/g" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
-		
-		# Insert alfresco configuration content before the last line in domain.conf in nginx
-		#sudo sed -i "$e cat $NGINX_CONF/sites-available/alfresco.conf" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
-		sudo mkdir temp
-		sudo cp $NGINX_CONF/sites-available/alfresco.snippet	temp/
-		sudo sed -e '/##ALFRESCO##/ {' -e 'r temp/alfresco.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
-		sudo rm -rf temp
-	fi
-	sudo mkdir -p /var/cache/nginx/alfresco
+		# Check if camunda config exists in tomcat server.xml
+		alfresco_found=$(grep -o "share" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf | wc -l)
   
-	sudo chown -R www-data:root /var/cache/nginx/alfresco
+		if [ $alfresco_found = 0 ]; then
+			# Insert cache config
+			sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescocache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+			
+			sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$TOMCAT_HTTP_PORT;	\n}	\n\n upstream share {    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+			
+			sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/share;/g" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+			
+			# Insert alfresco configuration content before the last line in domain.conf in nginx
+			#sudo sed -i "$e cat $NGINX_CONF/sites-available/alfresco.conf" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+			sudo mkdir temp
+			sudo cp $NGINX_CONF/sites-available/alfresco.snippet	temp/
+			sudo sed -e '/##ALFRESCO##/ {' -e 'r temp/alfresco.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+			sudo rm -rf temp
+			
+			sudo mkdir -p /var/cache/nginx/alfresco
+  
+			sudo chown -R www-data:root /var/cache/nginx/alfresco
+		fi
+	fi
 
 fi	
 
