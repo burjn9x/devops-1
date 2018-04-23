@@ -7,10 +7,10 @@
 | - | -- | ------------ 		| ------------------ | -------------------- | ------------------- |
 | x | 01 | Ubuntu       		| Ubuntu 16.04.4 LTS | lsb_release -a       |                     |
 | x | 02 | Nginx        		| 1.10.3             | nginx -v             |                     |
-| x | 03 | Oracle Java  		| 1.8.0_161          | java -version        | /etc/java-8-oracle/ |
+| x | 03 | Oracle Java  		| 1.8.0_162          | java -version        | /etc/java-8-oracle/ |
 | x | 04 | MAVEN        		| 3.3.9              | mvn -v               | /usr/share/maven    |
 | x | 05 | ANT          		| 1.9.6              | ant -v               | /usr/share/ant      |
-| x | 06 | MariaDB      		| 9.4.11             | mysql --version      |  |
+| x | 06 | MariaDB      		| 15.1 > 10.1.32     | mysql --version      |  |
 | x | 07 | Tomcat       		| 8.5.29             |         			 	      |                     |
 | x | 08 | SSL          		|                    |                      |                     |
 | - | 09 | Camunda BPM      |                    |                      |                     |
@@ -19,10 +19,10 @@
 | - | 12 | ImageMagick  		| 6.8.9-9            | 						          |                     |
 | - | 13 | Ghostscript  		| 9.18        		   | 			                |                     |
 | - | 14 | Alf PDF Renderer | 1.0      			     |             			    |                     |
-| - | 15 | Node.JS          | 6.x      			     |             			    |                     |
-| - | 16 | PM2              |       			       |             			    |                     |
-| - | 17 | Redis            |       			       |             			    |                     |
-| - | 18 | Mongo DB         |       			       |             			    |                     |
+| - | 15 | Node.JS          | 8.11.1      			 | node -v            	|                     |
+| - | 16 | PM2              | 2.10.2      			 | pm2 -v            		|                     |
+| - | 17 | Redis            | 3.0.6      	       | redis-server -v      |                     |
+| - | 18 | Mongo DB         | 3.4.14      			 | mongo -version       |                     |
 
 
 > **Checklist**
