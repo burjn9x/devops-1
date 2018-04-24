@@ -137,7 +137,9 @@ sudo swapon --show
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 
 sudo locale-gen en_US.utf8
-sudo dpkg-reconfigure locales
+#sudo dpkg-reconfigure locales
+#sudo echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+#sudo echo "LANG=en_US.UTF-8" >> /etc/environment
 
 
 ##
@@ -148,4 +150,3 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echo "Begin setting up TimeZone..."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 sudo timedatectl set-timezone $TIME_ZONE
-

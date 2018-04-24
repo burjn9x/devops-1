@@ -1,16 +1,16 @@
-| ## | Domain                          | Port | Description           |
-|----|---------------------------------|------|-----------------------|
-| 01 | jenkins.o2oprotocol.io          | 8080 | Jenkins CI-CD         |
-| 02 | mkdocs.o2oprotocol.io           | 8000 | MkDocs                |
-| 03 | devops.o2oprotocol.io           | 5000 | DevOps                |
-| 11 | chatbot.o2oprotocol.io          | 6666 | Chatbot               |
-| 12 | servicedesk.o2oprotocol.io      | 8866 | Service Desk          |
-| 15 | magento2.o2oprotocol.io         | 80   | Magento 2             |
-| 21 | workflow.o2oprotocol.io         | 8888 | Tomcat Server         |
-| 22 | camunda.o2oprotocol.io          | 8888 | Camunda BPM           |
-| 23 | alfresco.o2oprotocol.io         | 8888 | Alfresco ECM          |
-| 24 | eforms-builder.o2oprotocol.io   | 3333 | eForms eWorkflow      |
-| 25 | eforms.o2oprotocol.io           | 7777 | eForms eWorkflow      |
-| 31 | dapp-boilerplate.o2oprotocol.io | 8088 | DApp Real Estate      |
-| 32 | o2omall.o2oprotocol.io          | 3000 | O2O Mall              |
-| 33 | ipfs.o2oprotocol.io             | 8088 | IPFS                  |
+| ## | Domain                         | Port | Description           |
+|----|--------------------------------|------|-----------------------|
+| 01 | jenkins.MYCOMPANY.COM          | 8081 | Jenkins CI-CD         |
+| 02 | mkdocs.MYCOMPANY.COM           | xxxx | MkDocs                |
+| 03 | devops.MYCOMPANY.COM           | xxxx | DevOps                |
+| 11 | chatbot.MYCOMPANY.COM          | 8100 | Chatbot               |
+| 12 | servicedesk.MYCOMPANY.COM      | 8110 | Service Desk          |
+| 15 | magento2.MYCOMPANY.COM         | xxxx | Magento 2             |
+| 21 | workflow.MYCOMPANY.COM         | 8300 | Tomcat Server         |
+| 22 | camunda.MYCOMPANY.COM          | 8300 | Camunda BPM           |
+| 23 | alfresco.MYCOMPANY.COM         | 8300 | Alfresco ECM          |
+| 24 | eforms-builder.MYCOMPANY.COM   | 8120 | eForms eWorkflow      |
+| 25 | eforms.MYCOMPANY.COM           | 8130 | eForms eWorkflow      |
+| 31 | dapp-boilerplate.MYCOMPANY.COM | 8140 | DApp Real Estate      |
+| 32 | o2omall.MYCOMPANY.COM          | 8150 | O2O Mall              |
+| 33 | ipfs.MYCOMPANY.COM             | 8080 | IPFS                  |

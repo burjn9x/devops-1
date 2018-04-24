@@ -20,6 +20,9 @@ echogreen "Begin running...."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
 
+# add ubuntu to devops
+sudo adduser ubuntu devops
+
 
 # Run initializing script for ubuntu
 . $BASE_INSTALL/ubuntu-upgrade.sh
@@ -51,6 +54,6 @@ sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $DEVOPS_HOME
 sudo systemctl enable devops.service
 sudo systemctl daemon-reload
 
-. $DEVOPS_HOME/devops-service.sh start
+sudo /bin/su - $DEVOPS_USER -c "$DEVOPS_HOME/devops-service.sh start"
 
 

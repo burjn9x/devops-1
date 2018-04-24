@@ -48,6 +48,9 @@ create_ssl() {
 	  fi
 }
 
+read -e -p "Please enter the public host name for your server (only domain name, not subdomain)${ques} [`hostname`] " -i "`hostname`" DOMAIN_NAME
+sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" $NGINX_CONF/domain.txt
+
 count=1
 while read line || [[ -n "$line" ]] ;
 do
@@ -60,7 +63,9 @@ do
 		#if [[ $domain =~ ^(([a-zA-Z]|[a-zA-Z][a-zA-Z\-]*[a-zA-Z])\.)*([A-Za-z]|[A-Za-z][A-Za-z\-]*[A-Za-z])$ ]]; then
 			# echo $domain;
 			# sudo systemctl reload nginx
-			create_ssl $domain $port
+			if [ $port != "xxxx" ]; then
+				create_ssl $domain $port
+			fi
 		#else
 		#	echo "$domain is an invalid name, please check again."
 		#fi

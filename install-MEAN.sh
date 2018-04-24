@@ -189,6 +189,19 @@ EOF
 
 	sudo ufw app update nginx
   fi
+  
+	count=1
+	while read line || [[ -n "$line" ]] ;
+	do
+		count=`expr $count + 1`
+		if [ $count -gt 3 ]; then
+			IFS='|' read -ra arr <<<"$line"
+			port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+			if [ $port != "xxxx" ]; then
+				sudo ufw allow $port
+			fi
+		fi
+	done < $NGINX_CONF/domain.txt
 
   sudo ufw allow 'Nginx HTTP'
   sudo ufw allow 'Nginx HTTPS'
