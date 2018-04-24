@@ -54,6 +54,6 @@ sudo chown -R $DEVOPS_USER:$DEVOPS_GROUP $DEVOPS_HOME
 sudo systemctl enable devops.service
 sudo systemctl daemon-reload
 
-sudo /bin/su - $DEVOPS_USER -c "$DEVOPS_HOME/devops-service.sh start"
+sudo $DEVOPS_HOME/devops-service.sh start
 
 

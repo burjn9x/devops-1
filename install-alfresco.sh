@@ -344,7 +344,7 @@ if [ -d "$CATALINA_HOME" ]; then
 		sudo ln -s /etc/nginx/sites-available/$SHARE_HOSTNAME.conf /etc/nginx/sites-enabled/
 	  
 		sudo sed -i "s/@@DNS_DOMAIN@@/$SHARE_HOSTNAME/g" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
-		sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/share;/g" /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
+		
 	fi
 	
 	# Check if camunda config exists in tomcat server.xml
