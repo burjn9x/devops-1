@@ -146,11 +146,21 @@ if [ "$installcamundawar" = "y" ]; then
 	 TOMCAT_HTTP_PORT=8080
   fi
   
-  # Create a new one to remove common snippet
-  if [ -f "$BASE_INSTALL/ssl.sh" ]; then
-	.	$BASE_INSTALL/ssl.sh $CAMUNDA_HOSTNAME
+  
+  read -e -p "Please enter the protocol for Camunda server (fully qualified domain name)${ques} [https] " -i "https" CAMUNDA_PROTOCOL
+  
+  if [ "${CAMUNDA_PROTOCOL,,}" = "https" ]; then
+	if [ -f "$BASE_INSTALL/ssl.sh" ]; then
+		. $BASE_INSTALL/ssl.sh	$CAMUNDA_HOSTNAME
+	else
+		. ssl.sh $CAMUNDA_HOSTNAME
+	fi
   else
-	. ssl.sh $CAMUNDA_HOSTNAME
+	 sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+	 sudo ln -s /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf /etc/nginx/sites-enabled/
+	  
+	 sudo sed -i "s/@@DNS_DOMAIN@@/$CAMUNDA_HOSTNAME/g" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+	 sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/camunda;/g" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
   fi
   
   #echo "Installing configuration for camunda on nginx..."
