@@ -13,6 +13,7 @@ export TOMCAT_HTTP_PORT=8888
 export TOMCAT_SHUTDOWN_PORT=8885
 export TOMCAT_AJP_PORT=8889
 export TOMCAT_HTTPS_PORT=8443
+export JAVA_VERSION=8u171
 
 
 export DEVOPS_HOME=/home/devops
@@ -82,7 +83,7 @@ export JDBCMYSQL=mysql-connector-java-5.1.43.tar.gz
 
 export APACHEMAVEN=https://archive.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 export APACHEANT=http://mirrors.viethosting.com/apache//ant/binaries/apache-ant-$ANT_VERSION-bin.tar.gz
-export JAVA8URL=http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161
+export JAVA8URL=http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-$JAVA_VERSION
 
 
 export ALFREPOWAR=https://artifacts.alfresco.com/nexus/content/repositories/public/org/alfresco/alfresco-platform/5.2.g/alfresco-platform-5.2.g.war

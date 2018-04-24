@@ -133,18 +133,23 @@ if [ "$installnginx" = "y" ]; then
   
   sudo chown -R www-data:root /opt/letsencrypt
   
-  if [ ! -f "/etc/nginx/conf.d/default.conf" ]; then
-	sudo rsync -avz $NGINX_CONF/conf.d/default.conf /etc/nginx/conf.d/		
-  else
-	sed -i '/^\(}\)/ i location \/\.well-known {\n  alias \/opt\/letsencrypt\/\.well-known\/;\n  allow all;	\n  }' /etc/nginx/conf.d/default.conf
-  fi
+  # if [ ! -f "/etc/nginx/conf.d/default.conf" ]; then
+  # sudo rsync -avz $NGINX_CONF/conf.d/default.conf /etc/nginx/conf.d/		
+  # else
+  # sudo sed -i '/^\(}\)/ i location \/\.well-known {\n  alias \/opt\/letsencrypt\/\.well-known\/;\n  allow all;	\n  }' /etc/nginx/conf.d/default.conf
+  # fi
   
   if [ -f "/etc/nginx/sites-available/default" ]; then
-	sed -i '/^\(}\)/ i location \/\.well-known {\n  alias \/opt\/letsencrypt\/\.well-known\/;\n  allow all;	\n  }' /etc/nginx/sites-available/default
+      # Check if eform config does exist
+    well_known=$(grep -o "well-known" /etc/nginx/sites-available/default | wc -l)
+    
+    if [ $well_known = 0 ]; then
+	     sudo sed -i '/^\(}\)/ i location \/\.well-known {\n  alias \/opt\/letsencrypt\/\.well-known\/;\n  allow all;	\n  }' /etc/nginx/sites-available/default
+     fi
   fi
   
   if [ ! -f "/etc/nginx/snippets/ssl.conf" ]; then
-	sudo cat <<EOF >/etc/nginx/snippets/ssl.conf
+	sudo echo "
 ssl_session_timeout 1d;
 ssl_session_cache shared:SSL:50m;
 ssl_session_tickets off;
@@ -157,10 +162,10 @@ ssl_prefer_server_ciphers on;
 ssl_stapling on;
 ssl_stapling_verify on;
 
-add_header Strict-Transport-Security "max-age=15768000; includeSubdomains; preload";
+add_header Strict-Transport-Security \"max-age=15768000; includeSubdomains; preload\";
 add_header X-Frame-Options DENY;
 add_header X-Content-Type-Options nosniff;
-EOF
+" | sudo tee /etc/nginx/snippets/ssl.conf
   fi
   
   ## Reload config file
@@ -168,27 +173,27 @@ EOF
   sudo systemctl restart nginx
   
   sudo ufw enable
-  if [ ! -f "/etc/ufw/applications.d/nginx.ufw.profile" ]; then
-	echo "There is no profile for nginx within ufw, so we decide to create it."
-	sudo cat <<EOF >/etc/ufw/applications.d/nginx.ufw.profile
-[Nginx HTTP]
-title=Web Server (Nginx, HTTP)
-description=Small, but very powerful and efficient web server
-ports=80/tcp
+#   if [ ! -f "/etc/ufw/applications.d/nginx.ufw.profile" ]; then
+# 	echo "There is no profile for nginx within ufw, so we decide to create it."
+# 	sudo cat <<EOF >/etc/ufw/applications.d/nginx.ufw.profile
+# [Nginx HTTP]
+# title=Web Server (Nginx, HTTP)
+# description=Small, but very powerful and efficient web server
+# ports=80/tcp
 
-[Nginx HTTPS]
-title=Web Server (Nginx, HTTPS)
-description=Small, but very powerful and efficient web server
-ports=443/tcp
+# [Nginx HTTPS]
+# title=Web Server (Nginx, HTTPS)
+# description=Small, but very powerful and efficient web server
+# ports=443/tcp
 
-[Nginx Full]
-title=Web Server (Nginx, HTTP + HTTPS)
-description=Small, but very powerful and efficient web server
-ports=80,443/tcp
-EOF
+# [Nginx Full]
+# title=Web Server (Nginx, HTTP + HTTPS)
+# description=Small, but very powerful and efficient web server
+# ports=80,443/tcp
+# EOF
 
-	sudo ufw app update nginx
-  fi
+# 	sudo ufw app update nginx
+#   fi
   
 	count=1
 	while read line || [[ -n "$line" ]] ;
@@ -267,13 +272,10 @@ if [ "$installpm2" = "y" ]; then
 	echo "You need to install PM2"
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo npm install -g pm2
-	
+
   echo "Regis ubuntu's pm2 run on startup"
-  # Launch PM2 and its managed processes on server boots
-  # pm2 startup systemd
-  # pm2 list
+  sudo chown $USER:$USER -R /home/$USER/.pm2
   sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
-  #sudo chown $USER:$USER ~/.pm2
 fi
 
 ##

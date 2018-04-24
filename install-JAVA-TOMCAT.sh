@@ -6,12 +6,12 @@
 
 # Configure constants
 if [ -f "constants.sh" ]; then
-	. constants.sh
+  . constants.sh
 fi
 
 # Configure colors
 if [ -f "colors.sh" ]; then
-	. colors.sh
+  . colors.sh
 fi
 
 echo
@@ -24,7 +24,7 @@ echo
 URLERROR=0
 
 for REMOTE in $TOMCAT_DOWNLOAD $JDBCPOSTGRESURL/$JDBCPOSTGRES $JDBCMYSQLURL/$JDBCMYSQL \
-				$APACHEMAVEN $APACHEANT
+        $APACHEMAVEN $APACHEANT
 do
         wget --spider $REMOTE --no-check-certificate >& /dev/null
         if [ $? != 0 ]
@@ -72,13 +72,13 @@ if [ "$installmaven" = "y" ]; then
   sudo tar -xf $TMP_INSTALL/apache-maven-$MAVEN_VERSION.tar.gz -C $TMP_INSTALL
   sudo mv $TMP_INSTALL/apache-maven-$MAVEN_VERSION $TMP_INSTALL/maven
   sudo mv $TMP_INSTALL/maven $DEVOPS_HOME
-  cat << EOF > /etc/profile.d/maven.sh
+  sudo echo "
 #!/bin/sh
 export MAVEN_HOME=$DEVOPS_HOME/maven
 export M2_HOME=$DEVOPS_HOME/maven
 export M2=$DEVOPS_HOME/maven/bin
 export PATH=$PATH:$DEVOPS_HOME/maven/bin
-EOF
+" | sudo tee /etc/profile.d/maven.sh
 
   sudo chmod a+x /etc/profile.d/maven.sh
   source /etc/profile.d/maven.sh
@@ -109,13 +109,13 @@ if [ "$installant" = "y" ]; then
   sudo tar -xf $TMP_INSTALL/apache-ant-$ANT_VERSION.tar.gz -C $TMP_INSTALL
   sudo mv $TMP_INSTALL/apache-ant-$ANT_VERSION $TMP_INSTALL/ant
   sudo mv $TMP_INSTALL/ant $DEVOPS_HOME
-  cat << EOF > /etc/profile.d/ant.sh
+  sudo echo "
 #!/bin/sh
 export ANT_HOME=$DEVOPS_HOME/ant
 export PATH=$PATH:$DEVOPS_HOME/ant/bin
-EOF
+" | sudo tee /etc/profile.d/ant.sh
 
-  chmod a+x /etc/profile.d/ant.sh
+  sudo chmod a+x /etc/profile.d/ant.sh
   source /etc/profile.d/ant.sh
   echo
   echogreen "Finished installing Ant"
@@ -148,9 +148,9 @@ if [ "$installjdk" = "y" ]; then
      ### curl -C - -L -O -# -H "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA8URL}${platform}"
   done
   sudo mkdir /usr/java
-  sudo tar xvzf $TMP_INSTALL/jdk-8u161-linux-x64.tar.gz -C /usr/java
+  sudo tar xvzf $TMP_INSTALL/jdk-$JAVA_VERSION-linux-x64.tar.gz -C /usr/java
   
-  JAVA_DEST=jdk1.8.0_161
+  JAVA_DEST=jdk1.8.0_171
   export JAVA_HOME=/usr/java/$JAVA_DEST/
   sudo update-alternatives --install /usr/bin/java java ${JAVA_HOME%*/}/bin/java 1
   sudo update-alternatives --install /usr/bin/javac javac ${JAVA_HOME%*/}/bin/javac 1
@@ -196,8 +196,8 @@ read -e -p "Install Tomcat${ques} [y/n] " -i "$DEFAULTYESNO" installtomcat
 if [ "$installtomcat" = "y" ]; then
   echogreen "Installing Tomcat"
   if [ ! -f "$TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION.tar.gz" ]; then
-	echo "Downloading tomcat..."
-	curl -# -o $TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION.tar.gz $TOMCAT_DOWNLOAD
+  echo "Downloading tomcat..."
+  curl -# -o $TMP_INSTALL/apache-tomcat-$TOMCAT8_VERSION.tar.gz $TOMCAT_DOWNLOAD
   fi
   # Make sure install dir exists, including logs dir
   sudo mkdir -p $DEVOPS_HOME/logs
@@ -219,7 +219,7 @@ if [ "$installtomcat" = "y" ]; then
   # Change domain tomcat port in nginx config
   hostname=$(basename /etc/letsencrypt/live/*/)
   if [ "$hostname" != "" ]; then
-	  sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/$hostname.conf
+    sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/$hostname.conf
   fi
   
   # Create Tomcat conf folder
@@ -229,17 +229,17 @@ if [ "$installtomcat" = "y" ]; then
   echo
   read -e -p "Install Postgres JDBC Connector${ques} [y/n] " -i "$DEFAULTYESNO" installpg
   if [ "$installpg" = "y" ]; then
-	curl -# -O $JDBCPOSTGRESURL/$JDBCPOSTGRES
-	sudo mv $JDBCPOSTGRES $CATALINA_HOME/lib
+  curl -# -O $JDBCPOSTGRESURL/$JDBCPOSTGRES
+  sudo mv $JDBCPOSTGRES $CATALINA_HOME/lib
   fi
   echo
   read -e -p "Install Mysql JDBC Connector${ques} [y/n] " -i "$DEFAULTYESNO" installmy
   if [ "$installmy" = "y" ]; then
     cd $TMP_INSTALL
-	curl -# -L -O $JDBCMYSQLURL/$JDBCMYSQL
-	tar xf $JDBCMYSQL
-	cd "$(find . -type d -name "mysql-connector*")"
-	sudo mv mysql-connector*.jar $CATALINA_HOME/lib
+  curl -# -L -O $JDBCMYSQLURL/$JDBCMYSQL
+  tar xf $JDBCMYSQL
+  cd "$(find . -type d -name "mysql-connector*")"
+  sudo mv mysql-connector*.jar $CATALINA_HOME/lib
   fi
   echo
   echogreen "Finished installing Tomcat"
@@ -260,29 +260,29 @@ read -e -p "Please select on of these : [P]osgresql, [MY]sql, [MA]riadb, [Q]uit 
 
     case $installdb in
         "P")
-			echo "Choosing posgresql..."
-			DB_DRIVER=org.postgresql.Driver
-			DB_PORT=5432
-			DB_SUFFIX=''
-			DB_CONNECTOR=postgresql
+      echo "Choosing posgresql..."
+      DB_DRIVER=org.postgresql.Driver
+      DB_PORT=5432
+      DB_SUFFIX=''
+      DB_CONNECTOR=postgresql
             . $BASE_INSTALL/scripts/postgresql.sh
             ;;
         "MY")
-			echo "Choosing mysql..."
+      echo "Choosing mysql..."
             . $BASE_INSTALL/scripts/mysql.sh
             ;;
         "MA")
-			echo "Choosing mariadb..."
+      echo "Choosing mariadb..."
             . $BASE_INSTALL/scripts/mariadb.sh
             ;;
-		"Q")
-			echo "Quitting..."
-			;;
+    "Q")
+      echo "Quitting..."
+      ;;
         *) echo invalid option;;
     esac
 
 export DB_SELECTION=$installdb
-	
+  
 ##
 # Jenkins
 ##
@@ -293,12 +293,12 @@ echo "You will also get the option to install this server"
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 read -e -p "Install Jenkins automation server${ques} [y/n] " -i "$DEFAULTYESNO" installjenkins
 if [ "$installjenkins" = "y" ]; then
-	wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
-	sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-	sudo apt-get update
-	sudo apt-get -qq -y install jenkins
-	sudo sed -i "s/\(^HTTP_PORT=\).*/\18081/" /etc/default/jenkins
-	sudo systemctl start jenkins
+  wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+  sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+  sudo apt-get update
+  sudo apt-get -qq -y install jenkins
+  sudo sed -i "s/\(^HTTP_PORT=\).*/\18081/" /etc/default/jenkins
+  sudo systemctl start jenkins
 fi
 
 
