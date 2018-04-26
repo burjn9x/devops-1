@@ -1,8 +1,8 @@
 | ## | Domain                         | Port | Description           |
 |----|--------------------------------|------|-----------------------|
-| 01 | jenkins.MYCOMPANY.COM          | 8081 | Jenkins CI-CD         |
-| 02 | mkdocs.MYCOMPANY.COM           | xxxx | MkDocs                |
-| 03 | devops.MYCOMPANY.COM           | xxxx | DevOps                |
+| 01 | ci.MYCOMPANY.COM               | 8081 | Jenkins CI-CD         |
+| 02 | docs.MYCOMPANY.COM             | xxxx | MkDocs Static Site    |
+| 03 | portfolio.MYCOMPANY.COM        | xxxx | Jekyll Static Site    |
 | 11 | chatbot.MYCOMPANY.COM          | 8100 | Chatbot               |
 | 12 | servicedesk.MYCOMPANY.COM      | 8110 | Service Desk          |
 | 15 | magento2.MYCOMPANY.COM         | xxxx | Magento 2             |
@@ -12,5 +12,6 @@
 | 24 | eforms-builder.MYCOMPANY.COM   | 8120 | eForms eWorkflow      |
 | 25 | eforms.MYCOMPANY.COM           | 8130 | eForms eWorkflow      |
 | 31 | dapp-boilerplate.MYCOMPANY.COM | 8140 | DApp Real Estate      |
-| 32 | o2omall.MYCOMPANY.COM          | 8150 | O2O Mall              |
-| 33 | ipfs.MYCOMPANY.COM             | 8080 | IPFS                  |
+| 32 | freelancer.MYCOMPANY.COM       | 8888 | Freelancer React      |
+| 33 | dapp-monitor.MYCOMPANY.COM     | 8866 | dapp-monitor Node.js  |
+| 34 | ipfs.MYCOMPANY.COM             | 8077 | IPFS                  |
