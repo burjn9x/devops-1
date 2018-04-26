@@ -1,6 +1,6 @@
 #!/bin/bash
 # -------
-# Script to configure and setup Maven, Ant, Java, Tomcat, Database, Jenkins
+# Script to configure and setup Maven, Ant, Java, Tomcat, Database
 #
 # -------
 
@@ -283,23 +283,6 @@ read -e -p "Please select on of these : [P]osgresql, [MY]sql, [MA]riadb, [Q]uit 
 
 export DB_SELECTION=$installdb
   
-##
-# Jenkins
-##
-echo
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo "Jenkins is a en source automation server, Jenkins provides hundreds of plugins to support building, deploying and automating any project "
-echo "You will also get the option to install this server"
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-read -e -p "Install Jenkins automation server${ques} [y/n] " -i "$DEFAULTYESNO" installjenkins
-if [ "$installjenkins" = "y" ]; then
-  wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
-  sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-  sudo apt-get update
-  sudo apt-get -qq -y install jenkins
-  sudo sed -i "s/\(^HTTP_PORT=\).*/\18081/" /etc/default/jenkins
-  sudo systemctl start jenkins
-fi
 
 
 

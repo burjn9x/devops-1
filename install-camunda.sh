@@ -139,6 +139,14 @@ if [ "$installcamundawar" = "y" ]; then
 		rm $NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf
 	fi
 
+	# Get camunda port in domain table
+	camunda_line=$(grep "camunda" $NGINX_CONF/domain.txt)
+	IFS='|' read -ra arr <<<"$camunda_line"
+	camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	
+	if [ -n "$camunda_port" ]; then
+		TOMCAT_HTTP_PORT=$camunda_port
+	fi
 	
   
   # Check if variable TOMCAT_HTTP_PORT is set, if not, we use the default value as 8080
@@ -150,10 +158,10 @@ if [ "$installcamundawar" = "y" ]; then
   read -e -p "Please enter the protocol for Camunda server (fully qualified domain name)${ques} [https] " -i "https" CAMUNDA_PROTOCOL
   
   if [ "${CAMUNDA_PROTOCOL,,}" = "https" ]; then
-	if [ -f "$BASE_INSTALL/scripts/ssl.sh" ]; then
-		. $BASE_INSTALL/scripts/ssl.sh	$CAMUNDA_HOSTNAME
+	if [ -f "$BASE_INSTALL/ssl.sh" ]; then
+		. $BASE_INSTALL/ssl.sh	$CAMUNDA_HOSTNAME
 	else
-		. scripts/ssl.sh $CAMUNDA_HOSTNAME
+		. ssl.sh $CAMUNDA_HOSTNAME
 	fi
   else
 	 sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf

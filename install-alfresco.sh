@@ -305,6 +305,15 @@ if [ -d "$CATALINA_HOME" ]; then
 		sudo sed -i "s/@@DB_NAME@@/$ALF_DB_NAME_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
 	fi
 	
+	# Get alfresco port in domain table
+	alfresco_line=$(grep "alfresco" $NGINX_CONF/domain.txt)
+	IFS='|' read -ra arr <<<"$alfresco_line"
+	alfresco_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	
+	if [ -n "$alfresco_port" ]; then
+		TOMCAT_HTTP_PORT=$alfresco_port
+	fi
+	
 	# Check if tomcat ports have been changed previously, 
 	# so we will roll back to original state when server.xml is overwritten after installing alfresco 
 	if [ -n "$TOMCAT_HTTP_PORT" ]; then

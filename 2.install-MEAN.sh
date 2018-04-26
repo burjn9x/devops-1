@@ -1,6 +1,6 @@
 #!/bin/bash
 # -------
-# Script to configure and setup Nginx, NVM, PM2, Nodejs, Redis, MongoDB, CertbotSSL, SSL
+# Script to configure and setup Nginx, NVM, PM2, Nodejs, Redis, MongoDB, Jenkins, CertbotSSL, SSL
 #
 # -------
 
@@ -327,6 +327,28 @@ if [ "$installmongodb" = "y" ]; then
     sudo systemctl enable mongod   
     sudo systemctl start mongod
 fi
+
+##
+# Jenkins
+##
+echo
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+echo "Jenkins is a en source automation server, Jenkins provides hundreds of plugins to support building, deploying and automating any project "
+echo "You will also get the option to install this server"
+echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+read -e -p "Install Jenkins automation server${ques} [y/n] " -i "$DEFAULTYESNO" installjenkins
+if [ "$installjenkins" = "y" ]; then
+  wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+  sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+  sudo apt-get update
+  sudo apt-get -qq -y install jenkins
+  jenkins_line=$(grep "jenkins" $NGINX_CONF/domain.txt)
+  IFS='|' read -ra arr <<<"$jenkins_line"
+  jenkins_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins
+  sudo systemctl start jenkins
+fi
+
 
 ##
 # Certbot SSL
