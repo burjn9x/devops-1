@@ -25,21 +25,24 @@ sudo adduser ubuntu devops
 
 
 # Run initializing script for ubuntu
-. $BASE_INSTALL/ubuntu-upgrade.sh
+. $BASE_INSTALL/1.ubuntu-upgrade.sh
 
 # Run script to setup Nginx, NVM, PM2, Nodejs, Redis, MongoDB, CertbotSSL, SSL
-. $BASE_INSTALL/install-MEAN.sh
+. $BASE_INSTALL/2.install-MEAN.sh
 
 # Run script to setup Maven, Ant, Java, Tomcat, Database, Jenkins
-. $BASE_INSTALL/install-JAVA-TOMCAT.sh
+. $BASE_INSTALL/3.install-JAVA-TOMCAT.sh
 
 # Run script to setup Alfresco
 # TODO for temporary, we need to install Alfresco before Camunda because they use the same server.xml (tomcat)
 # but we will find a way to insert alfresco configuration into server.xml instead of overwriting the existing server.xml
-. $BASE_INSTALL/install-alfresco.sh
+. $BASE_INSTALL/4.install-alfresco.sh
 
 # Run script to setup Camunda
-. $BASE_INSTALL/install-camunda.sh
+. $BASE_INSTALL/5.install-camunda.sh
+
+# Run script to setup Eforms
+. $BASE_INSTALL/6.install-eform.sh
 
 # Create devops service
 sudo rsync -avz $BASE_INSTALL/tomcat/devops.service /etc/systemd/system/
