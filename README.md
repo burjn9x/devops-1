@@ -1,6 +1,14 @@
 # Installing & Configuring DevOps Ubuntu 16.04 LTS.
 =======================
 
+## Installation Guideline
+
+| Step | Function Name        | Description      |
+| :--- |:-------------------- | :--------------- |
+| 01   | 1.ubuntu-upgrade.sh  | curl, wget, rsync, zip, unzip, git, python, pip, mkdocs, awscli; and SwapFile, en_US.utf8, TimeZone |
+| 02   | 2.install-MEAN.sh    | nginx, nvm, nodejs, pm2, redis, mongo, certbot,  |
+
+
 ## 1. 3rd-Party Software Packagess
 
 | x | ## | Software     		| Version            | Command              | PATH                |
@@ -46,3 +54,5 @@ sudo systemctl status jenkins
 ```
 
 Ubuntu Version :  **16.04 LTS** and compatible to **14.04**
+
+- [x] 

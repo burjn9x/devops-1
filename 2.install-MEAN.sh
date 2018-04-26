@@ -83,23 +83,23 @@ if [ "$installnginx" = "y" ]; then
   # Enable Nginx to auto start when Ubuntu is booted
   sudo systemctl enable nginx
   # Check Nginx status
-  #systemctl status nginx
+  # systemctl status nginx
   
-  #TODO: sudo service nginx stop
-  #sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
-  #sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.sample
+  # TODO: sudo service nginx stop
+  # sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup
+  # sudo mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.sample
   
-  #WEB_ROOT=$WORKFORCE_HOME/www
+  # WEB_ROOT=$WORKFORCE_HOME/www
   
   # Make the ssl dir as this is what is used in sample config
-  #TODO: sudo mkdir -p /etc/nginx/ssl
+  # TODO: sudo mkdir -p /etc/nginx/ssl
   
   # Compatible with Apache, we check if there is already existing apache web root. If it is, we use it by default. 
   # If not, $WORKFORCE_HOME should be a folder contains webroot
-  #if [ ! -d "/var/www" ]; then
-	#sudo mkdir -p $WORKFORCE_HOME/www
-  #else
-	#WEB_ROOT="/var/www"
+  # if [ ! -d "/var/www" ]; then
+	# sudo mkdir -p $WORKFORCE_HOME/www
+  # else
+	# WEB_ROOT="/var/www"
   #fi
   
 #  sudo mkdir -p /var/cache/nginx/workforce
@@ -128,7 +128,7 @@ if [ "$installnginx" = "y" ]; then
   # Insert config for letsencrypt
   if [ ! -d "/opt/letsencrypt/.well-known" ]; then
 	sudo mkdir -p /opt/letsencrypt/.well-known
-	echo "Hello HTTP!" | sudo tee /opt/letsencrypt/index.html
+	echo "Hello Letsencrypt!" | sudo tee /opt/letsencrypt/index.html
   fi
   
   sudo chown -R www-data:root /opt/letsencrypt
@@ -371,7 +371,7 @@ if [ "$installssl" = "y" ]; then
 	read -e -p "Please enter the public host name for your server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" hostname
 	
 	if [ -f "$BASE_INSTALL/ssl.sh" ]; then
-		.	$BASE_INSTALL/ssl.sh $hostname
+		.	$BASE_INSTALL/scripts/ssl.sh $hostname
 	else
 		. 	ssl.sh $hostname
 	fi
