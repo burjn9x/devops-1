@@ -3,10 +3,14 @@
 
 ## Installation Guideline
 
-| Step | Function Name        | Description      |
-| :--- |:-------------------- | :--------------- |
-| 01   | 1.ubuntu-upgrade.sh  | curl, wget, rsync, zip, unzip, git, python, pip, mkdocs, awscli; and SwapFile, en_US.utf8, TimeZone |
-| 02   | 2.install-MEAN.sh    | nginx, nvm, nodejs, pm2, redis, mongo, certbot,  |
+| Step | Function Name        		 | Description      |
+| :--- |:-------------------- 		 | :--------------- |
+| 01   | 1.ubuntu-upgrade.sh  		 | curl, wget, rsync, zip, unzip, git, python, pip, mkdocs, awscli; and SwapFile, en_US.utf8, TimeZone |
+| 02   | 2.install-MEAN.sh    		 | nginx, nvm, nodejs, pm2, redis, mongo, jenkins, certbot,  |
+| 03   | 3.install-JAVA-TOMCAT.sh    | Maven, Ant, Java, Tomcat, Database
+| 04   | 4.install-alfresco.sh       | Alfresco
+| 05   | 5.install-camunda.sh        | Camunda
+| 06   | 6.install-camunda.sh        | EForm
 
 
 ## 1. 3rd-Party Software Packagess
