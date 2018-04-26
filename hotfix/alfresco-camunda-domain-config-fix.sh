@@ -31,7 +31,7 @@ if [ -f "$NGINX_CONF/sites-available/$SHARE_HOSTNAME.conf" ]; then
 	rm $NGINX_CONF/sites-available/$SHARE_HOSTNAME.conf
 fi
 
-. $BASE_INSTALL/ssl.sh	$SHARE_HOSTNAME
+. $BASE_INSTALL/scripts/ssl.sh	$SHARE_HOSTNAME
 
 # Insert cache config
 sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescocache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$SHARE_HOSTNAME.conf
@@ -70,7 +70,7 @@ if [ -f "$NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
 fi
 
 # Create a new one to remove common snippet
-.	$BASE_INSTALL/ssl.sh $CAMUNDA_HOSTNAME
+.	$BASE_INSTALL/scripts/ssl.sh $CAMUNDA_HOSTNAME
 
   
 #echo "Installing configuration for camunda on nginx..."

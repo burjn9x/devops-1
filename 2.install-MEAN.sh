@@ -370,10 +370,10 @@ if [ "$installssl" = "y" ]; then
 	local_port=443
 	read -e -p "Please enter the public host name for your server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" hostname
 	
-	if [ -f "$BASE_INSTALL/ssl.sh" ]; then
+	if [ -f "$BASE_INSTALL/scripts/ssl.sh" ]; then
 		.	$BASE_INSTALL/scripts/ssl.sh $hostname
 	else
-		. 	ssl.sh $hostname
+		. 	scripts/ssl.sh $hostname
 	fi
 	sudo mkdir temp
 	sudo cp $NGINX_CONF/sites-available/common.snippet	temp/

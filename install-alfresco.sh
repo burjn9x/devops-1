@@ -235,16 +235,16 @@ if [ -d "$CATALINA_HOME" ]; then
 		SHARE_PORT=443
 		# Create a new one to remove common snippet
 		if [ -n "$TOMCAT_HTTP_PORT" ]; then
-		  if [ -f "$BASE_INSTALL/ssl.sh" ]; then
-			. $BASE_INSTALL/ssl.sh	$SHARE_HOSTNAME
+		  if [ -f "$BASE_INSTALL/scripts/ssl.sh" ]; then
+			. $BASE_INSTALL/scripts/ssl.sh	$SHARE_HOSTNAME
 		  else
-			. ssl.sh $SHARE_HOSTNAME
+			. scripts/ssl.sh $SHARE_HOSTNAME
 		  fi
 		else
-			if [ -f "$BASE_INSTALL/ssl.sh" ]; then
-			. $BASE_INSTALL/ssl.sh	$SHARE_HOSTNAME
+			if [ -f "$BASE_INSTALL/scripts/ssl.sh" ]; then
+			. $BASE_INSTALL/scripts/ssl.sh	$SHARE_HOSTNAME
 		  else
-			. ssl.sh $SHARE_HOSTNAME
+			. scripts/ssl.sh $SHARE_HOSTNAME
 		  fi
 		fi
 	fi
