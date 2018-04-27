@@ -47,10 +47,10 @@ if [ ! -d "$TMP_INSTALL" ]; then
   mkdir -p $TMP_INSTALL
 fi
 
-# Create home directory for application instance
-if [ ! -d "$DEVOPS_HOME" ]; then
-  mkdir -p $DEVOPS_HOME
-fi
+# # Create home directory for application instance
+# if [ ! -d "$DEVOPS_HOME" ]; then
+#   mkdir -p $DEVOPS_HOME
+# fi
 
 cd $TMP_INSTALL
 
