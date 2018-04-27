@@ -84,7 +84,7 @@ create_ssl() {
 }
 
 read -e -p "Please enter the public host name for your server (only domain name, not subdomain)${ques} [`hostname`] " -i "`hostname`" DOMAIN_NAME
-sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" domain.txt
+sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" $BASE_INSTALL/domain.txt
 
 count=1
 while read line || [[ -n "$line" ]] ;
@@ -106,7 +106,7 @@ do
 		#fi
 
 	fi
-done < domain.txt
+done < $BASE_INSTALL/domain.txt
 
 sudo systemctl restart nginx
 echogreen "Finished installing SSL"
