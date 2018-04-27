@@ -52,7 +52,7 @@ read -e -p "Create Camunda Database and user? [y/n] " -i "y" createdbcamunda
 if [ "$createdbcamunda" = "y" ]; then
   read -s -p "Enter the Camunda database password:" CAMUNDA_PASSWORD
   echo ""
-  read -s -p "/\nRe-Enter the Camunda database password:" CAMUNDA_PASSWORD2
+  read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
   if [ "$CAMUNDA_PASSWORD" == "$CAMUNDA_PASSWORD2" ]; then
     echo "Creating Camunda database and user."
     echo "You must supply the root user password for mysql:"

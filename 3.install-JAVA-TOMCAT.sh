@@ -216,11 +216,11 @@ if [ "$installtomcat" = "y" ]; then
   sudo sed -i "s/8009/$TOMCAT_AJP_PORT/g" $CATALINA_HOME/conf/server.xml
   #sudo sed -i "s/443/$TOMCAT_HTTPS_PORT/g"  $CATALINA_HOME/conf/server.xml
   
-  # Change domain tomcat port in nginx config
-  hostname=$(basename /etc/letsencrypt/live/*/)
-  if [ "$hostname" != "" ]; then
-    sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/$hostname.conf
-  fi
+  # # Change domain tomcat port in nginx config
+  # hostname=$(basename /etc/letsencrypt/live/*/)
+  # if [ "$hostname" != "" ]; then
+  #   sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" /etc/nginx/sites-available/$hostname.conf
+  # fi
   
   # Create Tomcat conf folder
   sudo mkdir -p $CATALINA_HOME/conf/Catalina/localhost
