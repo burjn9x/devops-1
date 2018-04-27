@@ -273,9 +273,6 @@ if [ "$installpm2" = "y" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo npm install -g pm2
 
-  echo "Regis ubuntu's pm2 run on startup"
-  sudo chown $USER:$USER -R /home/$USER/.pm2
-  sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
 fi
 
 ##
@@ -403,3 +400,10 @@ if [ "$installssl" = "y" ]; then
 	sudo sed -i "s/@@PORT@@/8080/g" /etc/nginx/sites-available/$local_domain.conf
 	sudo rm -rf temp
 fi
+
+##
+# Chown & startup systemd
+##
+echo "Regis ubuntu's pm2 run on startup"
+sudo chown $USER:$USER -R /home/$USER/.pm2
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
