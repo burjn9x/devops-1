@@ -44,6 +44,9 @@ sudo adduser ubuntu devops
 # Run script to setup Eforms
 . $BASE_INSTALL/6.install-eform.sh
 
+# Run script to install Magento2
+. $BASE_INSTALL/7.install-magento2.sh
+
 # Create devops service
 sudo rsync -avz $BASE_INSTALL/tomcat/devops.service /etc/systemd/system/
 sudo rsync -avz $BASE_INSTALL/scripts/devops-service.sh $DEVOPS_HOME/
