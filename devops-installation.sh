@@ -42,10 +42,10 @@ echo
 . $BASE_INSTALL/5.install-camunda.sh
 
 # Run script to setup Eforms
-. $BASE_INSTALL/6.install-eform.sh
+. $BASE_INSTALL/6.install-eforms.sh
 
 # Run script to install Magento2
-. $BASE_INSTALL/7.install-magento2.sh
+#. $BASE_INSTALL/7.install-magento2.sh
 
 # Run script to install SSL: list of domain & port
 . $BASE_INSTALL/8.ssl-domain-port.sh
