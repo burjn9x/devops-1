@@ -41,7 +41,7 @@ read -e -p "Please enter the public host name for Alfresco server (fully qualifi
 if [ -f "/etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
 	
 	# Get alfresco port in domain table
-	camunda_line=$(grep "camunda" domain.txt)
+	camunda_line=$(grep "camunda" $DEVOPS_HOME/domain.txt)
 	IFS='|' read -ra arr <<<"$camunda_line"
 	camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 	
