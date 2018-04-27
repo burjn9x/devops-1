@@ -492,10 +492,10 @@ if [ ! -f "$DEVOPS_HOME/scripts/limitconvert.sh" ]; then
 	sudo rsync -avz $BASE_INSTALL/scripts/limitconvert.sh $DEVOPS_HOME/scripts/
 fi
 
-if [ ! -f "$DEVOPS_HOME/scripts/createssl.sh" ]; then
-    echo "Copying createssl.sh script..."
-	sudo rsync -avz $BASE_INSTALL/scripts/createssl.sh $DEVOPS_HOME/scripts/
- fi
+# if [ ! -f "$DEVOPS_HOME/scripts/createssl.sh" ]; then
+#     echo "Copying createssl.sh script..."
+# 	sudo rsync -avz $BASE_INSTALL/scripts/createssl.sh $DEVOPS_HOME/scripts/
+#  fi
  
 if [ ! -f "$DEVOPS_HOME/scripts/libreoffice.sh" ]; then
     echo "Copying libreoffice.sh script..."
