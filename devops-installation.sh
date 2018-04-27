@@ -48,7 +48,7 @@ echo
 #. $BASE_INSTALL/7.install-magento2.sh
 
 # Run script to install SSL: list of domain & port
-. $BASE_INSTALL/8.ssl-domain-port.sh
+# . $BASE_INSTALL/8.ssl-domain-port.sh
 
 # Create devops service
 sudo rsync -avz $BASE_INSTALL/tomcat/devops.service /etc/systemd/system/
