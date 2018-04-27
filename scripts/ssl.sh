@@ -20,6 +20,16 @@ if [ ! -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
 	sudo certbot certonly --authenticator standalone --installer nginx -d $local_domain --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx"
 fi
 
+n=0
+until [ $n -ge 5 ]
+do
+    if [ -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
+		break
+	fi
+    n=$[$n+1]
+    sleep 5
+done
+
 if [ -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
 	  
 	sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$local_domain.conf

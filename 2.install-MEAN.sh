@@ -272,7 +272,20 @@ if [ "$installpm2" = "y" ]; then
 	echo "You need to install PM2"
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo npm install -g pm2
-
+	
+	# We will retry checking whether .pm2 directory exists and change its owner
+	n=0
+	until [ $n -ge 5 ]
+	do
+		if [ -d "/home/$USER/.pm2" ]; then
+			echo "Regis ubuntu's pm2 run on startup"
+			sudo chown $USER:$USER -R /home/$USER/.pm2
+			break
+		fi
+		n=$[$n+1]
+		sleep 5
+	done
+	sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
 fi
 
 ##
@@ -401,9 +414,4 @@ fi
 # 	sudo rm -rf temp
 # fi
 
-##
-# Chown & startup systemd
-##
-echo "Regis ubuntu's pm2 run on startup"
-sudo chown $USER:$USER -R /home/$USER/.pm2
-sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
+
