@@ -34,10 +34,10 @@ if [ "$installmariadb" = "y" ]; then
   sudo apt-get install -y mariadb-server
   sudo mysql_secure_installation
   #Tuning database by setting config
-  echo "key_buffer_size         = 128M" >> /etc/mysql/conf.d/mariadb.cnf
-  echo "max_allowed_packet      = 128M" >> /etc/mysql/conf.d/mariadb.cnf
-  echo "thread_stack            = 1024K" >> /etc/mysql/conf.d/mariadb.cnf
-  echo "innodb_log_file_size    = 128M" >> /etc/mysql/conf.d/mariadb.cnf
+  echo "key_buffer_size         = 128M"  | sudo tee /etc/mysql/conf.d/mariadb.cnf
+  echo "max_allowed_packet      = 128M"  | sudo tee /etc/mysql/conf.d/mariadb.cnf
+  echo "thread_stack            = 1024K" | sudo tee /etc/mysql/conf.d/mariadb.cnf
+  echo "innodb_log_file_size    = 128M"  | sudo tee/etc/mysql/conf.d/mariadb.cnf
 fi
 
 read -e -p "Create Alfresco Database and user? [y/n] " -i "y" createdbalfresco
