@@ -206,7 +206,7 @@ add_header X-Content-Type-Options nosniff;
 				sudo ufw allow $port
 			fi
 		fi
-	done < $NGINX_CONF/domain.txt
+	done < domain.txt
 
   sudo ufw allow 'Nginx HTTP'
   sudo ufw allow 'Nginx HTTPS'
@@ -339,7 +339,7 @@ if [ "$installjenkins" = "y" ]; then
   sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
   sudo apt-get update
   sudo apt-get -qq -y install jenkins
-  jenkins_line=$(grep "jenkins" $NGINX_CONF/domain.txt)
+  jenkins_line=$(grep "jenkins" domain.txt)
   IFS='|' read -ra arr <<<"$jenkins_line"
   jenkins_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
   sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins
@@ -377,29 +377,29 @@ fi
 
 
 ##
-# SSL
+# SSL @deprecated - using ssl-standalone instead of
 ##
-echo
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echo "Begin setting up a SSL..."
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-read -e -p "Install ssl${ques} [y/n] " -i "$DEFAULTYESNO" installssl
-if [ "$installssl" = "y" ]; then
-	local_port=443
-	read -e -p "Please enter the public host name for your server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" hostname
+# echo
+# echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+# echo "Begin setting up a SSL..."
+# echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+# echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+# read -e -p "Install ssl${ques} [y/n] " -i "$DEFAULTYESNO" installssl
+# if [ "$installssl" = "y" ]; then
+# 	local_port=443
+# 	read -e -p "Please enter the public host name for your server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" hostname
 	
-	if [ -f "$BASE_INSTALL/scripts/ssl.sh" ]; then
-		.	$BASE_INSTALL/scripts/ssl.sh $hostname
-	else
-		. 	scripts/ssl.sh $hostname
-	fi
-	sudo mkdir temp
-	sudo cp $NGINX_CONF/sites-available/common.snippet	temp/
-	sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$hostname.conf
-	sudo sed -i "s/@@PORT@@/8080/g" /etc/nginx/sites-available/$local_domain.conf
-	sudo rm -rf temp
-fi
+# 	if [ -f "$BASE_INSTALL/scripts/ssl.sh" ]; then
+# 		.	$BASE_INSTALL/scripts/ssl.sh $hostname
+# 	else
+# 		. 	scripts/ssl.sh $hostname
+# 	fi
+# 	sudo mkdir temp
+# 	sudo cp $NGINX_CONF/sites-available/common.snippet	temp/
+# 	sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$hostname.conf
+# 	sudo sed -i "s/@@PORT@@/8080/g" /etc/nginx/sites-available/$local_domain.conf
+# 	sudo rm -rf temp
+# fi
 
 ##
 # Chown & startup systemd

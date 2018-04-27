@@ -140,7 +140,7 @@ if [ "$installcamundawar" = "y" ]; then
 	fi
 
 	# Get camunda port in domain table
-	camunda_line=$(grep "camunda" $NGINX_CONF/domain.txt)
+	camunda_line=$(grep "camunda" domain.txt)
 	IFS='|' read -ra arr <<<"$camunda_line"
 	camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 	
