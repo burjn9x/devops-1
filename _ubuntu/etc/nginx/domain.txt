@@ -6,7 +6,7 @@
 | 11 | chatbot.MYCOMPANY.COM          | 8100 | Chatbot               |
 | 12 | servicedesk.MYCOMPANY.COM      | 8110 | Service Desk          |
 | 15 | magento2.MYCOMPANY.COM         | xxxx | Magento 2             |
-| 21 | workflow.MYCOMPANY.COM         | 8300 | Tomcat Server         |
+| 21 | eworkflow.MYCOMPANY.COM        | xxxx | Tomcat Server         |
 | 22 | camunda.MYCOMPANY.COM          | 8300 | Camunda BPM           |
 | 23 | alfresco.MYCOMPANY.COM         | 8300 | Alfresco ECM          |
 | 24 | eforms-builder.MYCOMPANY.COM   | 8120 | eForms eWorkflow      |
