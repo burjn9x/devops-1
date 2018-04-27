@@ -27,19 +27,54 @@ create_ssl() {
 	fi
 	
 	if [ -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
-		  
-		sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$local_domain.conf
-		sudo ln -s /etc/nginx/sites-available/$local_domain.conf /etc/nginx/sites-enabled/
-		  
-		#sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$local_domain.conf
-		sudo sed -i "s/@@DNS_DOMAIN@@/$local_domain/g" /etc/nginx/sites-available/$local_domain.conf
 		
-		
-		sudo cp $NGINX_CONF/sites-available/common.snippet	temp/
-		sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$local_domain.conf
-		
-		  
-		sudo sed -i "s/@@PORT@@/$local_port/g" /etc/nginx/sites-available/$local_domain.conf
+		if [ "$local_domain" = "alfresco" ] || [ "$local_domain" = "camunda" ]; then
+			
+			# Check if ssl is found
+			ssl_found=0
+			if [ -f "/etc/nginx/sites-available/$local_domain.conf" ]; then
+				ssl_found=$(grep -o "443" /etc/nginx/sites-available/$local_domain.conf | wc -l)
+			fi
+			
+			if [ "$ssl_found" = 0 ]; then
+				sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$local_domain.conf
+				sudo ln -s /etc/nginx/sites-available/$local_domain.conf /etc/nginx/sites-enabled/
+				  
+				#sudo sed -i "s/@@WEB_ROOT@@/${WEB_ROOT//\//\\/}/g" /etc/nginx/sites-available/$local_domain.conf
+				sudo sed -i "s/@@DNS_DOMAIN@@/$local_domain/g" /etc/nginx/sites-available/$local_domain.conf
+			
+				if [ "$local_domain" = "alfresco" ]; then
+					# Insert cache config
+					sudo sed -i '1 i\proxy_cache_path \/var\/cache\/nginx\/alfresco levels=1 keys_zone=alfrescocache:256m max_size=512m inactive=1440m;\n' /etc/nginx/sites-available/$local_domain.conf
+					sudo sed -i "0,/server/s/server/upstream alfresco {	\n\tserver localhost\:$local_port;	\n}	\n\n upstream share {    \n\tserver localhost:$local_port;	\n}\n\n&/" /etc/nginx/sites-available/$local_domain.conf
+					sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/share;/g" /etc/nginx/sites-available/$local_domain.conf
+					sudo cp $NGINX_CONF/sites-available/alfresco.snippet	temp/
+					sudo sed -e '/##ALFRESCO##/ {' -e 'r temp/alfresco.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$local_domain.conf
+					sudo mkdir -p /var/cache/nginx/alfresco
+
+					sudo chown -R www-data:root /var/cache/nginx/alfresco
+					
+					# Change https in alfresco-global.properties
+					sudo sed -i "s/\(^share.protocol=\).*/\1https/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+					sudo sed -i "s/\(^opencmis.server.value=\).*/\1https:\/\/$local_domain/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+					sudo sed -i "s/\(^share.port=\).*/\1443/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
+				else
+					 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$local_port;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$local_port;	\n}\n\n&/" /etc/nginx/sites-available/$local_domain.conf
+					 sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/camunda;/g" /etc/nginx/sites-available/$local_domain.local_domain
+					 sudo cp $NGINX_CONF/sites-available/camunda.snippet	temp/
+					 sudo sed -e '/##CAMUNDA##/ {' -e 'r temp/camunda.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$local_domain.conf
+				fi
+			fi
+		else
+			sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$local_domain.conf
+			sudo ln -s /etc/nginx/sites-available/$local_domain.conf /etc/nginx/sites-enabled/
+				  
+			sudo sed -i "s/@@DNS_DOMAIN@@/$local_domain/g" /etc/nginx/sites-available/$local_domain.conf
+			sudo cp $NGINX_CONF/sites-available/common.snippet	temp/
+			sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$local_domain.conf
+			  
+			sudo sed -i "s/@@PORT@@/$local_port/g" /etc/nginx/sites-available/$local_domain.conf
+		fi
 		  
 		echo "SSL for domain : $local_domain has been created successfully."
 		  

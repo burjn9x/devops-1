@@ -228,7 +228,7 @@ if [ -d "$CATALINA_HOME" ]; then
 	fi
 	
 	
-	read -e -p "Please enter the protocol to use for public Share server (http or https)${ques} [https] " -i "https" SHARE_PROTOCOL
+	read -e -p "Please enter the protocol to use for public Share server (http or https)${ques} [http] " -i "http" SHARE_PROTOCOL
 	
 	SHARE_PORT=80
 	if [ "${SHARE_PROTOCOL,,}" = "https" ]; then
@@ -736,7 +736,7 @@ if [ "$installsolr" = "y" ]; then
   
   
   if [ ! -f "$CATALINA_HOME/conf/Catalina/localhost/solr4.xml" ]; then
-	mv $DEVOPS_HOME/solr4/context.xml $CATALINA_HOME/conf/Catalina/localhost/solr4.xml
+	sudo mv $DEVOPS_HOME/solr4/context.xml $CATALINA_HOME/conf/Catalina/localhost/solr4.xml
   fi
 
   echo
