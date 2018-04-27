@@ -206,7 +206,7 @@ add_header X-Content-Type-Options nosniff;
 				sudo ufw allow $port
 			fi
 		fi
-	done < $DEVOPS_HOME/domain.txt
+	done < $BASE_INSTALL/domain.txt
 
   sudo ufw allow 'Nginx HTTP'
   sudo ufw allow 'Nginx HTTPS'
@@ -352,7 +352,7 @@ if [ "$installjenkins" = "y" ]; then
   sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
   sudo apt-get update
   sudo apt-get -qq -y install jenkins
-  jenkins_line=$(grep "jenkins" $DEVOPS_HOME/domain.txt)
+  jenkins_line=$(grep "jenkins" $BASE_INSTALL/domain.txt)
   IFS='|' read -ra arr <<<"$jenkins_line"
   jenkins_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
   sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins

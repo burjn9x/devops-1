@@ -306,7 +306,7 @@ if [ -d "$CATALINA_HOME" ]; then
 	fi
 	
 	# Get alfresco port in domain table
-	alfresco_line=$(grep "alfresco" $DEVOPS_HOME/domain.txt)
+	alfresco_line=$(grep "alfresco" $BASE_INSTALL/domain.txt)
 	IFS='|' read -ra arr <<<"$alfresco_line"
 	alfresco_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 	
