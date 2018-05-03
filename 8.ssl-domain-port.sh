@@ -4,10 +4,14 @@
 # -------
 
 # Configure constants
-. constants.sh
+if [ -f "constants.sh" ]; then
+	. constants.sh
+fi
 
 # Configure colors
-. colors.sh
+if [ -f "colors.sh" ]; then
+	. colors.sh
+fi
 
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -84,11 +88,10 @@ create_ssl() {
 }
 
 read -e -p "Please enter the public host name for your server (only domain name, not subdomain)${ques} [`hostname`] " -i "`hostname`" DOMAIN_NAME
-sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" domain.txt
+sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" $BASE_INSTALL/domain.txt
 
 count=1
-while read line || [[ -n "$line" ]] ;
-do
+while read line || [[ -n "$line" ]] ; do
 	count=`expr $count + 1`
 	if [ $count -gt 3 ]; then
 		IFS='|' read -ra arr <<<"$line"
@@ -106,7 +109,7 @@ do
 		#fi
 
 	fi
-done < domain.txt
+done < $BASE_INSTALL/domain.txt
 
 sudo systemctl restart nginx
 echogreen "Finished installing SSL"

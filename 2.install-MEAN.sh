@@ -206,7 +206,7 @@ add_header X-Content-Type-Options nosniff;
 				sudo ufw allow $port
 			fi
 		fi
-	done < domain.txt
+	done < $BASE_INSTALL/domain.txt
 
   sudo ufw allow 'Nginx HTTP'
   sudo ufw allow 'Nginx HTTPS'
@@ -274,18 +274,18 @@ if [ "$installpm2" = "y" ]; then
 	sudo npm install -g pm2
 	
 	# We will retry checking whether .pm2 directory exists and change its owner
-	n=0
-	until [ $n -ge 5 ]
-	do
-		if [ -d "/home/$USER/.pm2" ]; then
-			echo "Regis ubuntu's pm2 run on startup"
-			sudo chown $USER:$USER -R /home/$USER/.pm2
-			break
-		fi
-		n=$[$n+1]
-		sleep 5
-	done
-	sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
+	# n=0
+	# until [ $n -ge 6 ]
+	# do
+	# 	if [ -d "/home/$USER/.pm2" ]; then
+	# 		echo "Regis ubuntu's pm2 run on startup"
+	# 		sudo chown $USER:$USER -R /home/$USER/.pm2
+	# 		break
+	# 	fi
+	# 	n=$[$n+1]
+	# 	sleep 10
+	# done
+	# sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
 fi
 
 ##
@@ -352,7 +352,7 @@ if [ "$installjenkins" = "y" ]; then
   sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
   sudo apt-get update
   sudo apt-get -qq -y install jenkins
-  jenkins_line=$(grep "jenkins" domain.txt)
+  jenkins_line=$(grep "jenkins" $BASE_INSTALL/domain.txt)
   IFS='|' read -ra arr <<<"$jenkins_line"
   jenkins_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
   sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins
@@ -414,4 +414,6 @@ fi
 # 	sudo rm -rf temp
 # fi
 
-
+## TODO: permission-startup.sh
+sudo chown $USER:$USER -R /home/$USER/.pm2
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER

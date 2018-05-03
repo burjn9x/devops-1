@@ -129,7 +129,7 @@ if [ "$installcamundawar" = "y" ]; then
 #  fi
  # sudo ln -s /etc/nginx/sites-available/camunda.conf /etc/nginx/sites-enabled/
   
-  # Extract domain name from SSL key path
+  # Extract domain name from SSL kßey path
   #hostname=$(basename /etc/letsencrypt/live/*/)
   
   read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
@@ -140,7 +140,7 @@ if [ "$installcamundawar" = "y" ]; then
 	fi
 
 	# Get camunda port in domain table
-	camunda_line=$(grep "camunda" domain.txt)
+	camunda_line=$(grep "camunda" $BASE_INSTALL/domain.txt)
 	IFS='|' read -ra arr <<<"$camunda_line"
 	camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 	
