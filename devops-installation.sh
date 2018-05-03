@@ -21,7 +21,7 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 echo
 
 # add ubuntu to devops
-sudo adduser ubuntu devops
+#sudo adduser ubuntu devops
 
 
 # Run initializing script for ubuntu
