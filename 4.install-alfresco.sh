@@ -715,6 +715,7 @@ if [ "$installsolr" = "y" ]; then
   SOLRDATAPATH="$ALF_DATA_HOME/solr4"
   # Escape for sed
   SOLRDATAPATH="${SOLRDATAPATH//\//\\/}"
+  DEVOPS_HOME_PATH="${DEVOPS_HOME//\//\\/}"
 
   sudo mv $DEVOPS_HOME/solr4/workspace-SpacesStore/conf/solrcore.properties $DEVOPS_HOME/solr4/workspace-SpacesStore/conf/solrcore.properties.orig
   sudo mv $DEVOPS_HOME/solr4/archive-SpacesStore/conf/solrcore.properties $DEVOPS_HOME/solr4/archive-SpacesStore/conf/solrcore.properties.orig
