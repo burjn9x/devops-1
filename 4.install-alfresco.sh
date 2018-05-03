@@ -310,7 +310,6 @@ if [ -d "$CATALINA_HOME" ]; then
 	IFS='|' read -ra arr <<<"$alfresco_line"
 	alfresco_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 	
-	TOMCAT_HTTP_PORT_ORI=$TOMCAT_HTTP_PORT
 	
 	if [ -n "$alfresco_port" ]; then
 		TOMCAT_HTTP_PORT=$alfresco_port
@@ -320,9 +319,9 @@ if [ -d "$CATALINA_HOME" ]; then
 	# so we will roll back to original state when server.xml is overwritten after installing alfresco 
 	if [ -n "$TOMCAT_HTTP_PORT" ]; then
 		# Change server default port
-		sudo sed -i "s/$TOMCAT_HTTP_PORT_ORI/$TOMCAT_HTTP_PORT/g" $CATALINA_HOME/conf/server.xml
-		#sudo sed -i "s/8005/$TOMCAT_SHUTDOWN_PORT/g" $CATALINA_HOME/conf/server.xml
-		#sudo sed -i "s/8009/$TOMCAT_AJP_PORT/g" $CATALINA_HOME/conf/server.xml
+		sudo sed -i "s/8080/$TOMCAT_HTTP_PORT/g" $CATALINA_HOME/conf/server.xml
+		sudo sed -i "s/8005/$TOMCAT_SHUTDOWN_PORT/g" $CATALINA_HOME/conf/server.xml
+		sudo sed -i "s/8009/$TOMCAT_AJP_PORT/g" $CATALINA_HOME/conf/server.xml
 	else
 		TOMCAT_HTTP_PORT=8080;
 	fi
