@@ -272,6 +272,10 @@ if [ "$installpm2" = "y" ]; then
 	echo "You need to install PM2"
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo npm install -g pm2
+	## TODO: permission-startup.sh
+	sudo mkdir /home/$USER/.pm2
+	sudo chown $USER:$USER -R /home/$USER/.pm2
+	sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
 	
 	# We will retry checking whether .pm2 directory exists and change its owner
 	# n=0
@@ -414,6 +418,3 @@ fi
 # 	sudo rm -rf temp
 # fi
 
-## TODO: permission-startup.sh
-sudo chown $USER:$USER -R /home/$USER/.pm2
-sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
