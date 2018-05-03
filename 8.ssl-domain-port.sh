@@ -90,8 +90,11 @@ create_ssl() {
 read -e -p "Please enter the public host name for your server (only domain name, not subdomain)${ques} [`hostname`] " -i "`hostname`" DOMAIN_NAME
 sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" $BASE_INSTALL/domain.txt
 
+DOMAIN_INFOS=()
+
 count=1
 while read line || [[ -n "$line" ]] ; do
+# for line in $(cat $BASE_INSTALL/domain.txt) ; do
 	count=`expr $count + 1`
 	if [ $count -gt 3 ]; then
 		IFS='|' read -ra arr <<<"$line"
@@ -102,7 +105,7 @@ while read line || [[ -n "$line" ]] ; do
 			# echo $domain;
 			# sudo systemctl reload nginx
 			if [ $port != "xxxx" ]; then
-				create_ssl $domain $port
+				DOMAIN_INFOS+=("$domain:$port")
 			fi
 		#else
 		#	echo "$domain is an invalid name, please check again."
@@ -110,6 +113,13 @@ while read line || [[ -n "$line" ]] ; do
 
 	fi
 done < $BASE_INSTALL/domain.txt
+
+for DOMAIN_INFO in ${DOMAIN_INFOS[@]}
+do
+	domain=${DOMAIN_INFO%%:*}
+    port=${DOMAIN_INFO#*:}
+	create_ssl $domain $port
+done
 
 sudo systemctl restart nginx
 echogreen "Finished installing SSL"
