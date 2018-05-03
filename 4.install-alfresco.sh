@@ -295,7 +295,7 @@ if [ -d "$CATALINA_HOME" ]; then
 	sudo sed -i "s/\(^opencmis.context.override=\).*/\1true/"  $ALFRESCO_GLOBAL_PROPERTIES
 	sudo sed -i "s/\(^opencmis.context.value=\).*/\1/"  $ALFRESCO_GLOBAL_PROPERTIES
 	sudo sed -i "s/\(^opencmis.servletpath.override=\).*/\1true/"  $ALFRESCO_GLOBAL_PROPERTIES
-	sudo sed -i "s/\(^opencmis.servletpath.value=\).*/\/"  $ALFRESCO_GLOBAL_PROPERTIES
+	sudo sed -i "s/\(^opencmis.servletpath.value=\).*/\1/"  $ALFRESCO_GLOBAL_PROPERTIES
 	sudo sed -i "s/\(^opencmis.server.override=\).*/\1true/"  $ALFRESCO_GLOBAL_PROPERTIES
 	sudo sed -i "s/\(^opencmis.server.value=\).*/\1${SHARE_PROTOCOL,,}:\/\/$SHARE_HOSTNAME/"  $ALFRESCO_GLOBAL_PROPERTIES
 	
