@@ -91,8 +91,7 @@ read -e -p "Please enter the public host name for your server (only domain name,
 sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" $BASE_INSTALL/domain.txt
 
 count=1
-while read line || [[ -n "$line" ]] ;
-do
+while read line || [[ -n "$line" ]] ; do
 	count=`expr $count + 1`
 	if [ $count -gt 3 ]; then
 		IFS='|' read -ra arr <<<"$line"
