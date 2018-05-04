@@ -67,7 +67,7 @@ create_ssl() {
 					sudo sed -i "s/\(^share.port=\).*/\1443/"  $CATALINA_HOME/shared/classes/alfresco-global.properties
 				else
 					 sudo sed -i "0,/server/s/server/upstream camunda {    \n\tserver localhost\:$local_port;	\n}	\n\n	upstream engine-rest {	    \n\tserver localhost:$local_port;	\n}\n\n&/" /etc/nginx/sites-available/$local_domain.conf
-					 sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/camunda;/g" /etc/nginx/sites-available/$local_domain.local_domain
+					 sudo sed -i "s/##REWRITE##/rewrite \^\/\$	\/camunda;/g" /etc/nginx/sites-available/$local_domain.conf
 					 sudo cp $NGINX_CONF/sites-available/camunda.snippet	temp/
 					 sudo sed -e '/##CAMUNDA##/ {' -e 'r temp/camunda.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$local_domain.conf
 				fi
