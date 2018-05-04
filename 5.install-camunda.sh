@@ -83,7 +83,7 @@ if [ "$installcamundawar" = "y" ]; then
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/groovy-all-*.jar $CATALINA_HOME/lib
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/h2-*.jar $CATALINA_HOME/lib
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/java-uuid-generator-*.jar $CATALINA_HOME/lib
-  sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/javax.security.auth.message-api-*.jar $CATALINA_HOME/lib
+  # sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/javax.security.auth.message-api-*.jar $CATALINA_HOME/lib
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/joda-time-*.jar $CATALINA_HOME/lib
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/mail-*.jar $CATALINA_HOME/lib
   sudo rsync -avz $TMP_INSTALL/camunda-bpm-tomcat/server/*/lib/mybatis-*.jar $CATALINA_HOME/lib

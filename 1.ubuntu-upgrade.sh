@@ -66,7 +66,7 @@ if [ "`which git`" = "" ]; then
 	echo "You need to install git."
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo apt-get $APTVERBOSITY install git;
-	sudo chown -R $USER:$USER .config
+	sudo chown -R $USER:$USER ~/.config
 fi
 
 
