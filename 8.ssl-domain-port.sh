@@ -25,7 +25,10 @@ create_ssl() {
 	local_domain=$1
 	local_port=$2
     echo "SSL for domain : $local_domain is being created with port : $local_port"
-	if [ ! -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
+	
+	if sudo test -f /etc/letsencrypt/live/$local_domain/fullchain.pem; then
+		echo "SSL key for domain : $local_domain does exist, so skipping creating it..."
+	else
 		# sudo letsencrypt certonly --webroot -w /opt/letsencrypt -d $local_domain --email digital@smartbiz.vn --agree-tos
 		sudo certbot certonly --authenticator standalone --installer nginx -d $local_domain --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx"
 	fi
