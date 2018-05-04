@@ -127,4 +127,4 @@ echogreen "Finished installing SSL"
 sudo rm -rf temp
 
 # Add cron job to renew key
-crontab -l | { cat; echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" > /var/log/certbot-renew.log'; } | crontab -
+crontab -l | { cat; echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" | sudo tee -a /var/log/certbot-renew.log'; } | crontab -
