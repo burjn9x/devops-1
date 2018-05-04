@@ -30,7 +30,7 @@ create_ssl() {
 		sudo certbot certonly --authenticator standalone --installer nginx -d $local_domain --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx"
 	fi
 	
-	if [ -f "/etc/letsencrypt/live/$local_domain/fullchain.pem" ]; then
+	if sudo test -f /etc/letsencrypt/live/$local_domain/fullchain.pem; then
 			
 		if [[ "$local_domain" = *"alfresco"* ]] || [[ "$local_domain" = *"camunda"* ]]; then
 			
