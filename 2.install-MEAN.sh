@@ -273,7 +273,7 @@ if [ "$installpm2" = "y" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo npm install -g pm2
 	## TODO: permission-startup.sh
-	sudo mkdir /home/$USER/.pm2
+	mkdir /home/$USER/.pm2
 	sudo chown $USER:$USER -R /home/$USER/.pm2
 	sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u $USER --hp /home/$USER
 	
@@ -359,8 +359,17 @@ if [ "$installjenkins" = "y" ]; then
   jenkins_line=$(grep "jenkins" $BASE_INSTALL/domain.txt)
   IFS='|' read -ra arr <<<"$jenkins_line"
   jenkins_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  if [ -z "$jenkins_port" ]; then
+	ci_line=$(grep "ci" $BASE_INSTALL/domain.txt)
+	IFS='|' read -ra arr1 <<<"$ci_line"
+	jenkins_port="$(echo -e "${arr1[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	if [ -z "$jenkins_port" ]; then
+		jenkins_port=8080
+	fi
+  fi
   sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins
   sudo systemctl start jenkins
+  echogreen "This is the initial admin password for jenkins : $(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
 fi
 
 
