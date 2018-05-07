@@ -100,18 +100,20 @@ grunt
 sudo rsync -avz $TMP_INSTALL/eformcamundaui/target/webapp/* 	$CATALINA_HOME/webapps/camunda/
 
 # EForm Renderer
-git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
+cd $DEVOPS_HOME
+git clone https://bitbucket.org/workplace101/eformsrenderer.git eformsrenderer
 sudo npm install -g @angular/cli
 
-cd $DEVOPS_HOME/eformsrenderer
+cd eformsrenderer
 npm install
 npm run build
 
-git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
+cd $DEVOPS_HOME
+git clone https://bitbucket.org/workplace101/eforms-builder.git eforms-builder
 
 sudo npm install -g bower
 sudo npm install -g gulp
-cd $DEVOPS_HOME/eforms-builder
+cd eforms-builder
 npm install         
 bower install       
 gulp build
