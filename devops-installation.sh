@@ -65,4 +65,4 @@ sudo systemctl daemon-reload
 
 sudo $DEVOPS_HOME/devops-service.sh start
 
-
+echogreen "This is the initial admin password for jenkins : $(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
