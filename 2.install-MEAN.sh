@@ -382,6 +382,7 @@ if [ "$installjenkins" = "y" ]; then
   		  
 	sudo sed -i "s/@@PORT@@/$jenkins_port/g" /etc/nginx/sites-available/$JENKINE_HOSTNAME.conf
   sudo service nginx restart
+  sudo service jenkins restart
 fi
 
 
