@@ -369,7 +369,6 @@ if [ "$installjenkins" = "y" ]; then
   fi
   sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins
   sudo systemctl start jenkins
-  sleep 5
   echogreen "This is the initial admin password for jenkins : $(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
 fi
 
