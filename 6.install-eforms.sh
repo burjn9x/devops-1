@@ -25,6 +25,18 @@ if [ -d "$TMP_INSTALL/workplacebpm" ]; then
 	sudo rm -rf $TMP_INSTALL/workplacebpm
 fi
 
+if [ -d "$TMP_INSTALL/eformcamundaui" ]; then
+	sudo rm -rf $TMP_INSTALL/eformcamundaui
+fi
+
+if [ -d "$TMP_INSTALL/eformsrenderer" ]; then
+	sudo rm -rf $TMP_INSTALL/eformsrenderer
+fi
+
+if [ -d "$TMP_INSTALL/eforms-builder" ]; then
+	sudo rm -rf $TMP_INSTALL/eforms-builder
+fi
+
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 cd $TMP_INSTALL/workplacebpm/src/eForm
 source /etc/profile.d/maven.sh
