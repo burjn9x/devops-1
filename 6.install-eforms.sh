@@ -25,7 +25,7 @@ if [ -d "$TMP_INSTALL/workplacebpm" ]; then
 	sudo rm -rf $TMP_INSTALL/workplacebpm
 fi
 
-sudo git clone https://DigitalBusiness@bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
+sudo git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 cd $TMP_INSTALL/workplacebpm/src/eForm
 source /etc/profile.d/maven.sh
 mvn clean install
@@ -76,11 +76,24 @@ sudo sed -i "s/\(^CmisUser=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF
 sudo sed -i "s/\(^CmisPassword=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 
+. $DEVOPS_HOME/devops-service.sh restart
+
+# Eform camunda UI
 sudo git clone https://DigitalBusiness@bitbucket.org/workplace101/eformcamundaui.git $TMP_INSTALL/eformcamundaui
 npm install -g grunt-cli
 cd $TMP_INSTALL/eformcamundaui
 grunt
 sudo rsync -avz $TMP_INSTALL/eformcamundaui/taget/webapp/* 	$CATALINA_HOME/webapps/camunda/
 
+# EForm Renderer
+sudo git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
+sudo git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
+npm install -g @angular/cli
+npm install
+npm run build
+ln -s $DEVOPS_HOME/eforms-builder/dist $DEVOPS_HOME/eformsrenderer/dist/builder || true
 
-. $DEVOPS_HOME/devops-service.sh restart
+read -e -p "Please enter the public host name for Eform Renderer (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" EFORM_RENDERER_HOSTNAME
+sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
+sudo ln -s /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf /etc/nginx/sites-enabled/
+sudo sed -i "s/@@DNS_DOMAIN@@/$EFORM_RENDERER_HOSTNAME/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
