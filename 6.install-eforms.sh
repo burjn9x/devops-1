@@ -76,4 +76,11 @@ sudo sed -i "s/\(^CmisUser=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF
 sudo sed -i "s/\(^CmisPassword=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 
+sudo git clone https://DigitalBusiness@bitbucket.org/workplace101/eformcamundaui.git $TMP_INSTALL/eformcamundaui
+npm install -g grunt-cli
+cd $TMP_INSTALL/eformcamundaui
+grunt
+sudo rsync -avz $TMP_INSTALL/eformcamundaui/taget/webapp/* 	$CATALINA_HOME/webapps/camunda/
+
+
 . $DEVOPS_HOME/devops-service.sh restart
