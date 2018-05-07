@@ -93,19 +93,27 @@ sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps
 # Eform camunda UI
 #git config --global --unset-all user.name
 git clone https://bitbucket.org/workplace101/eformscamundaui.git $TMP_INSTALL/eformcamundaui
-npm install -g grunt-cli
+sudo npm install -g grunt-cli
 cd $TMP_INSTALL/eformcamundaui
 grunt
 sudo rsync -avz $TMP_INSTALL/eformcamundaui/taget/webapp/* 	$CATALINA_HOME/webapps/camunda/
 
 # EForm Renderer
-#git config --global --unset credential.helper
 git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
-#git config --global --unset credential.helper
-git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
 npm install -g @angular/cli
+
+cd $TMP_INSTALL/eformsrenderer
 npm install
 npm run build
+
+git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
+
+sudo npm install -g bower
+sudo npm install -g gulp
+cd $TMP_INSTALL/eforms-builder
+npm install         
+bower install       
+gulp build
 ln -s $DEVOPS_HOME/eforms-builder/dist $DEVOPS_HOME/eformsrenderer/dist/builder || true
 
 read -e -p "Please enter the public host name for Eform Renderer (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" EFORM_RENDERER_HOSTNAME
@@ -114,3 +122,6 @@ sudo ln -s /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf /etc/nginx/s
 sudo sed -i "s/@@DNS_DOMAIN@@/$EFORM_RENDERER_HOSTNAME/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
 
 sudo sed -i "s/##WEB_ROOT##/root $DEVOPS_HOME\/eformsrenderer\/dist;/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
+
+sudo service nginx restart
+
