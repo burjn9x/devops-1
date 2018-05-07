@@ -26,15 +26,15 @@ if [ -d "$TMP_INSTALL/workplacebpm" ]; then
 fi
 
 if [ -d "$TMP_INSTALL/eformcamundaui" ]; then
-	sudo rm -rf $TMP_INSTALL/eformcamundaui
+	sudo rm -rf $TMP_INSTALL//eformcamundaui
 fi
 
-if [ -d "$TMP_INSTALL/eformsrenderer" ]; then
-	sudo rm -rf $TMP_INSTALL/eformsrenderer
+if [ -d "$DEVOPS_HOME/eformsrenderer" ]; then
+	sudo rm -rf $DEVOPS_HOME/eformsrenderer
 fi
 
-if [ -d "$TMP_INSTALL/eforms-builder" ]; then
-	sudo rm -rf $TMP_INSTALL/eforms-builder
+if [ -d "$DEVOPS_HOME/eforms-builder" ]; then
+	sudo rm -rf $DEVOPS_HOME/eforms-builder
 fi
 
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
@@ -100,9 +100,9 @@ sudo rsync -avz $TMP_INSTALL/eformcamundaui/taget/webapp/* 	$CATALINA_HOME/webap
 
 # EForm Renderer
 git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
-npm install -g @angular/cli
+sudo npm install -g @angular/cli
 
-cd $TMP_INSTALL/eformsrenderer
+cd $DEVOPS_HOME/eformsrenderer
 npm install
 npm run build
 
@@ -110,7 +110,7 @@ git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/efo
 
 sudo npm install -g bower
 sudo npm install -g gulp
-cd $TMP_INSTALL/eforms-builder
+cd $DEVOPS_HOME/eforms-builder
 npm install         
 bower install       
 gulp build
