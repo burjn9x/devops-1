@@ -46,8 +46,8 @@
 | x | 26 | tomcat               |       			     |   telnet localhost 8300          			    |                     |
 | x | 27 | database             |       			 | telnet localhost [3306 | 5432]           	|                     |
 | x | 28 | alfresco             |       			 | [http|https]://alfresco.MYCOMPANY.COM            		|                     |
-| x | 29 | camunda              |       	       | [http|https]://camunda.MYCOMPANY.COM      |                     |
-| x | 30 | magento2             |       			 | [http|https]://magento2.MYCOMPANY.COM       |                     |
+| x | 29 | camunda              |       	       | [http/https]://camunda.MYCOMPANY.COM      |                     |
+| x | 30 | magento2             |       			 | [http/https]://magento2.MYCOMPANY.COM       |                     |
 
 > **Checklist**
 
