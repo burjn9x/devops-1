@@ -91,7 +91,7 @@ sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps
 . $DEVOPS_HOME/devops-service.sh restart
 
 # Eform camunda UI
-git clone https://DigitalBusiness@bitbucket.org/workplace101/eformcamundaui.git $TMP_INSTALL/eformcamundaui
+git clone https://bitbucket.org/workplace101/eformcamundaui.git $TMP_INSTALL/eformcamundaui
 npm install -g grunt-cli
 cd $TMP_INSTALL/eformcamundaui
 grunt
