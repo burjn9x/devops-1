@@ -66,3 +66,11 @@ sudo systemctl daemon-reload
 sudo $DEVOPS_HOME/devops-service.sh start
 
 echogreen "This is the initial admin password for jenkins : $(sudo cat /var/lib/jenkins/secrets/initialAdminPassword)"
+
+read -e -p "Do you want to ssh to server remotely by providing username and password${ques} [y/n] " -i "$DEFAULTYESNO" sshremote
+if [ "$sshremote" = "y" ]; then
+	sudo sed -i "s/\(^PasswordAuthentication \).*/\1yes/" /etc/ssh/sshd_config
+	sudo service sshd restart
+	sudo usermod --password $(echo PASSWORD | openssl passwd -1 -stdin) $USER
+	echogreen "User can ssh to server by using this command : ssh -o PreferredAuthentications=password user@ip"
+fi
