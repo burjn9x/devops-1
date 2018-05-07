@@ -37,7 +37,7 @@ if [ -d "$TMP_INSTALL/eforms-builder" ]; then
 	sudo rm -rf $TMP_INSTALL/eforms-builder
 fi
 
-git config --global --unset-all user.name
+git config --global --unset credential.helper
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 cd $TMP_INSTALL/workplacebpm/src/eForm
 source /etc/profile.d/maven.sh
@@ -100,9 +100,9 @@ grunt
 sudo rsync -avz $TMP_INSTALL/eformcamundaui/taget/webapp/* 	$CATALINA_HOME/webapps/camunda/
 
 # EForm Renderer
-git config --global --unset-all user.name
+git config --global --unset credential.helper
 git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
-git config --global --unset-all user.name
+git config --global --unset credential.helper
 git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
 npm install -g @angular/cli
 npm install
