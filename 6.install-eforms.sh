@@ -37,6 +37,7 @@ if [ -d "$TMP_INSTALL/eforms-builder" ]; then
 	sudo rm -rf $TMP_INSTALL/eforms-builder
 fi
 
+git config --global --remove-section user
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 cd $TMP_INSTALL/workplacebpm/src/eForm
 source /etc/profile.d/maven.sh
@@ -91,6 +92,7 @@ sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps
 . $DEVOPS_HOME/devops-service.sh restart
 
 # Eform camunda UI
+git config --global --unset-all user.name
 git clone https://bitbucket.org/workplace101/eformcamundaui.git $TMP_INSTALL/eformcamundaui
 npm install -g grunt-cli
 cd $TMP_INSTALL/eformcamundaui
@@ -98,7 +100,9 @@ grunt
 sudo rsync -avz $TMP_INSTALL/eformcamundaui/taget/webapp/* 	$CATALINA_HOME/webapps/camunda/
 
 # EForm Renderer
+git config --global --remove-section user
 git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
+git config --global --remove-section user
 git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
 npm install -g @angular/cli
 npm install
