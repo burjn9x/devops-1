@@ -62,9 +62,9 @@ if sudo test -f /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf; then
 	fi
 
 	# Check if eform config does exist
-	eform_found=$(grep -o "eform" $CATALINA_HOME/conf/server.xml | wc -l)
+	eform_found=$(sudo grep -o "eform" $CATALINA_HOME/conf/server.xml | wc -l)
 	
-	if [ $camunda_found = 0 ]; then
+	if [ $eform_found = 0 ]; then
 		#sudo sed -i "0,/server/s/server/upstream eform {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
 		sudo sed -i "1 i\upstream eform {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
 		 
