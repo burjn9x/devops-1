@@ -37,8 +37,8 @@ sudo rsync -avz $TMP_INSTALL/workplacebpm/src/eForm/gateway/target/eform.war $CA
 
 read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
 read -e -p "Please enter the public host name for Alfresco server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" ALFRESCO_HOSTNAME
-	
-if [ -f "/etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf" ]; then
+
+if sudo test -f /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf; then	
 	
 	# Get alfresco port in domain table
 	camunda_line=$(grep "camunda" $BASE_INSTALL/domain.txt)
