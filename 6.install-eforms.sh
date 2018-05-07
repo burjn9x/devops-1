@@ -92,7 +92,7 @@ sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps
 
 # Eform camunda UI
 #git config --global --unset-all user.name
-git clone https://bitbucket.org/workplace101/eformcamundaui.git $TMP_INSTALL/eformcamundaui
+git clone https://bitbucket.org/workplace101/eformscamundaui.git $TMP_INSTALL/eformcamundaui
 npm install -g grunt-cli
 cd $TMP_INSTALL/eformcamundaui
 grunt
