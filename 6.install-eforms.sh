@@ -114,4 +114,4 @@ sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-availab
 sudo ln -s /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf /etc/nginx/sites-enabled/
 sudo sed -i "s/@@DNS_DOMAIN@@/$EFORM_RENDERER_HOSTNAME/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
 
-sudo sed -i "s/##WEB_ROOT##/$DEVOPS_HOME\/eformsrenderer\/dist/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
+sudo sed -i "s/##WEB_ROOT##/root $DEVOPS_HOME\/eformsrenderer\/dist;/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
