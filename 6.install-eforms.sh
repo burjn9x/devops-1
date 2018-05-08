@@ -67,7 +67,7 @@ if sudo test -f /etc/nginx/sites-available/$camunda_hostname.conf; then
 	fi
 
 	# Check if eform config does exist
-	eform_found=$(sudo grep -o "eform" $CATALINA_HOME/conf/server.xml | wc -l)
+	eform_found=$(sudo grep -o "eform" /etc/nginx/sites-available/$camunda_hostname.conf | wc -l)
 	
 	if [ $eform_found = 0 ]; then
 		#sudo sed -i "0,/server/s/server/upstream eform {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
@@ -139,7 +139,8 @@ sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-availab
 sudo ln -s /etc/nginx/sites-available/$eforms_hostname.conf /etc/nginx/sites-enabled/
 sudo sed -i "s/@@DNS_DOMAIN@@/$eforms_hostname/g" /etc/nginx/sites-available/$eforms_hostname.conf
 
-sudo sed -i "s/##WEB_ROOT##/root $DEVOPS_HOME\/eformsrenderer\/dist;/g" /etc/nginx/sites-available/$eforms_hostname.conf
+DEVOPS_HOME_PATH="${DEVOPS_HOME//\//\\/}"
+sudo sed -i "s/##WEB_ROOT##/root $DEVOPS_HOME_PATH\/eformsrenderer\/dist;/g" /etc/nginx/sites-available/$eforms_hostname.conf
 
 sudo service nginx restart
 
