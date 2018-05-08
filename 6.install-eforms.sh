@@ -123,12 +123,12 @@ cd $DEVOPS_HOME/eformsrenderer
 npm install
 npm run build
 
-git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
-cd $DEVOPS_HOME/eforms-builder
+git clone https://bitbucket.org/workplace101/eformsbuilder.git $DEVOPS_HOME/eformsbuilder
+cd $DEVOPS_HOME/eformsbuilder
 npm install         
 bower install       
 gulp build
-ln -s $DEVOPS_HOME/eforms-builder/dist $DEVOPS_HOME/eformsrenderer/dist/builder || true
+ln -s $DEVOPS_HOME/eformsbuilder/dist $DEVOPS_HOME/eformsrenderer/dist/builder || true
 
 #read -e -p "Please enter the public host name for Eform Renderer (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" EFORM_RENDERER_HOSTNAME
 eforms_line=$(grep "eforms." $BASE_INSTALL/domain.txt)
