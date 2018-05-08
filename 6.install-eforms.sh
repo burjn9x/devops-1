@@ -21,6 +21,8 @@ if [ "`which git`" = "" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 fi
 
+sudo chmod 775 -R $DEVOPS_HOME
+
 if [ -d "$TMP_INSTALL/workplacebpm" ]; then
 	sudo rm -rf $TMP_INSTALL/workplacebpm
 fi
