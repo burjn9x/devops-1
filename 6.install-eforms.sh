@@ -111,12 +111,11 @@ sudo npm install -g bower
 sudo npm install -g gulp
 
 # Eform camunda UI
-#git config --global --unset-all user.name
-git clone https://bitbucket.org/workplace101/eformscamundaui.git $TMP_INSTALL/eformcamundaui
-cd $TMP_INSTALL/eformcamundaui
-npm install
-grunt
-sudo rsync -avz $TMP_INSTALL/eformcamundaui/target/webapp/* 	$CATALINA_HOME/webapps/camunda/
+# git clone https://bitbucket.org/workplace101/eformscamundaui.git $TMP_INSTALL/eformcamundaui
+# cd $TMP_INSTALL/eformcamundaui
+# npm install
+# grunt
+# sudo rsync -avz $TMP_INSTALL/eformcamundaui/target/webapp/* 	$CATALINA_HOME/webapps/camunda/
 
 # EForm Renderer
 git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
