@@ -49,15 +49,14 @@ if [ -d "$CATALINA_HOME/webapps/eform" ]; then
 fi
 sudo rsync -avz $TMP_INSTALL/workplacebpm/src/eForm/gateway/target/eform.war $CATALINA_HOME/webapps
 
-read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
-read -e -p "Please enter the public host name for Alfresco server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" ALFRESCO_HOSTNAME
+#read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
+#read -e -p "Please enter the public host name for Alfresco server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" ALFRESCO_HOSTNAME
+camunda_line=$(grep "camunda" $BASE_INSTALL/domain.txt)
+IFS='|' read -ra arr <<<"$camunda_line"
+camunda_hostname="$(echo -e "${arr[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
-if sudo test -f /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf; then	
-	
-	# Get alfresco port in domain table
-	camunda_line=$(grep "camunda" $BASE_INSTALL/domain.txt)
-	IFS='|' read -ra arr <<<"$camunda_line"
-	camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+if sudo test -f /etc/nginx/sites-available/$camunda_hostname.conf; then	
 	
 	if [ -n "$camunda_port" ]; then
 		TOMCAT_HTTP_PORT=$camunda_port
@@ -83,8 +82,18 @@ echo "We are waiting for eform being deployed...."
 
 sleep 20
 
+alfresco_line=$(grep "alfresco" $BASE_INSTALL/domain.txt)
+IFS='|' read -ra arr <<<"$alfresco_line"
+alfresco_hostname="$(echo -e "${arr[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+
+alfresco_protocol=https
+ssl_found=$(grep -o "443" /etc/nginx/sites-available/$alfresco_hostname.conf | wc -l)
+if [ $ssl_found = 0 ]; then
+	alfresco_protocol=http
+fi
+
 sudo sed -i "s/\(^endpoint=\).*/\1https\:\/\/scaucwnkwa.execute-api.ap-southeast-1.amazonaws.com\/v1\/notify\/workchat/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
-sudo sed -i "s/\(^CmisBrowserUrl=\).*/\1https:\/\/$ALFRESCO_HOSTNAME\/alfresco\/api\/-default-\/public\/cmis\/versions\/1.1\/browser/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
+sudo sed -i "s/\(^CmisBrowserUrl=\).*/\1$alfresco_protocol:\/\/$alfresco_hostname\/alfresco\/api\/-default-\/public\/cmis\/versions\/1.1\/browser/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisRepoId=\).*/\1-default-/" 	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisUser=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisPassword=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
@@ -92,30 +101,27 @@ sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps
 
 . $DEVOPS_HOME/devops-service.sh restart
 
+sudo npm install -g grunt-cli
+sudo npm install -g @angular/cli
+sudo npm install -g bower
+sudo npm install -g gulp
+
 # Eform camunda UI
 #git config --global --unset-all user.name
 git clone https://bitbucket.org/workplace101/eformscamundaui.git $TMP_INSTALL/eformcamundaui
-sudo npm install -g grunt-cli
 cd $TMP_INSTALL/eformcamundaui
 npm install
 grunt
 sudo rsync -avz $TMP_INSTALL/eformcamundaui/target/webapp/* 	$CATALINA_HOME/webapps/camunda/
 
 # EForm Renderer
-cd $DEVOPS_HOME
-git clone https://bitbucket.org/workplace101/eformsrenderer.git eformsrenderer
-sudo npm install -g @angular/cli
-
-cd eformsrenderer
+git clone https://bitbucket.org/workplace101/eformsrenderer.git $DEVOPS_HOME/eformsrenderer
+cd $DEVOPS_HOME/eformsrenderer
 npm install
 npm run build
 
-cd $DEVOPS_HOME
-git clone https://bitbucket.org/workplace101/eforms-builder.git eforms-builder
-
-sudo npm install -g bower
-sudo npm install -g gulp
-cd eforms-builder
+git clone https://bitbucket.org/workplace101/eforms-builder.git $DEVOPS_HOME/eforms-builder
+cd $DEVOPS_HOME/eforms-builder
 npm install         
 bower install       
 gulp build
