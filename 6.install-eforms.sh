@@ -130,12 +130,15 @@ bower install
 gulp build
 ln -s $DEVOPS_HOME/eforms-builder/dist $DEVOPS_HOME/eformsrenderer/dist/builder || true
 
-read -e -p "Please enter the public host name for Eform Renderer (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" EFORM_RENDERER_HOSTNAME
-sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
-sudo ln -s /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf /etc/nginx/sites-enabled/
-sudo sed -i "s/@@DNS_DOMAIN@@/$EFORM_RENDERER_HOSTNAME/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
+#read -e -p "Please enter the public host name for Eform Renderer (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" EFORM_RENDERER_HOSTNAME
+eforms_line=$(grep "eforms." $BASE_INSTALL/domain.txt)
+IFS='|' read -ra arr <<<"$eforms_line"
+eforms_hostname="$(echo -e "${arr[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$eforms_hostname.conf
+sudo ln -s /etc/nginx/sites-available/$eforms_hostname.conf /etc/nginx/sites-enabled/
+sudo sed -i "s/@@DNS_DOMAIN@@/$eforms_hostname/g" /etc/nginx/sites-available/$eforms_hostname.conf
 
-sudo sed -i "s/##WEB_ROOT##/root $DEVOPS_HOME\/eformsrenderer\/dist;/g" /etc/nginx/sites-available/$EFORM_RENDERER_HOSTNAME.conf
+sudo sed -i "s/##WEB_ROOT##/root $DEVOPS_HOME\/eformsrenderer\/dist;/g" /etc/nginx/sites-available/$eforms_hostname.conf
 
 sudo service nginx restart
 
