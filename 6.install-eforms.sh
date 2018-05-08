@@ -70,13 +70,13 @@ if sudo test -f /etc/nginx/sites-available/$camunda_hostname.conf; then
 	
 	if [ $eform_found = 0 ]; then
 		#sudo sed -i "0,/server/s/server/upstream eform {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n&/" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
-		sudo sed -i "1 i\upstream eform {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n" /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+		sudo sed -i "1 i\upstream eform {	    \n\tserver localhost:$TOMCAT_HTTP_PORT;	\n}\n\n" /etc/nginx/sites-available/$camunda_hostname.conf
 		 
 		 # Insert camunda configuration content before the last line in domain.conf in nginx
 		 #sudo sed -i "$e cat $NGINX_CONF/sites-available/camunda.conf" /etc/nginx/sites-available/$hostname.conf
 		 sudo mkdir temp
 		 sudo cp $NGINX_CONF/sites-available/eform.snippet	temp/
-		 sudo sed -e '/##EFORM##/ {' -e 'r temp/eform.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$CAMUNDA_HOSTNAME.conf
+		 sudo sed -e '/##EFORM##/ {' -e 'r temp/eform.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$camunda_hostname.conf
 		 sudo rm -rf temp
 	fi
 fi
