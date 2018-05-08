@@ -101,7 +101,7 @@ sudo sed -i "s/\(^CmisBrowserUrl=\).*/\1$alfresco_protocol:\/\/$alfresco_hostnam
 sudo sed -i "s/\(^CmisRepoId=\).*/\1-default-/" 	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisUser=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisPassword=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
-sudo sed -i "s/\(^CmisRootFolder=\).*/\Data Dictionary/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
+sudo sed -i "s/\(^CmisRootFolder=\).*/\1Data Dictionary/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 
 . $DEVOPS_HOME/devops-service.sh restart
 
