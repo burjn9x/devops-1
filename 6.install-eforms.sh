@@ -22,6 +22,7 @@ if [ "`which git`" = "" ]; then
 fi
 
 sudo chmod 775 -R $DEVOPS_HOME
+sudo chown -R $USER:$USER ~/.local
 
 if [ -d "$TMP_INSTALL/workplacebpm" ]; then
 	sudo rm -rf $TMP_INSTALL/workplacebpm
@@ -35,8 +36,8 @@ if [ -d "$DEVOPS_HOME/eformsrenderer" ]; then
 	sudo rm -rf $DEVOPS_HOME/eformsrenderer
 fi
 
-if [ -d "$DEVOPS_HOME/eforms-builder" ]; then
-	sudo rm -rf $DEVOPS_HOME/eforms-builder
+if [ -d "$DEVOPS_HOME/eformsbuilder" ]; then
+	sudo rm -rf $DEVOPS_HOME/eformsbuilder
 fi
 
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
