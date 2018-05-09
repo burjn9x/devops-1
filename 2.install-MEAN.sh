@@ -370,17 +370,17 @@ if [ "$installjenkins" = "y" ]; then
   sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins
   sudo systemctl start jenkins
   read -e -p "Please enter the public host name for Jenkins server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" JENKINS_HOSTNAME
-  sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$JENKINE_HOSTNAME.conf
-  sudo ln -s /etc/nginx/sites-available/$JENKINE_HOSTNAME.conf /etc/nginx/sites-enabled/
+  sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf
+  sudo ln -s /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf /etc/nginx/sites-enabled/
 	  
-  sudo sed -i "s/@@DNS_DOMAIN@@/$JENKINE_HOSTNAME/g" /etc/nginx/sites-available/$JENKINE_HOSTNAME.conf
+  sudo sed -i "s/@@DNS_DOMAIN@@/$JENKINS_HOSTNAME/g" /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf
 
   sudo mkdir temp
   sudo cp $NGINX_CONF/sites-available/common.snippet	temp/
-  sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$JENKINE_HOSTNAME.conf
+  sudo sed -e '/##COMMON##/ {' -e 'r temp/common.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf
   sudo rm -rf temp
   		  
-  sudo sed -i "s/@@PORT@@/$jenkins_port/g" /etc/nginx/sites-available/$JENKINE_HOSTNAME.conf
+  sudo sed -i "s/@@PORT@@/$jenkins_port/g" /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf
   sudo service nginx restart
   sudo service jenkins restart
 fi
