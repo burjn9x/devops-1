@@ -14,7 +14,7 @@
 | 33 | tomcat.MYCOMPANY.COM                 | 8866 | Tomcat Server            |
 | 34 | camunda.MYCOMPANY.COM                | 8866 | Camunda BPM              |
 | 35 | alfresco.MYCOMPANY.COM               | 8866 | Alfresco ECM             |
-| 41 | dapp-o2oprotocol.MYCOMPANY.COM       | 8877 | DApp O2OProtocol Demo    |
+| 41 | dapp-demo.MYCOMPANY.COM              | 8877 | DApp  Demo               |
 | 42 | blocklancer.MYCOMPANY.COM            | 8888 | Freelancer React WebUI   |
 | 43 | blocklancer-admin.MYCOMPANY.COM      | 8899 | Freelancer-Admin Node.js |
 | 44 | ipfs.MYCOMPANY.COM                   | 5001 | IPFS                     |
