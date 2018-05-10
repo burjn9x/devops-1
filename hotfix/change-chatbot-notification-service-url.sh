@@ -17,8 +17,9 @@ else
 	. ../colors.sh
 fi
 
-export NOTICATION_SERVICE_URL=https://scaucwnkwa.execute-api.ap-southeast-1.amazonaws.com/v1/notify/workchat
+export NOTIFICATION_SERVICE_URL=https://scaucwnkwa.execute-api.ap-southeast-1.amazonaws.com/v1/notify/workchat
+NOTIFICATION_SERVICE_URL_ESC="${NOTIFICATION_SERVICE_URL//\//\\/}"
 
-sudo sed -i "s/\(^endpoint=\).*/\1$NOTICATION_SERVICE_URL/" 	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
+sudo sed -i "s/\(^endpoint=\).*/\1$NOTIFICATION_SERVICE_URL_ESC/"       $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 
 sudo $DEVOPS_HOME/devops-service.sh restart
