@@ -96,7 +96,9 @@ if [ $ssl_found = 0 ]; then
 	alfresco_protocol=http
 fi
 
-sudo sed -i "s/\(^endpoint=\).*/\1https\:\/\/scaucwnkwa.execute-api.ap-southeast-1.amazonaws.com\/v1\/notify\/workchat/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
+NOTIFICATION_SERVICE_URL_ESC="${NOTIFICATION_SERVICE_URL//\//\\/}"
+
+sudo sed -i "s/\(^endpoint=\).*/\1$NOTIFICATION_SERVICE_URL_ESC/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisBrowserUrl=\).*/\1$alfresco_protocol:\/\/$alfresco_hostname\/alfresco\/api\/-default-\/public\/cmis\/versions\/1.1\/browser/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisRepoId=\).*/\1-default-/" 	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisUser=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
