@@ -20,8 +20,8 @@ echogreen "Begin running...."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
 
-# add ubuntu to devops
-#sudo adduser ubuntu devops
+read -e -p "Please enter the public host name for your server (only domain name, not subdomain)${ques} [`hostname`] " -i "`hostname`" DOMAIN_NAME
+sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" $BASE_INSTALL/domain.txt
 
 
 # Run initializing script for ubuntu
