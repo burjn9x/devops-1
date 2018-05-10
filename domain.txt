@@ -6,8 +6,9 @@
 | 11 | salesforcechatbot.MYCOMPANY.COM      | 8611 | Chatbot                  |
 | 12 | commercechatbot.MYCOMPANY.COM        | 8622 | Chatbot                  |
 | 13 | customerservicechatbot.MYCOMPANY.COM | 8633 | Chatbot                  |
-| 14 | chatbot.MYCOMPANY.COM                | 8644 | Chatbot                  |
-| 15 | workplace.MYCOMPANY.COM              | 8655 | Service Desk             |
+| 14 | leadgenerationchatbot.MYCOMPANY.COM  | 8644 | Chatbot                  |
+| 15 | chatbot.MYCOMPANY.COM                | 8655 | Chatbot                  |
+| 16 | workplace.MYCOMPANY.COM              | 8655 | Service Desk             |
 | 21 | magento2.MYCOMPANY.COM               | 8711 | Magento 2                |
 | 31 | eforms-builder.MYCOMPANY.COM         | 8811 | eForms eWorkflow         |
 | 32 | eforms.MYCOMPANY.COM                 | 8822 | eForms eWorkflow         |
