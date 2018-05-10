@@ -69,7 +69,6 @@ if [ "`which git`" = "" ]; then
 	sudo chown -R $USER:$USER ~/.config
 fi
 
-
 if [ "`which python`" = "" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	echo "You need to install python."
@@ -96,6 +95,35 @@ if [ "`which aws`" = "" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo apt-get $APTVERBOSITY install awscli;
 fi
+
+##
+# Java 8 SDK
+##
+if [ "`which java`" = "" ]; then
+  echoblue "Installing Oracle Java 8. Fetching packages..."
+
+  JDK_VERSION=`echo $JAVA8URL | rev | cut -d "/" -f1 | rev`
+
+  declare -a PLATFORMS=("-linux-x64.tar.gz")
+
+  for platform in "${PLATFORMS[@]}"
+  do
+     wget -c --header "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA8URL}${platform}" -P $TMP_INSTALL
+     ### curl -C - -L -O -# -H "Cookie: oraclelicense=accept-securebackup-cookie" "${JAVA8URL}${platform}"
+  done
+  sudo mkdir /usr/java
+  sudo tar xvzf $TMP_INSTALL/jdk-$JAVA_VERSION-linux-x64.tar.gz -C /usr/java
+  
+  JAVA_DEST=jdk1.8.0_171
+  export JAVA_HOME=/usr/java/$JAVA_DEST/
+  sudo update-alternatives --install /usr/bin/java java ${JAVA_HOME%*/}/bin/java 1
+  sudo update-alternatives --install /usr/bin/javac javac ${JAVA_HOME%*/}/bin/javac 1
+
+  echo
+  echogreen "Finished installing Oracle Java 8"
+  echo
+fi
+
 
 ##
 # Swap File
