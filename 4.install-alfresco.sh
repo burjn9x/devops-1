@@ -216,11 +216,16 @@ if [ -d "$CATALINA_HOME" ]; then
 	echo "This information will be added to default configuration files."
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	
-	# Extract domain name from SSL key path
-	#hostname=$(basename /etc/letsencrypt/live/*/)
+	# Get alfresco port in domain table
+	alfresco_line=$(grep "alfresco" $BASE_INSTALL/domain.txt)
+	IFS='|' read -ra arr <<<"$alfresco_line"
+	alfresco_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	SHARE_HOSTNAME="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 	
-	#if [ "$hostname" = "" ]; then
-	read -e -p "Please enter the public host name for Share server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" SHARE_HOSTNAME
+	if [ -z "$SHARE_HOSTNAME" ]; then
+		read -e -p "Please enter the public host name for Share server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" SHARE_HOSTNAME
+	fi
+	
 	
 	if [ -f "$NGINX_CONF/sites-available/$SHARE_HOSTNAME.conf" ]; then
 		# Remove old configuration
@@ -250,12 +255,7 @@ if [ -d "$CATALINA_HOME" ]; then
 	fi
 	read -e -p "Please enter the host name for Alfresco Repository server (fully qualified domain name) as shown to users${ques} [$SHARE_HOSTNAME] " -i "$SHARE_HOSTNAME" REPO_HOSTNAME
 	read -e -p "Please enter the host name for Alfresco Repository server that Share will use to talk to repository${ques} [localhost] " -i "localhost" SHARE_TO_REPO_HOSTNAME
-	#else 
-	#	SHARE_HOSTNAME=$hostname
-	#	SHARE_PORT=443
-	#	REPO_HOSTNAME=$hostname
-	#	SHARE_TO_REPO_HOSTNAME=localhost
-	#fi
+
 	
 	# Add default alfresco-global.propertis
 	ALFRESCO_GLOBAL_TMP_PATH=$TMP_INSTALL
@@ -304,12 +304,6 @@ if [ -d "$CATALINA_HOME" ]; then
 	else
 		sudo sed -i "s/@@DB_NAME@@/$ALF_DB_NAME_DEFAULT/g" $ALFRESCO_GLOBAL_PROPERTIES
 	fi
-	
-	# Get alfresco port in domain table
-	alfresco_line=$(grep "alfresco" $BASE_INSTALL/domain.txt)
-	IFS='|' read -ra arr <<<"$alfresco_line"
-	alfresco_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-	
 	
 	if [ -n "$alfresco_port" ]; then
 		TOMCAT_HTTP_PORT=$alfresco_port

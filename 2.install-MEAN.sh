@@ -352,24 +352,27 @@ echo "You will also get the option to install this server"
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 read -e -p "Install Jenkins automation server${ques} [y/n] " -i "$DEFAULTYESNO" installjenkins
 if [ "$installjenkins" = "y" ]; then
-  wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+  get -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
   sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
   sudo apt-get update
   sudo apt-get -qq -y install jenkins
   jenkins_line=$(grep "jenkins" $BASE_INSTALL/domain.txt)
   IFS='|' read -ra arr <<<"$jenkins_line"
   jenkins_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  JENKINS_HOSTNAME="$(echo -e "${arr[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
   if [ -z "$jenkins_port" ]; then
 	ci_line=$(grep "ci" $BASE_INSTALL/domain.txt)
 	IFS='|' read -ra arr1 <<<"$ci_line"
 	jenkins_port="$(echo -e "${arr1[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	JENKINS_HOSTNAME="$(echo -e "${arr1[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 	if [ -z "$jenkins_port" ]; then
 		jenkins_port=8080
+		read -e -p "Please enter the public host name for Jenkins server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" JENKINS_HOSTNAME
 	fi
   fi
   sudo sed -i "s/\(^HTTP_PORT=\).*/\1$jenkins_port/" /etc/default/jenkins
   sudo systemctl start jenkins
-  read -e -p "Please enter the public host name for Jenkins server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" JENKINS_HOSTNAME
+  #read -e -p "Please enter the public host name for Jenkins server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" JENKINS_HOSTNAME
   sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf
   sudo ln -s /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf /etc/nginx/sites-enabled/
 	  

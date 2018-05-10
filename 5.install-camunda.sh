@@ -132,17 +132,22 @@ if [ "$installcamundawar" = "y" ]; then
   # Extract domain name from SSL kßey path
   #hostname=$(basename /etc/letsencrypt/live/*/)
   
-  read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
+  # Get camunda port in domain table
+	camunda_line=$(grep "camunda" $BASE_INSTALL/domain.txt)
+	IFS='|' read -ra arr <<<"$camunda_line"
+	camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	CAMUNDA_HOSTNAME="$(echo -e "${arr[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+  
+  
+    if [ -z "$CAMUNDA_HOSTNAME" ]; then
+		read -e -p "Please enter the public host name for Camunda server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" CAMUNDA_HOSTNAME
+	fi
 	
 	if [ -f "$NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf" ] && [ "$CAMUNDA_HOSTNAME" != "$SHARE_HOSTNAME" ]; then
 		# Remove old configuration
 		rm $NGINX_CONF/sites-available/$CAMUNDA_HOSTNAME.conf
 	fi
-
-	# Get camunda port in domain table
-	camunda_line=$(grep "camunda" $BASE_INSTALL/domain.txt)
-	IFS='|' read -ra arr <<<"$camunda_line"
-	camunda_port="$(echo -e "${arr[3]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+	
 	
 	if [ -n "$camunda_port" ]; then
 		TOMCAT_HTTP_PORT=$camunda_port

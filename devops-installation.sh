@@ -31,7 +31,7 @@ echo
 . $BASE_INSTALL/2.install-MEAN.sh
 
 # Run script to setup Maven, Ant, Java, Tomcat, Database, Jenkins
-. $BASE_INSTALL/3.install-JAVA-TOMCAT.sh
+. $BASE_INSTALL/3.install-TOMCAT.sh
 
 # Run script to setup Alfresco
 # TODO for temporary, we need to install Alfresco before Camunda because they use the same server.xml (tomcat)
