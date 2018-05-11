@@ -15,10 +15,11 @@
 | 33 | tomcat.MYCOMPANY.COM                 | 8866 | Tomcat Server            |
 | 34 | camunda.MYCOMPANY.COM                | 8866 | Camunda BPM              |
 | 35 | alfresco.MYCOMPANY.COM               | 8866 | Alfresco ECM             |
-| 41 | dapp-demo.MYCOMPANY.COM              | 8877 | DApp  Demo               |
+| 41 | dapp-boilerplate.MYCOMPANY.COM       | 8877 | DApp  Demo               |
 | 42 | blocklancer.MYCOMPANY.COM            | 8888 | Freelancer React WebUI   |
 | 43 | blocklancer-admin.MYCOMPANY.COM      | 8899 | Freelancer-Admin Node.js |
 | 44 | ipfs.MYCOMPANY.COM                   | 8081 | IPFS Files Hash          |
 | 45 | ipfs-api.MYCOMPANY.COM               | 5001 | IPFS-API WebUI           |
 | 45 | ipfs-swarm.MYCOMPANY.COM             | 4001 | IPFS-Swarm               |
-| 46 | digital-identity.MYCOMPANY.COM       | 3001 | Digital Identity ERC-725 |
+| 46 | digital-identity.MYCOMPANY.COM       | 3001 | Identity Issuer Service  |
+| 47 | identity.MYCOMPANY.COM               | 3333 | Digital Identity ERC-725 |
