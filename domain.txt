@@ -18,5 +18,7 @@
 | 41 | dapp-demo.MYCOMPANY.COM              | 8877 | DApp  Demo               |
 | 42 | blocklancer.MYCOMPANY.COM            | 8888 | Freelancer React WebUI   |
 | 43 | blocklancer-admin.MYCOMPANY.COM      | 8899 | Freelancer-Admin Node.js |
-| 44 | ipfs.MYCOMPANY.COM                   | 5001 | IPFS                     |
-| 45 | digital-identity.MYCOMPANY.COM       | 3001 | Digital Identity ERC-725 |
+| 44 | ipfs.MYCOMPANY.COM                   | 8081 | IPFS Files Hash          |
+| 45 | ipfs-api.MYCOMPANY.COM               | 5001 | IPFS-API WebUI           |
+| 45 | ipfs-swarm.MYCOMPANY.COM             | 4001 | IPFS-Swarm               |
+| 46 | digital-identity.MYCOMPANY.COM       | 3001 | Digital Identity ERC-725 |
