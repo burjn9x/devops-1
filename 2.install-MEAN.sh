@@ -386,6 +386,12 @@ if [ "$installjenkins" = "y" ]; then
   sudo sed -i "s/@@PORT@@/$jenkins_port/g" /etc/nginx/sites-available/$JENKINS_HOSTNAME.conf
   sudo service nginx restart
   sudo service jenkins restart
+  
+  jenkins_sudo_found=$(sudo grep -o "jenkins" /etc/sudoers | wc -l)
+  if [ $jenkins_sudo_found = 0 ]; then
+	# Add jenkins to sudoers
+	echo "jenkins ALL=(ALL) NOPASSWD: ALL" | sudo tee -a /etc/sudoers
+  fi
 fi
 
 
