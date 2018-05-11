@@ -136,6 +136,7 @@ read -e -p "Add devops system user${ques} [y/n] " -i "$DEFAULTYESNO" adddevops
 if [ "$adddevops" = "y" ]; then
   sudo adduser --system --disabled-login --disabled-password --group $DEVOPS_USER
   sudo adduser ubuntu $DEVOPS_USER
+  sudo adduser jenkins $DEVOPS_USER
   echo
   echogreen "Finished adding devops user"
   echo
