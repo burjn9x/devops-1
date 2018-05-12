@@ -25,7 +25,7 @@ server {
 	access_log /var/log/nginx/magento2-access.log;
 	error_log /var/log/nginx/magento2-error.log;
 
-	set \$MAGE_ROOT @@ROOT_PROJECT_FOLDER@@;
-	set \$MAGE_MODE developer;
+	set $MAGE_ROOT @@ROOT_PROJECT_FOLDER@@;
+	set $MAGE_MODE developer;
 	include @@ROOT_PROJECT_FOLDER@@/nginx.conf.sample;
 }

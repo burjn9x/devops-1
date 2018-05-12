@@ -72,28 +72,28 @@ create_ssl() {
 					sudo sed -e '/##CAMUNDA##/ {' -e 'r temp/camunda.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$local_domain.conf
 				fi
 			fi
-		elif [["$local_domain" = *"magento"* ]]; then
+		elif [[ "$local_domain" == *"magento"* ]]; then
 			# Load magento2 constants
-			DIRNAME="$(cd "$(dirname "$0")" && pwd)"
+			DIRNAME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 			FILE="$DIRNAME/magento2/MAGENTO_PROJECT_NAME"
 
-			if [ -f "$DIRNAME/magento2/constants.sh" ]; then
+			if sudo test -f "$DIRNAME/magento2/constants.sh"; then
 				. "$DIRNAME/magento2/constants.sh"
 			fi
 
 			# Load smippet conf
 			# Replace info
 			# Enable site
-			if [ -f $FILE]; then
+			if sudo test -f $FILE; then
 				PROJECT_NAME=$(cat "$FILE")
 				MAGENTO_WEB_ROOT_PATH="${MAGENTO_WEB_ROOT//\//\\/}"
 				
 				sudo cp $NGINX_CONF/sites-available/magento.snippet /tmp/
-				sudo sed -i "s/@@DNS_DOMAIN@@/$localhost_domain/g" /tmp/magento.snippet
+				sudo sed -i "s/@@DNS_DOMAIN@@/$local_domain/g" /tmp/magento.snippet
 				sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$MAGENTO_WEB_ROOT_PATH\/$PROJECT_NAME/g" /tmp/magento.snippet
 
 				sudo cp /tmp/magento.snippet /etc/nginx/sites-available/$local_domain.conf
-				sudo ln -s /etc/nginx/sites-available/$localhost_domain.conf /etc/nginx/sites-enabled/
+				sudo ln -s /etc/nginx/sites-available/$local_domain.conf /etc/nginx/sites-enabled/
 			else
 				echo "File $FILE not foung >>> Cant get Magento's project name"
 			fi
