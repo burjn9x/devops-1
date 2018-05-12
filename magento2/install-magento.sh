@@ -15,7 +15,6 @@ fi
 
 MAGENTO_WEB_ROOT_PATH="${MAGENTO_WEB_ROOT//\//\\/}"
 
-
 echo
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echogreen "Begin running...."
@@ -32,30 +31,29 @@ read -e -p "Please enter the project name${ques} " PROJECT_NAME
 
 if [ -n "$PROJECT_NAME" ]; then
 	cd $MAGENTO_WEB_ROOT
-	
+
 	read -e -p "Please enter the Magento version${ques} " -i "$MAGENTO_VERSION_DEFAULT" MAGENTO_VERSION
 	sudo composer create-project --repository-url=https://repo.magento.com/ magento/project-community-edition:$MAGENTO_VERSION $PROJECT_NAME
-	
+
 	# Install database and setup username password based on project name
 	#read -e -p "Create Magento Database and user? [y/n] " -i "y" createdbmagento
 	#if [ "$createdbmagento" = "y" ]; then
-	  echo "Installing and configuring magento database and user......"
-	  read -s -p "Enter the Magento database password:"  MAGENTO_PASSWORD
-	  echo ""
-	  read -s -p "Re-Enter the Magento database password:" MAGENTO_PASSWORD2
-	  while [ "$MAGENTO_PASSWORD" != "$MAGENTO_PASSWORD2" ]
-	  do
-		  echo "Password does not match. Please try again"
-		  read -s -p "Enter the Magento database password:"  MAGENTO_PASSWORD
-		  echo ""
-		  read -s -p "Re-Enter the Magento database password:" MAGENTO_PASSWORD2
-	  done
-	  #if [ "$MAGENTO_PASSWORD" == "$MAGENTO_PASSWORD2" ]; then
-		MAGENTO_DB=$PROJECT_NAME
-		MAGENTO_USER=$PROJECT_NAME
-		echo "Creating Magento database and user."
-		echo "You must supply the root user password for MariaDB:"
-		mysql -u root -p << EOF
+	echo "Installing and configuring magento database and user......"
+	read -s -p "Enter the Magento database password:" MAGENTO_PASSWORD
+	echo ""
+	read -s -p "Re-Enter the Magento database password:" MAGENTO_PASSWORD2
+	while [ "$MAGENTO_PASSWORD" != "$MAGENTO_PASSWORD2" ]; do
+		echo "Password does not match. Please try again"
+		read -s -p "Enter the Magento database password:" MAGENTO_PASSWORD
+		echo ""
+		read -s -p "Re-Enter the Magento database password:" MAGENTO_PASSWORD2
+	done
+	#if [ "$MAGENTO_PASSWORD" == "$MAGENTO_PASSWORD2" ]; then
+	MAGENTO_DB=$PROJECT_NAME
+	MAGENTO_USER=$PROJECT_NAME
+	echo "Creating Magento database and user."
+	echo "You must supply the root user password for MariaDB:"
+	mysql -u root -p <<EOF
 	# Drop user and database if exists
 	DROP USER IF EXISTS '$MAGENTO_USER'@'localhost';
 	DROP DATABASE IF EXISTS $MAGENTO_DB;
@@ -65,21 +63,21 @@ if [ -n "$PROJECT_NAME" ]; then
 	CREATE USER '$MAGENTO_USER'@'localhost' IDENTIFIED BY '$MAGENTO_PASSWORD';
 	GRANT ALL PRIVILEGES ON $MAGENTO_DB.* TO '$MAGENTO_USER'@'localhost' WITH GRANT OPTION;
 EOF
-	  echo
-	  echo "Remember to update configuration with the Magento database password"
-	  echo
-	  #fi
+	echo
+	echo "Remember to update configuration with the Magento database password"
+	echo
 	#fi
-	
+	#fi
+
 	# Setup magento
 	read -e -p "Please enter your public host name on this server${ques} " HOSTNAME
 	read -e -p "Please enter the protocol to use for public Share server (http or https)${ques} [https] " -i "https" PROTOCOL
 	if [ -n "$HOSTNAME" ]; then
 		#echo "DB USER : $MAGENTO_USER, DB PASSWORD : $MAGENTO_PASSWORD DB : $MAGENTO_DB"
 		sudo php $MAGENTO_WEB_ROOT/$PROJECT_NAME/bin/magento setup:install --base-url=$PROTOCOL://$HOSTNAME --backend-frontname=admin --db-host=127.0.0.1 --db-name=$MAGENTO_DB \
-						--db-password=$MAGENTO_PASSWORD --db-user=$MAGENTO_USER --admin-firstname=admin --admin-lastname=admin --admin-email=admin@mycompany.com \
-						--admin-user=admin --admin-password=$MAGENTO_ADMIN_PASSWORD_DEFAULT --language=en_US --currency=USD --timezone=$TIME_ZONE --use-rewrites=1
-						
+			--db-password=$MAGENTO_PASSWORD --db-user=$MAGENTO_USER --admin-firstname=admin --admin-lastname=admin --admin-email=admin@mycompany.com \
+			--admin-user=admin --admin-password=$MAGENTO_ADMIN_PASSWORD_DEFAULT --language=en_US --currency=USD --timezone=$TIME_ZONE --use-rewrites=1
+
 		# Set permission on project folder
 		cd $MAGENTO_WEB_ROOT/$PROJECT_NAME
 		compareVersion=2.2
@@ -96,7 +94,7 @@ EOF
 	else
 		echo "Please input valid hostname"
 	fi
-	
+
 	# Setup SSL
 	#read -e -p "Install SSL${ques} [y/n] " -i "$DEFAULTYESNO" installssl
 	if [ "$PROTOCOL" = "https" ]; then
@@ -105,10 +103,10 @@ EOF
 		if [ ! -f "/etc/letsencrypt/live/$HOSTNAME/fullchain.pem" ]; then
 			sudo certbot certonly --authenticator standalone --installer nginx -d $HOSTNAME --pre-hook "systemctl stop nginx" --post-hook "systemctl start nginx"
 		fi
-		
+
 		if [ -f "/etc/letsencrypt/live/$HOSTNAME/fullchain.pem" ]; then
-		
-			sudo cat <<EOF >/etc/nginx/sites-available/$HOSTNAME.conf
+
+			sudo echo "
 server {
   listen 80;
   server_name @@DNS_DOMAIN@@;
@@ -140,25 +138,27 @@ server {
   set \$MAGE_MODE developer;
   include @@ROOT_PROJECT_FOLDER@@/nginx.conf.sample;
 }
-EOF
+" | sudo tee /etc/nginx/sites-available/$HOSTNAME.conf
 			# Replace template with configuration value created in previous step
-			sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" 		/etc/nginx/sites-available/$HOSTNAME.conf
-			sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$MAGENTO_WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
+			sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" /etc/nginx/sites-available/$HOSTNAME.conf
+			sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$MAGENTO_WEB_ROOT_PATH\/$PROJECT_NAME/g" /etc/nginx/sites-available/$HOSTNAME.conf
 			sudo ln -s /etc/nginx/sites-available/$HOSTNAME.conf /etc/nginx/sites-enabled/
-				
+
 			# Add cron job to renew key
-			crontab -l | { cat; echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" > /var/log/certbot-renew.log'; } | crontab -
-			  
+			crontab -l | {
+				cat
+				echo '43 6 * * * root /usr/bin/certbot renew --post-hook "systemctl reload nginx" > /var/log/certbot-renew.log'
+			} | crontab -
+
 			echo "SSL for domain : $HOSTNAME has been created successfully."
-			  
+
 		else
-			  echored "There is an error in generating keys for domain $HOSTNAME."
+			echored "There is an error in generating keys for domain $HOSTNAME."
 		fi
 
-		
 	else
-		
-		sudo cat <<EOF >/etc/nginx/sites-available/$HOSTNAME.conf
+
+		sudo echo "
 upstream fastcgi_backend {
      server  unix:/run/php/php7.0-fpm.sock;
  }
@@ -169,19 +169,19 @@ upstream fastcgi_backend {
      set \$MAGE_ROOT @@ROOT_PROJECT_FOLDER@@;
      include @@ROOT_PROJECT_FOLDER@@/nginx.conf.sample;
  }
-EOF
+" | sudo tee /etc/nginx/sites-available/$HOSTNAME.conf
 		# Replace template with configuration value created in previous step
-		sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" 		/etc/nginx/sites-available/$HOSTNAME.conf
-		sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$MAGENTO_WEB_ROOT_PATH\/$PROJECT_NAME/g" 	/etc/nginx/sites-available/$HOSTNAME.conf
+		sudo sed -i "s/@@DNS_DOMAIN@@/$HOSTNAME/g" /etc/nginx/sites-available/$HOSTNAME.conf
+		sudo sed -i "s/@@ROOT_PROJECT_FOLDER@@/$MAGENTO_WEB_ROOT_PATH\/$PROJECT_NAME/g" /etc/nginx/sites-available/$HOSTNAME.conf
 		sudo ln -s /etc/nginx/sites-available/$HOSTNAME.conf /etc/nginx/sites-enabled/
-		
+
 		sudo service nginx restart
 	fi
 
 else
 	echo "Please input valid name for creating project"
 fi
-	
+
 echo
 echogreen "- - - - - - - - - - - - - - - - -"
 echo "Scripted install complete"
