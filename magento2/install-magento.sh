@@ -33,7 +33,7 @@ get_hostname() {
 	DOMAIN_NAME=$1
 	
 	count=1
-	while read line && [[ -n "$line" ]]; do
+	while read line || [[ -n "$line" ]]; do
 		count=$(expr $count + 1)
 		if [ $count -gt 3 ]; then
 			IFS='|' read -ra arr <<<"$line"
