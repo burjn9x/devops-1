@@ -121,7 +121,9 @@ EOF
 		sudo find var vendor generated pub/static pub/media app/etc -type d -exec chmod u+w {} \;
 	fi
 	sudo chmod u+x bin/magento
-	sudo chown -R :www-data .
+	# Permission magento's folder as "www-data:www-data"
+	# ":www-data" >>> "root:www-data"
+	sudo chown -R www-data:www-data .
 else
 	echo "Please input valid name for creating project"
 fi
