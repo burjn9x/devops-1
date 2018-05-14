@@ -65,26 +65,32 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 read -e -p "Install MAVEN build tool${ques} [y/n] " -i "$DEFAULTYESNO" installmaven
 
 if [ "$installmaven" = "y" ]; then
-  echogreen "Installing Maven"
-  echo "Downloading Maven..."
-  curl -# -o $TMP_INSTALL/apache-maven-$MAVEN_VERSION.tar.gz $APACHEMAVEN
-  echo "Extracting..."
-  sudo tar -xf $TMP_INSTALL/apache-maven-$MAVEN_VERSION.tar.gz -C $TMP_INSTALL
-  sudo mv $TMP_INSTALL/apache-maven-$MAVEN_VERSION $TMP_INSTALL/maven
-  sudo mv $TMP_INSTALL/maven $DEVOPS_HOME
-  sudo echo "
-#!/bin/sh
-export MAVEN_HOME=$DEVOPS_HOME/maven
-export M2_HOME=$DEVOPS_HOME/maven
-export M2=$DEVOPS_HOME/maven/bin
-export PATH=$PATH:$DEVOPS_HOME/maven/bin
-" | sudo tee /etc/profile.d/maven.sh
+	#DEPRICATED
+  # echogreen "Installing Maven"
+  # echo "Downloading Maven..."
+  # curl -# -o $TMP_INSTALL/apache-maven-$MAVEN_VERSION.tar.gz $APACHEMAVEN
+  # echo "Extracting..."
+  # sudo tar -xf $TMP_INSTALL/apache-maven-$MAVEN_VERSION.tar.gz -C $TMP_INSTALL
+  # sudo mv $TMP_INSTALL/apache-maven-$MAVEN_VERSION $TMP_INSTALL/maven
+  # sudo mv $TMP_INSTALL/maven $DEVOPS_HOME
+  # sudo echo "
+# #!/bin/sh
+# export MAVEN_HOME=$DEVOPS_HOME/maven
+# export M2_HOME=$DEVOPS_HOME/maven
+# export M2=$DEVOPS_HOME/maven/bin
+# export PATH=$PATH:$DEVOPS_HOME/maven/bin
+# " | sudo tee /etc/profile.d/maven.sh
 
-  sudo chmod a+x /etc/profile.d/maven.sh
-  source /etc/profile.d/maven.sh
-  echo
+  # sudo chmod a+x /etc/profile.d/maven.sh
+  # source /etc/profile.d/maven.sh
+  # echo
+  
+  # sudo apt-get install maven
+  # echogreen "Finished installing Maven"
+  # echo  
+  sudo apt-get install maven
   echogreen "Finished installing Maven"
-  echo  
+  echo
 else
   echo "Skipping install of Maven"
   echo
@@ -102,22 +108,24 @@ echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 read -e -p "Install ANT tool${ques} [y/n] " -i "$DEFAULTYESNO" installant
 
 if [ "$installant" = "y" ]; then
-  echogreen "Installing Ant"
-  echo "Downloading Ant..."
-  curl -# -o $TMP_INSTALL/apache-ant-$ANT_VERSION.tar.gz $APACHEANT
-  echo "Extracting..."
-  sudo tar -xf $TMP_INSTALL/apache-ant-$ANT_VERSION.tar.gz -C $TMP_INSTALL
-  sudo mv $TMP_INSTALL/apache-ant-$ANT_VERSION $TMP_INSTALL/ant
-  sudo mv $TMP_INSTALL/ant $DEVOPS_HOME
-  sudo echo "
-#!/bin/sh
-export ANT_HOME=$DEVOPS_HOME/ant
-export PATH=$PATH:$DEVOPS_HOME/ant/bin
-" | sudo tee /etc/profile.d/ant.sh
+  #DEPRICATED
+  # echogreen "Installing Ant"
+  # echo "Downloading Ant..."
+  # curl -# -o $TMP_INSTALL/apache-ant-$ANT_VERSION.tar.gz $APACHEANT
+  # echo "Extracting..."
+  # sudo tar -xf $TMP_INSTALL/apache-ant-$ANT_VERSION.tar.gz -C $TMP_INSTALL
+  # sudo mv $TMP_INSTALL/apache-ant-$ANT_VERSION $TMP_INSTALL/ant
+  # sudo mv $TMP_INSTALL/ant $DEVOPS_HOME
+  # sudo echo "
+# #!/bin/sh
+# export ANT_HOME=$DEVOPS_HOME/ant
+# export PATH=$PATH:$DEVOPS_HOME/ant/bin
+# " | sudo tee /etc/profile.d/ant.sh
 
-  sudo chmod a+x /etc/profile.d/ant.sh
-  source /etc/profile.d/ant.sh
-  echo
+  # sudo chmod a+x /etc/profile.d/ant.sh
+  # source /etc/profile.d/ant.sh
+  # echo
+  sudo apt-get install ant
   echogreen "Finished installing Ant"
   echo  
 else
