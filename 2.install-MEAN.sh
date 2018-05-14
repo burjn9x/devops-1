@@ -163,7 +163,6 @@ ssl_stapling on;
 ssl_stapling_verify on;
 
 add_header Strict-Transport-Security \"max-age=15768000; includeSubdomains; preload\";
-add_header X-Frame-Options DENY;
 add_header X-Content-Type-Options nosniff;
 " | sudo tee /etc/nginx/snippets/ssl.conf
   fi
