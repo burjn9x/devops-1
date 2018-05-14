@@ -133,7 +133,11 @@ gulp build
 ln -s $DEVOPS_HOME/eformsbuilder/dist $DEVOPS_HOME/eformsrenderer/dist/builder || true
 
 #read -e -p "Please enter the public host name for Eform Renderer (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" EFORM_RENDERER_HOSTNAME
-eforms_line=$(grep "eforms\." $BASE_INSTALL/domain.txt)
+# Check that domain for dev does exist
+eforms_line=$(grep "eforms-dev\." $BASE_INSTALL/domain.txt)
+if [ -z "$eforms_line" ]; then
+	eforms_line=$(grep "eforms\." $BASE_INSTALL/domain.txt)
+fi
 IFS='|' read -ra arr <<<"$eforms_line"
 eforms_hostname="$(echo -e "${arr[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
 
