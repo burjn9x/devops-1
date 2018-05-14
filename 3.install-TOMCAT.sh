@@ -66,7 +66,7 @@ read -e -p "Install MAVEN build tool${ques} [y/n] " -i "$DEFAULTYESNO" installma
 
 if [ "$installmaven" = "y" ]; then
 	#DEPRICATED
-  # echogreen "Installing Maven"
+   echogreen "Installing Maven"
   # echo "Downloading Maven..."
   # curl -# -o $TMP_INSTALL/apache-maven-$MAVEN_VERSION.tar.gz $APACHEMAVEN
   # echo "Extracting..."
@@ -109,7 +109,7 @@ read -e -p "Install ANT tool${ques} [y/n] " -i "$DEFAULTYESNO" installant
 
 if [ "$installant" = "y" ]; then
   #DEPRICATED
-  # echogreen "Installing Ant"
+   echogreen "Installing Ant"
   # echo "Downloading Ant..."
   # curl -# -o $TMP_INSTALL/apache-ant-$ANT_VERSION.tar.gz $APACHEANT
   # echo "Extracting..."
