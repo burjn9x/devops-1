@@ -136,7 +136,15 @@ ln -s $DEVOPS_HOME/eformsbuilder/dist $DEVOPS_HOME/eformsrenderer/dist/builder |
 eforms_line=$(grep "eforms\." $BASE_INSTALL/domain.txt)
 IFS='|' read -ra arr <<<"$eforms_line"
 eforms_hostname="$(echo -e "${arr[2]}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$eforms_hostname.conf
+
+read -e -p "Please enter the protocol for Eform server${ques} [http] " -i "http" EFORM_PROTOCOL
+
+if [ "${EFORM_PROTOCOL,,}" = "http" ]; then
+	sudo rsync -avz $NGINX_CONF/sites-available/domain.conf /etc/nginx/sites-available/$eforms_hostname.conf
+else
+	sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$eforms_hostname.conf
+fi
+
 sudo ln -s /etc/nginx/sites-available/$eforms_hostname.conf /etc/nginx/sites-enabled/
 sudo sed -i "s/@@DNS_DOMAIN@@/$eforms_hostname/g" /etc/nginx/sites-available/$eforms_hostname.conf
 
