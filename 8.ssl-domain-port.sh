@@ -97,6 +97,13 @@ create_ssl() {
 			else
 				echo "File $FILE not foung >>> Cant get Magento's project name"
 			fi
+		elif [[ "$local_domain" == *"eforms."* ]]; then	
+			sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$local_domain.conf
+			sudo ln -s /etc/nginx/sites-available/$local_domain.conf /etc/nginx/sites-enabled/
+			sudo sed -i "s/@@DNS_DOMAIN@@/$local_domain/g" /etc/nginx/sites-available/$local_domain.conf
+			
+			DEVOPS_HOME_PATH="${DEVOPS_HOME//\//\\/}"
+			sudo sed -i "s/##WEB_ROOT##/root $DEVOPS_HOME_PATH\/eformsrenderer\/dist;/g" /etc/nginx/sites-available/$local_domain.conf
 		else
 			sudo rsync -avz $NGINX_CONF/sites-available/domain.conf.ssl /etc/nginx/sites-available/$local_domain.conf
 			sudo ln -s /etc/nginx/sites-available/$local_domain.conf /etc/nginx/sites-enabled/
