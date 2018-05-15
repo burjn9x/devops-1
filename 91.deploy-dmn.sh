@@ -75,6 +75,6 @@ sudo sed -i "s/\(^eform.cli.dmn.camunda.url.deployment=\).*/\1$camunda_protocol:
 
 cd $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx
 source /etc/profile.d/maven.sh
-mvn clean install
+mvn clean install -Dmaven.test.skip=true
 
 java -jar $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/target/dmn-xlsx-cli-2.0.1.RELEASE.jar
