@@ -77,4 +77,4 @@ cd $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx
 source /etc/profile.d/maven.sh
 mvn clean install -Dmaven.test.skip=true
 
-java -jar $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/target/dmn-xlsx-cli-0.1.2-SNAPSHOT.jar
+sudo java -jar $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/target/dmn-xlsx-cli-0.1.2-SNAPSHOT.jar
