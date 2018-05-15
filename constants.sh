@@ -110,4 +110,4 @@ export COMPOSERURL=https://getcomposer.org/installer
 
 export CAMUNDAURL=https://camunda.org/release/camunda-bpm/tomcat/$CAMUNDA_VERSION/camunda-bpm-tomcat-$CAMUNDA_VERSION.0.zip
 
-export NOTIFICATION_SERVICE_URL=https://scaucwnkwa.execute-api.ap-southeast-1.amazonaws.com/v1/notify/workchat
+export NOTIFICATION_SERVICE_URL=https://pcca1bb0u2.execute-api.ap-northeast-1.amazonaws.com/production/notify/
