@@ -14,29 +14,30 @@ fi
 
 echogreen "Begin running script to convert file..........."
 
-
 if [ -d "$TMP_INSTALL/workplacebpm" ]; then
 	sudo rm -rf $TMP_INSTALL/workplacebpm
 fi
 
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 
-if [ ! -d "$TMP_INSTALL/dmn/input" ]; then
-	mkdir -p $TMP_INSTALL/dmn/input
+DEVOPS_HOME_PATH="${DEVOPS_HOME//\//\\/}"
+
+if [ ! -d "$DEVOPS_HOME_PATH/dmn/input" ]; then
+	mkdir -p $DEVOPS_HOME_PATH/dmn/input
 	echored "There is no input file for this dmn conversion..."
 	exit 1
 fi
 
-if [ ! -f "$TMP_INSTALL/dmn/input/RACI-Decision-Making-Criteria.xlsx" ]; then
+if [ ! -f "$DEVOPS_HOME_PATH/dmn/input/RACI-Decision-Making-Criteria.xlsx" ]; then
 	echored "There is no input file for this dmn conversion..."
 	echored "Please put RACI excel file : RACI-Decision-Making-Criteria.xlsx  into $TMP_INSTALL/dmn/input and run this script again.."
 	exit 1
 fi
 
-if [ ! -d "$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/output" ]; then
-	mkdir -p $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/output
+if [ ! -d "$DEVOPS_HOME_PATH/workplacebpm/src/workforce-dmn-xlsx/output" ]; then
+	mkdir -p $DEVOPS_HOME_PATH/dmn/output
 else
-	sudo rm -rf $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/output/*.*
+	sudo rm -rf $DEVOPS_HOME_PATH/dmn/output/*.*
 fi
 
 read -e -p "Please enter the tenant id for DMN deployment${ques} [TTV] " -i "TTV" TENANT_ID
@@ -44,16 +45,16 @@ read -e -p "Please enter the tenant id for DMN deployment${ques} [TTV] " -i "TTV
 read -e -p "Please enter the public host name for your server (only domain name, not subdomain)${ques} [`hostname`] " -i "`hostname`" DOMAIN_NAME
 sudo sed -i "s/MYCOMPANY.COM/$DOMAIN_NAME/g" $BASE_INSTALL/domain.txt
 
-TMP_INSTALL_ESC="${TMP_INSTALL//\//\\/}"
-sudo sed -i "s/\(^eform.cli.raci.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
-sudo sed -i "s/\(^eform.cli.departmentMaster.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
-sudo sed -i "s/\(^eform.cli.bom.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
-sudo sed -i "s/\(^eform.cli.bufferDepartment.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
-sudo sed -i "s/\(^eform.cli.dmn.bom.outputFilePath=\).*/\1$TMP_INSTALL_ESC\/workplacebpm\/src\/workforce-dmn-xlsx\/output\/BOMApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
-sudo sed -i "s/\(^eform.cli.dmn.bom.bufferFilePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+#TMP_INSTALL_ESC="${TMP_INSTALL//\//\\/}"
+sudo sed -i "s/\(^eform.cli.raci.filePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.departmentMaster.filePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.bom.filePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.bufferDepartment.filePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.dmn.bom.outputFilePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/output\/BOMApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.dmn.bom.bufferFilePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 
-sudo sed -i "s/\(^eform.cli.dmn.department.outputFilePath=\).*/\1$TMP_INSTALL_ESC\/workplacebpm\/src\/workforce-dmn-xlsx\/output\/DepartmentApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
-sudo sed -i "s/\(^eform.cli.dmn.department.bufferFilePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.dmn.department.outputFilePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/output\/DepartmentApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.dmn.department.bufferFilePath=\).*/\1$DEVOPS_HOME_PATH\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 
 sudo sed -i "s/\(^eform.cli.bpmn.deployFilePath=\).*/\1/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 
