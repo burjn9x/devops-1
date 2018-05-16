@@ -49,10 +49,10 @@ sudo sed -i "s/\(^eform.cli.raci.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/R
 sudo sed -i "s/\(^eform.cli.departmentMaster.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 sudo sed -i "s/\(^eform.cli.bom.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 sudo sed -i "s/\(^eform.cli.bufferDepartment.filePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
-sudo sed -i "s/\(^eform.cli.dmn.bom.outputFilePath=\).*/\1$TMP_INSTALL_ESC\/workplacebpm\/src\/workforce-dmn-xlsx\/ouput\/BOMApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.dmn.bom.outputFilePath=\).*/\1$TMP_INSTALL_ESC\/workplacebpm\/src\/workforce-dmn-xlsx\/output\/BOMApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 sudo sed -i "s/\(^eform.cli.dmn.bom.bufferFilePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 
-sudo sed -i "s/\(^eform.cli.dmn.department.outputFilePath=\).*/\1$TMP_INSTALL_ESC\/workplacebpm\/src\/workforce-dmn-xlsx\/ouput\/DepartmentApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
+sudo sed -i "s/\(^eform.cli.dmn.department.outputFilePath=\).*/\1$TMP_INSTALL_ESC\/workplacebpm\/src\/workforce-dmn-xlsx\/output\/DepartmentApproval.dmn/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 sudo sed -i "s/\(^eform.cli.dmn.department.bufferFilePath=\).*/\1$TMP_INSTALL_ESC\/dmn\/input\/RACI-Decision-Making-Criteria.xlsx/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
 
 sudo sed -i "s/\(^eform.cli.bpmn.deployFilePath=\).*/\1/" 	$TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/src/main/resources/application.properties
@@ -74,7 +74,7 @@ sudo sed -i "s/\(^eform.cli.dmn.camunda.url.deployment=\).*/\1$camunda_protocol:
 
 
 cd $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx
-source /etc/profile.d/maven.sh
+#source /etc/profile.d/maven.sh
 mvn clean install -Dmaven.test.skip=true
 
 sudo java -jar $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/target/dmn-xlsx-cli-0.1.2-SNAPSHOT.jar
