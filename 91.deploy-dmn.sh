@@ -35,7 +35,7 @@ if [ ! -d "$DEVOPS_HOME/eforms/dmn/input" ]; then
 	exit 1
 fi
 
-if [ ! -f "$DEVOPS_HOME/dmn/input/RACI-Decision-Making-Criteria.xlsx" ]; then
+if [ ! -f "$DEVOPS_HOME/eforms/dmn/input/RACI-Decision-Making-Criteria.xlsx" ]; then
 	echored "There is no input file for this dmn conversion..."
 	echored "Please put RACI excel file : RACI-Decision-Making-Criteria.xlsx  into $TMP_INSTALL/dmn/input and run this script again.."
 	exit 1
