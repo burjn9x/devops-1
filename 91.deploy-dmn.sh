@@ -78,3 +78,24 @@ cd $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx
 mvn clean install -Dmaven.test.skip=true
 
 sudo java -jar $TMP_INSTALL/workplacebpm/src/workforce-dmn-xlsx/xlsx-dmn-cli/target/dmn-xlsx-cli-0.1.2-SNAPSHOT.jar
+
+# Copy generated DMN into eform source and deploy eform
+sudo rsync -avz $DEVOPS_HOME_PATH/dmn/output/*.dmn $TMP_INSTALL/workplacebpm/src/eForm/workflow/src/main/resources/processes/$TENANT_ID
+cd $TMP_INSTALL/workplacebpm/src/eForm
+
+mkdir $TMP_INSTALL/temp
+cp $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties $TMP_INSTALL/temp
+mvn clean install
+if [ -d "$CATALINA_HOME/webapps/eform" ]; then
+	sudo rm -rf $CATALINA_HOME/webapps/eform*
+fi
+sudo rsync -avz $TMP_INSTALL/workplacebpm/src/eForm/gateway/target/eform.war $CATALINA_HOME/webapps
+
+echo "We are waiting for eform being deployed...."
+
+sleep 20
+
+sudo rsync -avz $TMP_INSTALL/temp/application.properties $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
+
+sudo $DEVOPS_HOME/devops-service.sh start
+
