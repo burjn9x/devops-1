@@ -97,5 +97,7 @@ sleep 20
 
 sudo rsync -avz $TMP_INSTALL/temp/application.properties $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 
-sudo $DEVOPS_HOME/devops-service.sh start
+sudo rm -rf $TMP_INSTALL/temp
+
+sudo $DEVOPS_HOME/devops-service.sh restart
 
