@@ -127,6 +127,8 @@ if [ "$installmultitenant" = "y" ]; then
 	cd $TMP_INSTALL/workplacebpm/src/eForm
 	mvn clean install
 	sudo rsync -avz $TMP_INSTALL/workplacebpm/src/eForm/gateway/target/eform.war  $CATALINA_HOME/webapps/multi-tenant.war
+	sleep 10
+	sudo rsync -avz $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties		$CATALINA_HOME/webapps/multi-tenant/WEB-INF/classes/application.properties
 	#fi
 fi
 
