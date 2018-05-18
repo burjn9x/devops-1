@@ -32,10 +32,10 @@ sudo rsync -avz $TMP_INSTALL/workplacebpm/src/camunda-showcase-insurance-applica
 sleep 20
 
 # Use version 2.0 rather than 1.1
-sudo rm  $CATALINA_HOME/webapps/camunda-showcase-insurance-application/WEB-INF/lib/jsr311-api-1.1.1.jar
+sudo rm -rf $CATALINA_HOME/webapps/camunda-showcase-insurance-application/WEB-INF/lib/jsr311-api-1.1.1.jar
 
 # Use newer version of mysql connector
-sudo rm  $CATALINA_HOME/lib/mysql-connector-java*.jar
+sudo rm -rf $CATALINA_HOME/lib/mysql-connector-*.jar
 curl -# -o $CATALINA_HOME/lib/mysql-connector-java-5.1.46.jar $MYSQL_CONNECTOR_5146_URL
 
 
