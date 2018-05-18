@@ -22,12 +22,14 @@ fi
 
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 cd $TMP_INSTALL/workplacebpm/src/camunda-showcase-insurance-application-master
-mvn clean install
+mvn clean install -Dmaven.test.skip=true
 
 if [ -d "$CATALINA_HOME/webapps/camunda-insurance" ]; then
 	sudo rm -rf $CATALINA_HOME/webapps/camunda-insurance*
 fi
 sudo rsync -avz $TMP_INSTALL/workplacebpm/src/camunda-showcase-insurance-application-master/target/camunda-showcase-insurance-application.war $CATALINA_HOME/webapps/insurance.war
+
+sleep 20
 
 # Use version 2.0 rather than 1.1
 sudo rm  $CATALINA_HOME/webapps/insurance/WEB-INF/lib/jsr311-api-1.1.1.jar
