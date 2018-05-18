@@ -16,18 +16,18 @@ fi
 echogreen "Setting up Camunda Insurance..........."
 
 
-if [ -d "$TMP_INSTALL/camunda-insurance" ]; then
-	sudo rm -rf $TMP_INSTALL/camunda-insurance
+if [ -d "$TMP_INSTALL/workplacebpm" ]; then
+	sudo rm -rf $TMP_INSTALL/workplacebpm
 fi
 
-git clone https://bitbucket.org/workplace101/camunda-insurance.git $TMP_INSTALL/camunda-insurance
-cd $TMP_INSTALL/camunda-insurance
+git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
+cd $TMP_INSTALL/workplacebpm/src/camunda-showcase-insurance-application-master
 mvn clean install
 
 if [ -d "$CATALINA_HOME/webapps/camunda-insurance" ]; then
 	sudo rm -rf $CATALINA_HOME/webapps/camunda-insurance*
 fi
-sudo rsync -avz $TMP_INSTALL/camunda-insurance/target/camunda-insurance.war $CATALINA_HOME/webapps/insurance.war
+sudo rsync -avz $TMP_INSTALL/workplacebpm/src/camunda-showcase-insurance-application-master/target/camunda-showcase-insurance-application.war $CATALINA_HOME/webapps/insurance.war
 
 # Use version 2.0 rather than 1.1
 sudo rm  $CATALINA_HOME/webapps/insurance/WEB-INF/lib/jsr311-api-1.1.1.jar
