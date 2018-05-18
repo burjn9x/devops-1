@@ -42,7 +42,7 @@ fi
 
 git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
 cd $TMP_INSTALL/workplacebpm/src/eForm
-source /etc/profile.d/maven.sh
+#source /etc/profile.d/maven.sh
 mvn clean install
 
 if [ -d "$CATALINA_HOME/webapps/eform" ]; then
@@ -104,6 +104,26 @@ sudo sed -i "s/\(^CmisRepoId=\).*/\1-default-/" 	$CATALINA_HOME/webapps/eform/WE
 sudo sed -i "s/\(^CmisUser=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisPassword=\).*/\1admin/"  	$CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
 sudo sed -i "s/\(^CmisRootFolder=\).*/\1Data Dictionary/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties
+
+read -e -p "Install multi-tenancy demo${ques} [y/n] " -i "$DEFAULTYESNO" installmultitenant
+if [ "$installmultitenant" = "y" ]; then
+	cd $TMP_INSTALL/workplacebpm
+	git checkout schema-isolation
+	cd $TMP_INSTALL/workplacebpm/src/workflow-plugin-sso
+	mvn clean install
+	sudo rsync -avz $TMP_INSTALL/workplacebpm/src/workflow-plugin-sso/target/workflow-plugin-sso-7.6.1-SNAPSHOT.jar  $CATALINA_HOME/webapps/camunda/WEB-INF/
+	
+	# Check if sso config exists in web.xml
+	#sso_found=$(grep -o "LoginSsoFilter" $CATALINA_HOME/webapps/camunda/WEB-INF/web.xml | wc -l)
+  
+	#if [ $sso_found = 0 ]; then
+	sudo rsync -avz $TMP_INSTALL/workplacebpm/src/environment/web.xml  $CATALINA_HOME/webapps/camunda/WEB-INF/
+	sudo rsync -avz $TMP_INSTALL/workplacebpm/src/environment/login.xml  $CATALINA_HOME/webapps/camunda/app/welcome
+	cd $TMP_INSTALL/workplacebpm/src/eForm
+	mvn clean install
+	sudo rsync -avz $TMP_INSTALL/workplacebpm/src/eForm/gateway/target/eform.war  $CATALINA_HOME/webapps/multi-tenant.war
+	#fi
+fi
 
 . $DEVOPS_HOME/devops-service.sh restart
 
