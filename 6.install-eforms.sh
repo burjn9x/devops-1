@@ -96,6 +96,11 @@ if [ $ssl_found = 0 ]; then
 	alfresco_protocol=http
 fi
 
+read -e -p "Please choose EForm environment for this server : [D]ev, [P]rod" -i "D" EFORM_ENV
+if [ "$EFORM_ENV" = "D" ]; then
+	NOTIFICATION_SERVICE_URL=$NOTIFICATION_SERVICE_DEV_URL
+fi
+
 NOTIFICATION_SERVICE_URL_ESC="${NOTIFICATION_SERVICE_URL//\//\\/}"
 
 sudo sed -i "s/\(^endpoint=\).*/\1$NOTIFICATION_SERVICE_URL_ESC/"  $CATALINA_HOME/webapps/eform/WEB-INF/classes/application.properties

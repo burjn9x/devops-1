@@ -112,3 +112,4 @@ export CAMUNDAURL=https://camunda.org/release/camunda-bpm/tomcat/$CAMUNDA_VERSIO
 
 export NOTIFICATION_SERVICE_URL=https://pcca1bb0u2.execute-api.ap-northeast-1.amazonaws.com/production/notify/workchat
 export MYSQL_CONNECTOR_5146_URL=http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.46/mysql-connector-java-5.1.46.jar
+export NOTIFICATION_SERVICE_DEV_URL=https://2ecg1x131e.execute-api.us-east-1.amazonaws.com/devV1/notify/workchat
