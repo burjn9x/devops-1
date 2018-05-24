@@ -37,7 +37,7 @@ sleep 10
 sudo $DEVOPS_HOME/devops-service.sh start
 
 echogreen "Waiting for tomcat to start up..........."
-while [ grep 'org.apache.catalina.startup.Catalina.start Server startup' $CATALINA_HOME/logs/catalina.out  == "" ];
+while [ "$(grep 'org.apache.catalina.startup.Catalina.start Server startup' /home/devops/tomcat/logs/catalina.out)" == "" ] 
 do
   sleep 5
 done
@@ -47,5 +47,3 @@ echo "Tomcat startup successfully!"
 echo "Creating default user for multi-tenant"
 echo "You must supply the root user password for mysql:"
 mysql -u root -p < $BASE_INSTALL/multi-tenant/create-user.sql
-
-	
