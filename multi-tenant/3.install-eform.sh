@@ -37,7 +37,7 @@ sleep 10
 # Remove data of log file tomcat
 cat /dev/null > $CATALINA_HOME/logs/catalina.out
 
-sudo $DEVOPS_HOME/devops-service.sh start
+sudo $DEVOPS_HOME/devops-service.sh restart
 
 echogreen "Waiting for tomcat to start up..........."
 while [ "$(grep 'org.apache.catalina.startup.Catalina.start Server startup' $CATALINA_HOME/logs/catalina.out)" == "" ] 
