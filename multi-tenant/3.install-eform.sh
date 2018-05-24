@@ -34,10 +34,13 @@ mvn clean install
 sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/eForm/gateway/target/eform.war  $CATALINA_HOME/webapps/multi-tenant.war
 sleep 10
 
+# Remove data of log file tomcat
+cat /dev/null > $CATALINA_HOME/logs/catalina.out
+
 sudo $DEVOPS_HOME/devops-service.sh start
 
 echogreen "Waiting for tomcat to start up..........."
-while [ "$(grep 'org.apache.catalina.startup.Catalina.start Server startup' /home/devops/tomcat/logs/catalina.out)" == "" ] 
+while [ "$(grep 'org.apache.catalina.startup.Catalina.start Server startup' $CATALINA_HOME/logs/catalina.out)" == "" ] 
 do
   sleep 5
 done
