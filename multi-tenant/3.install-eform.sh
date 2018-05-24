@@ -1,0 +1,42 @@
+#!/bin/bash
+# -------
+# This is script to install eform multitenant
+# -------	
+
+# Configure constants
+if [ -f "constants.sh" ]; then
+	. constants.sh
+fi
+
+# Configure colors
+if [ -f "colors.sh" ]; then
+	. colors.sh
+fi
+
+if [ -d "$TMP_INSTALL/workplacebpm-multitenant" ]; then
+	sudo rm -rf $TMP_INSTALL/workplacebpm-multitenant
+fi
+
+git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm-multitenant
+
+cd $TMP_INSTALL/workplacebpm-multitenant
+git checkout schema-isolation
+
+cd $TMP_INSTALL/workplacebpm-multitenant/src/workflow-plugin-sso
+mvn clean install
+sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/workflow-plugin-sso/target/workflow-plugin-sso-7.6.1-SNAPSHOT.jar  $CATALINA_HOME/webapps/camunda/WEB-INF/
+	
+sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/environment/web.xml  $CATALINA_HOME/webapps/camunda/WEB-INF/
+sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/environment/login.xml  $CATALINA_HOME/webapps/camunda/app/welcome
+
+cd $TMP_INSTALL/workplacebpm-multitenant/src/eForm
+mvn clean install
+sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/eForm/gateway/target/eform.war  $CATALINA_HOME/webapps/multi-tenant.war
+sleep 10
+
+sudo $DEVOPS_HOME/devops-service.sh start
+
+// Set default user
+mysql -u root -p < $BASE_INSTALL/multi-tenant/create-user.sql
+
+	
