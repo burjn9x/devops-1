@@ -8,6 +8,11 @@ if [ -f "../constants.sh" ]; then
 	. ../constants.sh
 fi
 
+# Configure colors
+if [ -f "../colors.sh" ]; then
+	. ../colors.sh
+fi
+
 if [ -d "$TMP_INSTALL/workplacebpm-multitenant" ]; then
 	sudo rm -rf $TMP_INSTALL/workplacebpm-multitenant
 fi
@@ -30,6 +35,13 @@ sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/eForm/gateway/target/e
 sleep 10
 
 sudo $DEVOPS_HOME/devops-service.sh start
+
+echogreen "Waiting for tomcat to start up..........."
+while [ grep 'org.apache.catalina.startup.Catalina.start Server startup' $CATALINA_HOME/logs/catalina.out  == "" ];
+do
+  sleep 5
+done
+echo "Tomcat startup successfully!"
 
 # Set default user
 echo "Creating default user for multi-tenant"
