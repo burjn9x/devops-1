@@ -36,7 +36,9 @@ sleep 10
 
 sudo $DEVOPS_HOME/devops-service.sh start
 
-// Set default user
+# Set default user
+echo "Creating default user for multi-tenant"
+echo "You must supply the root user password for mysql:"
 mysql -u root -p < $BASE_INSTALL/multi-tenant/create-user.sql
 
 	
