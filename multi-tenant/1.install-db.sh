@@ -37,6 +37,7 @@ EOF
     echo
     echo "Passwords do not match. Please run the script again for better luck!"
     echo
+    exit 1
   fi
 fi
 
@@ -70,5 +71,6 @@ EOF
     echo
     echo "Passwords do not match. Please run the script again for better luck!"
     echo
+    exit 1
   fi
 fi
