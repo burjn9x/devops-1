@@ -4,8 +4,8 @@
 # -------
 
 # Configure colors
-if [ -f "colors.sh" ]; then
-	. colors.sh
+if [ -f "../colors.sh" ]; then
+	. ../colors.sh
 fi
 
 export TTV_DB=TTV

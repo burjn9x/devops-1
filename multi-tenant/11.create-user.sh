@@ -3,13 +3,13 @@
 # This is script to create user from XLS
 
 # Configure constants
-if [ -f "constants.sh" ]; then
-	. constants.sh
+if [ -f "../constants.sh" ]; then
+	. ../constants.sh
 fi
 
 # Configure colors
-if [ -f "colors.sh" ]; then
-	. colors.sh
+if [ -f "../colors.sh" ]; then
+	. ../colors.sh
 fi
 
 echogreen "Begin running script to create user..........."
