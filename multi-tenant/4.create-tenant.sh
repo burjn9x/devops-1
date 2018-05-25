@@ -12,4 +12,4 @@ echogreen "Begin running script to create tenant..........."
 echo -ne "Name of tenant you want to create :"
 read tenantId
 
-curl -G localhost:8300//multi-tenant/tenant/$tenantId
+curl -G localhost:8300/multi-tenant/tenant/$tenantId

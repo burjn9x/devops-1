@@ -30,4 +30,4 @@ fi
 TMP_INSTALL_ESC="${TMP_INSTALL//\//\\/}"
 sudo sed -i "s/\(^eform.cli.createUser.filePath=\).*/\1$TMP_INSTALL_ESC\/create-user\/input\/Create_User_For_Tenant.xls/" 	$DEVOPS_HOME/tomcat/webapps/multi-tenant/WEB-INF/classes/application.properties
 
-curl -G localhost:8300//multi-tenant/user/create-user
+curl -G localhost:8300/multi-tenant/user/create-user
