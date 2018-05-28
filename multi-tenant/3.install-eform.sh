@@ -40,7 +40,7 @@ cat /dev/null > $CATALINA_HOME/logs/catalina.out
 
 sudo $DEVOPS_HOME/devops-service.sh restart
 
-echogreen "Waiting for tomcat to start up..........."
+echogreen "Waiting for tomcat to deploy multi-tenant..........."
 while [ "$(grep 'org.apache.catalina.startup.Catalina.start Server startup' $CATALINA_HOME/logs/catalina.out)" == "" ] 
 do
   sleep 5
@@ -49,5 +49,5 @@ echo "Tomcat startup successfully!"
 
 # Set default user
 echo "Creating default user for multi-tenant"
-echo "You must supply the root user password for mysql:"
+echo "You must supply the root user password for mysql: "
 mysql -u root -p < $BASE_INSTALL/multi-tenant/create-user.sql
