@@ -21,26 +21,26 @@
 - Run script create-user.sql
 
 ## Auto:
-
-- Run script install-db-multitenant.sh (create TTV, TAPAC Db)
-
-
+- Run script multitenant-installation.sh (create TTV, TAPAC Db)
+- Create tenant: run script 4.create-tenant.sh
+- Delete tenant: run script 6.delete-tenant.sh
+- Create user: run script 5.create-user.sh
 
 ## User account:
-
+Link login SSO: http://camunda.local.tctav.com/camunda/login
 Password of users: Abcd@1234
-
-Link login SSO: http://localhost:8080/camunda/app/welcome/login
-Link create tenant: http://localhost:8080/eform/tenant/{tenantName}
-Link delete tenant: http://localhost:8080/eform/tenant/delete/{tenantName}
 
 ## Scenario:
 
-- Login account: thanh.tn@tctav.com (SSO login link)
-- Submit form Business-Trip
+- Login account SSO login link
+- Submit form Business-Trip, Entertainment
+
+- Use script to create user in TTV tenant
 - In TTV tenant, we can log as account: eform.tbd@tctav.com to approve this task.
-- Login account: approver@tapac.com (different browser)
-- In SSO login, we redirect to TTV tenant, we also see this task and can approve this task.
+
+- Use script to create user in TAPAC tenant
+- Login account in different browser
+- In SSO login, we redirect to TTV tenant, we also see this task and can approve this task (if this task was assigned to this logged user)
 
 * FLow approver (Business-Trip): eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com, tramanh@tctav.com => onishi.tomohiro@tctav.com, onishi.tomohiro@tctav.com => End
 
