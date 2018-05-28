@@ -32,7 +32,7 @@ sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/environment/login.xml 
 cd $TMP_INSTALL/workplacebpm-multitenant/src/eForm
 mvn clean install
 sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/eForm/common/target/common-1.0-SNAPSHOT.jar  $CATALINA_HOME/webapps/camunda/WEB-INF/lib/
-sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/eForm/gateway/target/eform.war  $CATALINA_HOME/webapps/multi-tenant.war
+sudo rsync -avz $TMP_INSTALL/workplacebpm-multitenant/src/eForm/gateway/target/multi-tenant.war  $CATALINA_HOME/webapps/
 sleep 10
 
 # Remove data of log file tomcat
