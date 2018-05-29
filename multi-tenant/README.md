@@ -22,19 +22,25 @@
 
 ## Auto:
 
-- Run script multitenant-installation.sh (setup environment)
+- cd /home/ubuntu/devops/multi-tenant
 
-- Create tenant: run script 4.create-tenant.sh
+- Run ./multitenant-installation.sh (setup environment)
 
-- Delete tenant: run script 6.delete-tenant.sh
+- Create tenant: run ./4.create-tenant.sh
 
-- Create user: run script 5.create-user.sh
+- Delete tenant: run ./6.delete-tenant.sh
+
+- Create user: run ./5.create-user.sh
 
 ## User account:
 
 - Link login SSO: http://camunda.local.tctav.com/camunda/login
 
 - Password of default users: Abcd@1234
+
+- Excel stored: /tmp/devops-install/create-user/input
+
+- devops: /home/ubuntu/devops/multi-tenant
 
 ## Scenario:
 
@@ -45,10 +51,14 @@
 - Login account in different browser
 - In SSO login, we redirect to TTV tenant, we also see this task and can approve this task (if this task was assigned to this logged user)
 
-* FLow approver (Business-Trip): eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com, tramanh@tctav.com => onishi.tomohiro@tctav.com, onishi.tomohiro@tctav.com => End
+* FLow approver (Business-Trip): eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com, tramanh@tctav.com => onishi.tomohiro@tctav.com, onishi.tomohiro@tctav.com
 
 * FLow approver (Entertainment): 
-    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => eform.ceo@tctav.com => End (<18000000)
-    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => End (>=18000000)
+    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => eform.ceo@tctav.com (Grand Total < 18000000)
+    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => onishi.tomohiro@tctav.com (Grand Total >= 18000000)
+
+- Use script to create TCAP tenant
+- Use script to craete user in TCAP tenant
+- Repeat as above flow for TCAP tenant
 
 

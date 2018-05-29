@@ -76,7 +76,7 @@ INSERT INTO `ACT_ID_GROUP` VALUES ('TAPAC',1,'TAPAC','TAPAC User');
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd2d87ae-54c8-11e8-9a03-e03f4943c961',1,1,'TAPAC',NULL,0,'tasklist',2147483647);
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd09d307-54c8-11e8-9a03-e03f4943c961',1,1,'TAPAC',NULL,5,'*',2147483647);
 
-INSERT INTO 'ACT_RU_FILTER' VALUES ('bd7891a4-54c8-11e8-9a03-e03f4943c961', '1', 'Task', 'My Tasks', null, '{}', '{"color":"#555555","howUndefinedVariable":false,"description":"Unfiltered Tasks","refresh":false,"priority":1}');
+INSERT INTO `ACT_RU_FILTER` VALUES ('bd7891a4-54c8-11e8-9a03-e03f4943c961', '1', 'Task', 'My Tasks', null, '{}', '{"color":"#555555","howUndefinedVariable":false,"description":"Unfiltered Tasks","refresh":false,"priority":1}');
 
 -- TAPAC Tenant -------------------------------------------------------------------
 USE TAPAC;
@@ -112,5 +112,5 @@ INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd19d307-54c8-11e8-9a03-e03f4943d999
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd19d307-54c8-11e8-9a03-e03f4943c991',1,1,'COMMON',NULL,6,'*',258);
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd19d307-54c8-11e8-9a03-e03f4943c111',1,1,'COMMON',NULL,8,'*',8);
 
-INSERT INTO 'ACT_RU_FILTER' VALUES ('bd7891a4-54c8-11e8-9a03-e03f4943c961', '1', 'Task', 'My Tasks', null, '{}', '{"color":"#555555","howUndefinedVariable":false,"description":"Unfiltered Tasks","refresh":false,"priority":1}');
+INSERT INTO `ACT_RU_FILTER` VALUES ('bd7891a4-54c8-11e8-9a03-e03f4943c961', '1', 'Task', 'My Tasks', null, '{}', '{"color":"#555555","howUndefinedVariable":false,"description":"Unfiltered Tasks","refresh":false,"priority":1}');
 
