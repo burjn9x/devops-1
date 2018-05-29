@@ -51,11 +51,13 @@
 - Login account in different browser
 - In SSO login, we redirect to TTV tenant, we also see this task and can approve this task (if this task was assigned to this logged user)
 
-* FLow approver (Business-Trip): eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com, tramanh@tctav.com => onishi.tomohiro@tctav.com, onishi.tomohiro@tctav.com
+    FLow approver (Business-Trip): 
+    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com, tramanh@tctav.com => onishi.tomohiro@tctav.com, onishi.tomohiro@tctav.com
 
-* FLow approver (Entertainment): 
-    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => eform.ceo@tctav.com (Grand Total < 18000000)
-    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => onishi.tomohiro@tctav.com (Grand Total >= 18000000)
+    FLow approver (Entertainment): 
+    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => eform.ceo@tctav.com (Grand Total < 18000000)
+
+    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => onishi.tomohiro@tctav.com (Grand Total >= 18000000)
 
 - Use script to create TCAP tenant
 - Use script to craete user in TCAP tenant
