@@ -21,24 +21,27 @@
 - Run script create-user.sql
 
 ## Auto:
-- Run script multitenant-installation.sh (create TTV, TAPAC Db)
+
+- Run script multitenant-installation.sh (setup environment)
+
 - Create tenant: run script 4.create-tenant.sh
+
 - Delete tenant: run script 6.delete-tenant.sh
+
 - Create user: run script 5.create-user.sh
 
 ## User account:
-Link login SSO: http://camunda.local.tctav.com/camunda/login
-Password of users: Abcd@1234
+
+- Link login SSO: http://camunda.local.tctav.com/camunda/login
+
+- Password of default users: Abcd@1234
 
 ## Scenario:
 
-- Login account SSO login link
-- Submit form Business-Trip, Entertainment
-
-- Use script to create user in TTV tenant
+- Use script to create user in TTV tenant, or use default user to submit form.
 - In TTV tenant, we can log as account: eform.tbd@tctav.com to approve this task.
 
-- Use script to create user in TAPAC tenant
+- Use script to create user in TAPAC tenant (adminTAPAC, Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp)
 - Login account in different browser
 - In SSO login, we redirect to TTV tenant, we also see this task and can approve this task (if this task was assigned to this logged user)
 
