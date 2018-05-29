@@ -57,7 +57,7 @@
     FLow approver (Entertainment): 
     * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => eform.ceo@tctav.com (Grand Total < 18000000)
 
-    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => onishi.tomohiro@tctav.com (Grand Total >= 18000000)
+    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => onishi.tomohiro@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp (Grand Total >= 18000000)
 
 - Use script to create TCAP tenant
 - Use script to craete user in TCAP tenant
