@@ -46,6 +46,7 @@ INSERT INTO `ACT_ID_USER` VALUES ('eform.acc@tctav.com',1,'','','','{SHA-512}ZYC
 INSERT INTO `ACT_ID_USER` VALUES ('eform.ceo@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
 INSERT INTO `ACT_ID_USER` VALUES ('oai.vq@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
 INSERT INTO `ACT_ID_USER` VALUES ('onishi.tomohiro@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
+INSERT INTO `ACT_ID_USER` VALUES ('tramanh@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
 
 -----
 INSERT INTO `ACT_ID_USER` VALUES ('thanh.tn@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
@@ -67,6 +68,9 @@ INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('eform.acc@tctav.com','COMMON');
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('eform.ceo@tctav.com','COMMON');
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('oai.vq@tctav.com','COMMON');
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('onishi.tomohiro@tctav.com','COMMON');
+INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('tramanh@tctav.com','COMMON');
+
+
 -----
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('thanh.tn@tctav.com','COMMON');
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('thanh.nn@tctav.com','COMMON');
