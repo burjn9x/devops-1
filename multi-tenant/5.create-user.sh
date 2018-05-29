@@ -13,7 +13,7 @@ if [ -f "../colors.sh" ]; then
 fi
 
 echogreen "Begin running script to create user..........."
-
+echo "Excel file is stored in $TMP_INSTALL/create-user/input"
 
 if [ ! -d "$TMP_INSTALL/create-user/input" ]; then
 	mkdir -p $TMP_INSTALL/create-user/input
