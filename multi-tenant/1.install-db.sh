@@ -26,7 +26,7 @@ if [ "$createdbttv" = "y" ]; then
     mysql -u root -p << EOF
     #create workforce db
     CREATE DATABASE $TTV_DB DEFAULT CHARACTER SET utf8;
-    DROP USER '$TTV_USER'@'localhost';
+    DROP USER IF EXISTS '$TTV_USER'@'localhost';
     CREATE USER '$TTV_USER'@'localhost' IDENTIFIED BY '$TTV_PASSWORD';
     GRANT ALL PRIVILEGES ON $TTV_DB.* TO '$TTV_USER'@'localhost' WITH GRANT OPTION;
 EOF
@@ -52,7 +52,7 @@ if [ "$createdbtapac" = "y" ]; then
     mysql -u root -p << EOF
     #create workforce db
     CREATE DATABASE $TAPAC_DB DEFAULT CHARACTER SET utf8;
-    DROP USER '$TAPAC_USER'@'localhost';
+    DROP USER IF EXISTS '$TAPAC_USER'@'localhost';
     CREATE USER '$TAPAC_USER'@'localhost' IDENTIFIED BY '$TAPAC_PASSWORD';
     GRANT ALL PRIVILEGES ON $TAPAC_DB.* TO '$TAPAC_USER'@'localhost' WITH GRANT OPTION;
 

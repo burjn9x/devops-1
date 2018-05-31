@@ -22,30 +22,45 @@
 
 ## Auto:
 
-- Run script install-db-multitenant.sh (create TTV, TAPAC Db)
+- cd /home/ubuntu/devops/multi-tenant
 
+- Run ./multitenant-installation.sh (setup environment)
 
+- Create tenant: run ./4.create-tenant.sh
+
+- Delete tenant: run ./6.delete-tenant.sh
+
+- Create user: run ./5.create-user.sh
 
 ## User account:
 
-Password of users: Abcd@1234
+- Link login SSO: http://camunda.local.tctav.com/camunda/login
 
-Link login SSO: http://localhost:8080/camunda/app/welcome/login
-Link create tenant: http://localhost:8080/eform/tenant/{tenantName}
-Link delete tenant: http://localhost:8080/eform/tenant/delete/{tenantName}
+- Password of default users: Abcd@1234
+
+- Excel stored: /tmp/devops-install/create-user/input
+
+- devops: /home/ubuntu/devops/multi-tenant
 
 ## Scenario:
 
-- Login account: thanh.tn@tctav.com (SSO login link)
-- Submit form Business-Trip
+- Use script to create user in TTV tenant, or use default user to submit form.
 - In TTV tenant, we can log as account: eform.tbd@tctav.com to approve this task.
-- Login account: approver@tapac.com (different browser)
-- In SSO login, we redirect to TTV tenant, we also see this task and can approve this task.
 
-* FLow approver (Business-Trip): eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com, tramanh@tctav.com => onishi.tomohiro@tctav.com, onishi.tomohiro@tctav.com => End
+- Use script to create user in TAPAC tenant (adminTAPAC, Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp)
+- Login account in different browser
+- In SSO login, we redirect to TTV tenant, we also see this task and can approve this task (if this task was assigned to this logged user)
 
-* FLow approver (Entertainment): 
-    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => eform.ceo@tctav.com => End (<18000000)
-    eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => End (>=18000000)
+    FLow approver (Business-Trip): 
+    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com, tramanh@tctav.com => onishi.tomohiro@tctav.com, onishi.tomohiro@tctav.com
+
+    FLow approver (Entertainment): 
+    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => eform.ceo@tctav.com (Grand Total < 18000000)
+
+    * eform.tbd@tctav.com => eform.op@tctav.com => oai.vq@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp => onishi.tomohiro@tctav.com => Lee.Kwangho@trans-cosmos.co.jp, Sohara.Kotaro@trans-cosmos.co.jp (Grand Total >= 18000000)
+
+- Use script to create TCAP tenant
+- Use script to craete user in TCAP tenant
+- Repeat as above flow for TCAP tenant
 
 

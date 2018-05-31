@@ -45,6 +45,8 @@ INSERT INTO `ACT_ID_USER` VALUES ('eform.hr@tctav.com',1,'','','','{SHA-512}ZYCb
 INSERT INTO `ACT_ID_USER` VALUES ('eform.acc@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
 INSERT INTO `ACT_ID_USER` VALUES ('eform.ceo@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
 INSERT INTO `ACT_ID_USER` VALUES ('oai.vq@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
+INSERT INTO `ACT_ID_USER` VALUES ('onishi.tomohiro@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
+INSERT INTO `ACT_ID_USER` VALUES ('tramanh@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
 
 -----
 INSERT INTO `ACT_ID_USER` VALUES ('thanh.tn@tctav.com',1,'','','','{SHA-512}ZYCbsz2wse7eC1OcxLwiU4ajNxxFmzehHlJJ1m/kNtheFNmE1nJAkA0QbI5D+V02C3g/CBVSfD3qqmrE1TJ3iA==','mPXU7f5tLyzVH9vLvdPIrg==',NULL);
@@ -65,6 +67,9 @@ INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('eform.hr@tctav.com','COMMON');
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('eform.acc@tctav.com','COMMON');
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('eform.ceo@tctav.com','COMMON');
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('oai.vq@tctav.com','COMMON');
+INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('onishi.tomohiro@tctav.com','COMMON');
+INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('tramanh@tctav.com','COMMON');
+
 
 -----
 INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('thanh.tn@tctav.com','COMMON');
@@ -75,6 +80,8 @@ INSERT INTO `ACT_ID_MEMBERSHIP` VALUES ('tran.hsp@tctav.com','COMMON');
 INSERT INTO `ACT_ID_GROUP` VALUES ('TAPAC',1,'TAPAC','TAPAC User');
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd2d87ae-54c8-11e8-9a03-e03f4943c961',1,1,'TAPAC',NULL,0,'tasklist',2147483647);
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd09d307-54c8-11e8-9a03-e03f4943c961',1,1,'TAPAC',NULL,5,'*',2147483647);
+
+INSERT INTO `ACT_RU_FILTER` VALUES ('bd7891a4-54c8-11e8-9a03-e03f4943c961', '1', 'Task', 'My Tasks', null, '{}', '{"color":"#555555","howUndefinedVariable":false,"description":"Unfiltered Tasks","refresh":false,"priority":1}');
 
 -- TAPAC Tenant -------------------------------------------------------------------
 USE TAPAC;
@@ -110,5 +117,5 @@ INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd19d307-54c8-11e8-9a03-e03f4943d999
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd19d307-54c8-11e8-9a03-e03f4943c991',1,1,'COMMON',NULL,6,'*',258);
 INSERT INTO `ACT_RU_AUTHORIZATION` VALUES ('bd19d307-54c8-11e8-9a03-e03f4943c111',1,1,'COMMON',NULL,8,'*',8);
 
-
+INSERT INTO `ACT_RU_FILTER` VALUES ('bd7891a4-54c8-11e8-9a03-e03f4943c961', '1', 'Task', 'My Tasks', null, '{}', '{"color":"#555555","howUndefinedVariable":false,"description":"Unfiltered Tasks","refresh":false,"priority":1}');
 

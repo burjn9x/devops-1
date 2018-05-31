@@ -13,7 +13,7 @@ if [ -f "../colors.sh" ]; then
 fi
 
 echogreen "Begin running script to create user..........."
-
+echo "Excel file is stored in $TMP_INSTALL/create-user/input"
 
 if [ ! -d "$TMP_INSTALL/create-user/input" ]; then
 	mkdir -p $TMP_INSTALL/create-user/input
@@ -28,6 +28,6 @@ if [ ! -f "$TMP_INSTALL/create-user/input/Create_User_For_Tenant.xls" ]; then
 fi
 
 TMP_INSTALL_ESC="${TMP_INSTALL//\//\\/}"
-sudo sed -i "s/\(^eform.cli.createUser.filePath=\).*/\1$TMP_INSTALL_ESC\/create-user\/input\/Create_User_For_Tenant.xls/" 	$DEVOPS_HOME/tomcat-8181/webapps/eform/WEB-INF/classes/application.properties
+sudo sed -i "s/\(^eform.cli.createUser.filePath=\).*/\1$TMP_INSTALL_ESC\/create-user\/input\/Create_User_For_Tenant.xls/" 	$DEVOPS_HOME/tomcat/webapps/multi-tenant/WEB-INF/classes/application.properties
 
-curl -G localhost:8181//eform/user/create-user
+curl -G localhost:8300/multi-tenant/user/create-user
