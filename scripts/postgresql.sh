@@ -96,12 +96,14 @@ if [ "$createpgadmin" = "y" ]; then
 	 virtualenv pgadmin4
 	 cd $DEVOPS_HOME/pgadmin4
 	 source bin/activate
-	 wget https://ftp.postgresql.org/pub/pgadmin3/pgadmin4/v1.2/pip/pgadmin4-1.2-py2-none-any.whl
-	 pip install pgadmin4-1.6-py2.py3-none-any.whl
+	 curl -# -o $DEVOPS_HOME/pgadmin4/pgadmin4-1.2-py2-none-any.whl	https://ftp.postgresql.org/pub/pgadmin3/pgadmin4/v1.2/pip/pgadmin4-1.2-py2-none-any.whl
+	 pip install $DEVOPS_HOME/pgadmin4/pgadmin4-1.6-py2.py3-none-any.whl
 	 python lib/python3.5/site-packages/pgadmin4/setup.py
 	 deactivate
+	 PGADMIN4_HOME=$DEVOPS_HOME/pgadmin4
+	 PGADMIN4_HOME_ESC="${PGADMIN4_HOME//\//\\/}"
 	 sudo rsync -avz $BASE_INSTALL/scripts/pgadmin4.service /etc/systemd/system/
-	 sudo sed -i "s/@@PGADMIN4_HOME@@/$PGADMIN4_HOME/g" /etc/systemd/system/pgadmin4.service
+	 sudo sed -i "s/@@PGADMIN4_HOME@@/$PGADMIN4_HOME_ESC/g" /etc/systemd/system/pgadmin4.service
 	 sudo systemctl daemon-reload
 	 sudo systemctl enable pgadmin4
 	 sudo systemctl start pgadmin4
