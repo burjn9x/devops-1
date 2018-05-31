@@ -42,8 +42,8 @@ if [ "$createdbalfresco" = "y" ]; then
   read -s -p "Re-Enter the Alfresco database password:" ALFRESCO_PASSWORD2
   if [ "$ALFRESCO_PASSWORD" == "$ALFRESCO_PASSWORD2" ]; then
     echo "Creating Alfresco database and user."
-	sudo -i -u postgres psql -c "CREATE USER $ALFRESCO_USER WITH PASSWORD $ALFRESCO_PASSWORD;"
-	sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $ALFRESCO_DB to $ALFRESCO_USER;"
+	sudo -i -u postgres psql -c "CREATE USER $ALFRESCO_USER WITH PASSWORD "'"$ALFRESCO_PASSWORD"'";"
+	sudo -u postgres createdb -O $ALFRESCO_USER $ALFRESCO_DB
   echo
   echo "Remember to update alfresco-global.properties with the Alfresco database password"
   echo
@@ -61,8 +61,8 @@ if [ "$createdbcamunda" = "y" ]; then
   read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
   if [ "$CAMUNDA_PASSWORD" == "$CAMUNDA_PASSWORD2" ]; then
     echo "Creating Camunda database and user."
-    sudo -i -u postgres psql -c "CREATE USER $CAMUNDA_USER WITH PASSWORD $CAMUNDA_PASSWORD;"
-	sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $CAMUNDA_DB to $CAMUNDA_USER;"
+    sudo -i -u postgres psql -c "CREATE USER $CAMUNDA_USER WITH PASSWORD "'"$CAMUNDA_PASSWORD"'";"
+	sudo -u postgres createdb -O $CAMUNDA_USER $CAMUNDA_DB
   echo
   echo "Remember to update server.xml with the Camunda database password"
   echo
