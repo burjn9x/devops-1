@@ -4,6 +4,20 @@
 #
 # -------
 
+# Configure constants
+if [ -f "constants.sh" ]; then
+	. constants.sh
+else
+	. ../constants.sh
+fi
+
+# Configure colors
+if [ -f "colors.sh" ]; then
+	. colors.sh
+else
+	. ../colors.sh	
+fi
+
 export ALFRESCO_DB=alfresco
 export ALFRESCO_USER=alfresco
 export CAMUNDA_DB=camunda
@@ -41,6 +55,7 @@ if [ "$createdbalfresco" = "y" ]; then
   echo ""
   read -s -p "Re-Enter the Alfresco database password:" ALFRESCO_PASSWORD2
   if [ "$ALFRESCO_PASSWORD" == "$ALFRESCO_PASSWORD2" ]; then
+    echo
     echo "Creating Alfresco database and user."
 	sudo -i -u postgres psql -c "CREATE USER $ALFRESCO_USER WITH PASSWORD '"$ALFRESCO_PASSWORD"';"
 	sudo -u postgres createdb -O $ALFRESCO_USER $ALFRESCO_DB
@@ -60,6 +75,7 @@ if [ "$createdbcamunda" = "y" ]; then
   echo ""
   read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
   if [ "$CAMUNDA_PASSWORD" == "$CAMUNDA_PASSWORD2" ]; then
+    echo
     echo "Creating Camunda database and user."
     sudo -i -u postgres psql -c "CREATE USER $CAMUNDA_USER WITH PASSWORD '"$CAMUNDA_PASSWORD"';"
 	sudo -u postgres createdb -O $CAMUNDA_USER $CAMUNDA_DB
@@ -71,6 +87,25 @@ if [ "$createdbcamunda" = "y" ]; then
     echo "Passwords do not match. Please run the script again for better luck!"
     echo
   fi
+fi
+
+read -e -p "Install PostgreSQL Admin (Web)? [y/n] " -i "y" createpgadmin
+if [ "$createpgadmin" = "y" ]; then
+	 sudo apt-get install virtualenv python-pip libpq-dev python-dev
+	 cd $DEVOPS_HOME
+	 virtualenv pgadmin4
+	 cd $DEVOPS_HOME/pgadmin4
+	 source bin/activate
+	 wget https://ftp.postgresql.org/pub/pgadmin3/pgadmin4/v1.2/pip/pgadmin4-1.2-py2-none-any.whl
+	 pip install pgadmin4-1.6-py2.py3-none-any.whl
+	 python lib/python3.5/site-packages/pgadmin4/setup.py
+	 deactivate
+	 sudo rsync -avz $BASE_INSTALL/scripts/pgadmin4.service /etc/systemd/system/
+	 sudo sed -i "s/@@PGADMIN4_HOME@@/$PGADMIN4_HOME/g" /etc/systemd/system/pgadmin4.service
+	 sudo systemctl daemon-reload
+	 sudo systemctl enable pgadmin4
+	 sudo systemctl start pgadmin4
+	 
 fi
 
 echo
