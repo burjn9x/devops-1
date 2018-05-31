@@ -96,7 +96,7 @@ if [ "$createpgadmin" = "y" ]; then
 	 virtualenv pgadmin4
 	 cd $DEVOPS_HOME/pgadmin4
 	 source bin/activate
-	 curl -# -o $DEVOPS_HOME/pgadmin4/pgadmin4-1.2-py2-none-any.whl	https://ftp.postgresql.org/pub/pgadmin3/pgadmin4/v1.2/pip/pgadmin4-1.2-py2-none-any.whl
+	 curl -# -o $DEVOPS_HOME/pgadmin4/pgadmin4-1.6-py2.py3-none-any.whl	https://ftp.postgresql.org/pub/pgadmin/pgadmin4/v1.6/pip/pgadmin4-1.6-py2.py3-none-any.whl
 	 pip install $DEVOPS_HOME/pgadmin4/pgadmin4-1.6-py2.py3-none-any.whl
 	 python lib/python3.5/site-packages/pgadmin4/setup.py
 	 deactivate
