@@ -19,7 +19,7 @@ echo
 
 read -e -p "Install PostgreSQL database? [y/n] " -i "n" installpg
 if [ "$installpg" = "y" ]; then
-  sudo apt-get install postgresql
+  sudo apt-get install postgresql postgresql-contrib
   echo
   echo "You will now set the default password for the postgres user."
   echo "This will open a psql terminal, enter:"
@@ -35,20 +35,42 @@ if [ "$installpg" = "y" ]; then
   echo
 fi
 
-read -e -p "Create Alfresco Database and user? [y/n] " -i "n" createdb
-if [ "$createdb" = "y" ]; then
-  sudo -u postgres createuser -D -A -P $ALFRESCO_USER
-  sudo -u postgres createdb -O $ALFRESCO_USER $ALFRESCO_DB
+read -e -p "Create Alfresco Database and user? [y/n] " -i "y" createdbalfresco
+if [ "$createdbalfresco" = "y" ]; then
+  read -s -p "Enter the Alfresco database password:" ALFRESCO_PASSWORD
+  echo ""
+  read -s -p "Re-Enter the Alfresco database password:" ALFRESCO_PASSWORD2
+  if [ "$ALFRESCO_PASSWORD" == "$ALFRESCO_PASSWORD2" ]; then
+    echo "Creating Alfresco database and user."
+	sudo -i -u postgres psql -c "CREATE USER $ALFRESCO_USER WITH PASSWORD $ALFRESCO_PASSWORD;"
+	sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $ALFRESCO_DB to $ALFRESCO_USER;"
   echo
+  echo "Remember to update alfresco-global.properties with the Alfresco database password"
   echo
+  else
+    echo
+    echo "Passwords do not match. Please run the script again for better luck!"
+    echo
+  fi
 fi
 
-read -e -p "Create Camunda Database and user? [y/n] " -i "n" createdb
-if [ "$createdb" = "y" ]; then
-  sudo -u postgres createuser -D -A -P $CAMUNDA_USER
-  sudo -u postgres createdb -O $CAMUNDA_USER $CAMUNDA_DB
+read -e -p "Create Camunda Database and user? [y/n] " -i "y" createdbcamunda
+if [ "$createdbcamunda" = "y" ]; then
+  read -s -p "Enter the Camunda database password:" CAMUNDA_PASSWORD
+  echo ""
+  read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
+  if [ "$CAMUNDA_PASSWORD" == "$CAMUNDA_PASSWORD2" ]; then
+    echo "Creating Camunda database and user."
+    sudo -i -u postgres psql -c "CREATE USER $CAMUNDA_USER WITH PASSWORD $CAMUNDA_PASSWORD;"
+	sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $CAMUNDA_DB to $CAMUNDA_USER;"
   echo
+  echo "Remember to update server.xml with the Camunda database password"
   echo
+  else
+    echo
+    echo "Passwords do not match. Please run the script again for better luck!"
+    echo
+  fi
 fi
 
 echo
