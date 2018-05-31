@@ -108,7 +108,7 @@ if [ "$createpgadmin" = "y" ]; then
 	 sudo systemctl daemon-reload
 	 sudo systemctl enable pgadmin4
 	 sudo sed -i "1 i\\#\!\/usr\/bin\/env python" $PGADMIN4_HOME/lib/python2.7/site-packages/pgadmin4/pgAdmin4.py
-	 
+	 sudo chmod a+x	$PGADMIN4_HOME/lib/python2.7/site-packages/pgadmin4/pgAdmin4.py
 	 sudo systemctl start pgadmin4
 	 
 	 
