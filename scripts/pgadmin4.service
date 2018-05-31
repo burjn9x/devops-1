@@ -9,7 +9,7 @@ Group=ubuntu
 WorkingDirectory=@@PGADMIN4_HOME@@
 # Point to the bin folder of your virtual environment
 Environment="PATH=@@PGADMIN4_HOME@@/bin"
-ExecStart="@@PGADMIN4_HOME@@/lib/python3.5/site-packages/pgadmin4/pgAdmin4.py"
+ExecStart="@@PGADMIN4_HOME@@/lib/python2.7/site-packages/pgadmin4/pgAdmin4.py"
 PrivateTmp=true
  
 [Install]
