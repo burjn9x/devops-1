@@ -26,6 +26,14 @@ echogreen "Begin running...."
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 echo
 
+if [ "$(which nginx)" = "" ]; then
+	if [ -f "1.ubuntu-upgrade.sh" ]; then
+	. 1.ubuntu-upgrade.sh
+	else
+		. ../1.ubuntu-upgrade.sh
+	fi
+fi
+
 # Install php
 if [ "$(which php)" = "" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -130,10 +138,15 @@ if [ -n "$MAUTIC_HOSTNAME" ]; then
 		  
 		 sudo sed -i "s/@@DNS_DOMAIN@@/$MAUTIC_HOSTNAME/g" /etc/nginx/sites-available/$MAUTIC_HOSTNAME.conf
 	fi
+	sudo sed -i "s/##WEB_ROOT##/root \/var\/www\/mautic;/g" /etc/nginx/sites-available/$MAUTIC_HOSTNAME.conf
+	sudo sed -i "s/##INDEX##/index index.php index.html index.htm index.nginx-debian.html;/g" /etc/nginx/sites-available/$MAUTIC_HOSTNAME.conf
+	 
 	
 	sudo mkdir temp
 	sudo cp $NGINX_CONF/sites-available/mautic.snippet	temp/
 	sudo sed -e '/##MAUTIC##/ {' -e 'r temp/mautic.snippet' -e 'd' -e '}' -i /etc/nginx/sites-available/$MAUTIC_HOSTNAME.conf
 	sudo rm -rf temp
+	
+	sudo service nginx restart
 fi
 
