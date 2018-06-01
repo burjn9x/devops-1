@@ -34,9 +34,9 @@ echo "You may be prompted for sudo password."
 echo "--------------------------------------------"
 echo
 
-read -e -p "Install PostgreSQL database? [y/n] " -i "n" installpg
+read -e -p "Install PostgreSQL database? [y/n] " -i "y" installpg
 if [ "$installpg" = "y" ]; then
-  sudo apt-get install postgresql postgresql-contrib
+  sudo apt-get -y install postgresql postgresql-contrib
   echo
   echo "You will now set the default password for the postgres user."
   echo "This will open a psql terminal, enter:"
@@ -107,7 +107,27 @@ if [ "$createdbcashflow" = "y" ]; then
     echo
     echo "Creating Cashflow database and user."
     sudo -i -u postgres psql -c "CREATE USER $CASHFLOW_USER WITH PASSWORD '"$CASHFLOW_PASSWORD"';"
-	sudo -u postgres createdb -O $CASHFLOW_USER $CASHFLOW_DB
+	sudo -u postgres createdb -O $CASHFLOW_USER cashflow_general
+	sudo -u postgres createdb -O $CASHFLOW_USER cashflow_DEMO
+	
+	read -e -p "Do you want to initialize data for Cashflow system ? [y/n] " -i "y" cashflowinitialize
+	if [ "$cashflowinitialize" = "y" ]; then
+		echogreen "Please make sure you already have scripts put in $DEVOPS_HOME/cashflow/database"
+		echogreen "If not, please check and put scripts into that location."
+		count=`ls -1 $DEVOPS_HOME/cashflow/database/*.sql 2>/dev/null | wc -l`
+		if [ $count != 0 ]; then
+			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/2.cashflow_create_script_general.sql
+			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/3.insert_data_general.sql
+			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/insert_master_data.sql
+			
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/2.cashflow_create_script_tenant.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/3.create_function.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/4.insert_system_value.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/5.create_view.sql
+		else
+			echored "Scripts in $DEVOPS_HOME/cashflow/database seems not exist."
+		fi
+	fi
   echo
   echo "Remember to update application properties with the cashflow database info"
   echo
@@ -116,7 +136,7 @@ fi
 
 read -e -p "Install PostgreSQL Admin (Web)? [y/n] " -i "y" createpgadmin
 if [ "$createpgadmin" = "y" ]; then
-	 sudo apt-get install virtualenv python-pip libpq-dev python-dev
+	 sudo apt-get -y install virtualenv python-pip libpq-dev python-dev
 	 cd $PGADMIN_INSTALLATION_DEST
 	 virtualenv pgadmin4
 	 cd $PGADMIN_INSTALLATION_DEST/pgadmin4

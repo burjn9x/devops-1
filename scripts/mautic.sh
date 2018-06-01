@@ -106,7 +106,12 @@ if [ "$createmauticuser" = "y" ]; then
   read -s -p "Enter the Mautic database password:" MAUTIC_PASSWORD
   echo ""
   read -s -p "Re-Enter the Mautic database password:" MAUTIC_PASSWORD2
-  if [ "$MAUTIC_PASSWORD" == "$MAUTIC_PASSWORD2" ]; then
+  while [ "$MAUTIC_PASSWORD" != "$MAUTIC_PASSWORD2" ]; do
+		echo "Password does not match. Please try again"
+		read -s -p "Enter the Mautic database password:" MAUTIC_PASSWORD
+		echo ""
+		read -s -p "Re-Enter the Mautic database password:" MAUTIC_PASSWORD2
+  done
     echo "Creating Mautic database and user."
     echo "You must supply the root user password for MariaDB:"
     mysql -u root -p << EOF
@@ -118,11 +123,7 @@ if [ "$createmauticuser" = "y" ]; then
 EOF
   echo
   echo
-  else
-    echo
-    echo "Passwords do not match. Please run the script again for better luck!"
-    echo
-  fi
+  
 fi
 
 read -e -p "Please enter the public host name for Mautic server (fully qualified domain name)${ques} [`hostname`] " -i "`hostname`" MAUTIC_HOSTNAME
