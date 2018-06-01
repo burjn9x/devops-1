@@ -41,6 +41,9 @@ if [ "$(which php)" = "" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	sudo apt-get $APTVERBOSITY install php$PHP_VERSION-fpm php$PHP_VERSION-mcrypt php$PHP_VERSION-curl php$PHP_VERSION-cli php$PHP_VERSION-mysql php$PHP_VERSION-gd php$PHP_VERSION-xsl php$PHP_VERSION-json php$PHP_VERSION-intl php-pear php$PHP_VERSION-dev php$PHP_VERSION-common php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-soap php$PHP_VERSION-bcmath 
 	echoblue "PHP installation has been completed"
+else
+	# Maybe we installed php earlier without php-bcmath
+	sudo apt-get install php$PHP_VERSION-bcmath
 fi
 
 echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
@@ -149,4 +152,7 @@ if [ -n "$MAUTIC_HOSTNAME" ]; then
 	
 	sudo service nginx restart
 fi
+
+echogreen "After you login into the home page, you will see profile avatar be broken, the reason is mautic will get avatar picture from http://www.gravatar.com via email"
+echogreen " so you should access http://www.gravatar.com to register an account firstly using your email."
 
