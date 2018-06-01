@@ -88,7 +88,7 @@ else
   git pull
 fi
 
-rsync -avz $BASE_WP/mautic /var/www/
+sudo rsync -avz $BASE_WP/mautic /var/www/
 
 sudo chown -R www-data:www-data /var/www/mautic
 cd /var/www/mautic/
