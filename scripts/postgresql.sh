@@ -123,24 +123,24 @@ if [ "$createdbcashflow" = "y" ]; then
 		
 		count=`ls -1 $TMP_INSTALL/workplacebpm/cashflow/sql/*.sql 2>/dev/null | wc -l`
 		if [ $count != 0 ]; then
-			sudo -i -u $CASHFLOW_USER psql -d cashflow_general -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/2.cashflow_create_script_general.sql
-			sudo -i -u $CASHFLOW_USER psql -d cashflow_general -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/3.insert_data_general.sql
+			sudo -i -u postgres psql -d cashflow_general -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/2.cashflow_create_script_general.sql
+			sudo -i -u postgres psql -d cashflow_general -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/3.insert_data_general.sql
 			
-			sudo -i -u $CASHFLOW_USER psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/2.cashflow_create_script_tenant.sql
-			sudo -i -u $CASHFLOW_USER psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/3.create_function.sql
-			sudo -i -u $CASHFLOW_USER psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/4.insert_system_value.sql
-			sudo -i -u $CASHFLOW_USER psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/5.create_view.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/2.cashflow_create_script_tenant.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/3.create_function.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/4.insert_system_value.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/5.create_view.sql
 			
-			sudo -i -u $CASHFLOW_USER psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/insert_master_data.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/insert_master_data.sql
 
 		else
 			echored "Scripts in $DEVOPS_HOME/cashflow/database seems not exist."
 		fi
 	fi
 	
-	sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $CASHFLOW_USER;"
-	sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE cashflow_general TO $CASHFLOW_USER;"
-	sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE "cashflow_DEMO" TO $CASHFLOW_USER;"
+	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $CASHFLOW_USER;"
+	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON DATABASE cashflow_general TO $CASHFLOW_USER;"
+	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON DATABASE cashflow_DEMO TO $CASHFLOW_USER;"
 	
   echo
   echo "Remember to update application properties with the cashflow database info"
