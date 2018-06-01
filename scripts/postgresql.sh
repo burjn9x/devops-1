@@ -112,19 +112,25 @@ if [ "$createdbcashflow" = "y" ]; then
 	
 	read -e -p "Do you want to initialize data for Cashflow system ? [y/n] " -i "y" cashflowinitialize
 	if [ "$cashflowinitialize" = "y" ]; then
-		echogreen "Please make sure you already have scripts put in $DEVOPS_HOME/cashflow/database"
-		echogreen "If not, please check and put scripts into that location."
-		count=`ls -1 $DEVOPS_HOME/cashflow/database/*.sql 2>/dev/null | wc -l`
+	
+		if [ -d "$TMP_INSTALL/workplacebpm" ]; then
+			cd $TMP_INSTALL/workplacebpm
+			git pull
+		else
+			git clone https://bitbucket.org/workplace101/workplacebpm.git $TMP_INSTALL/workplacebpm
+		fi
+		
+		count=`ls -1 $TMP_INSTALL/workplacebpm/cashflow/sql/*.sql 2>/dev/null | wc -l`
 		if [ $count != 0 ]; then
-			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/2.cashflow_create_script_general.sql
-			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/3.insert_data_general.sql
+			sudo -i -u postgres psql -d cashflow_general -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/2.cashflow_create_script_general.sql
+			sudo -i -u postgres psql -d cashflow_general -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/3.insert_data_general.sql
 			
-			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/2.cashflow_create_script_tenant.sql
-			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/3.create_function.sql
-			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/4.insert_system_value.sql
-			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/5.create_view.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/2.cashflow_create_script_tenant.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/3.create_function.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/4.insert_system_value.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/5.create_view.sql
 			
-			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/insert_master_data.sql
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $TMP_INSTALL/workplacebpm/cashflow/sql/insert_master_data.sql
 
 		else
 			echored "Scripts in $DEVOPS_HOME/cashflow/database seems not exist."
