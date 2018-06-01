@@ -31,7 +31,7 @@ if [ "$(which php)" = "" ]; then
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 	echo "Installing php for system."
 	echoblue "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-	sudo apt-get $APTVERBOSITY install php$PHP_VERSION-fpm php$PHP_VERSION-mcrypt php$PHP_VERSION-curl php$PHP_VERSION-cli php$PHP_VERSION-mysql php$PHP_VERSION-gd php$PHP_VERSION-xsl php$PHP_VERSION-json php$PHP_VERSION-intl php-pear php$PHP_VERSION-dev php$PHP_VERSION-common php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-soap
+	sudo apt-get $APTVERBOSITY install php$PHP_VERSION-fpm php$PHP_VERSION-mcrypt php$PHP_VERSION-curl php$PHP_VERSION-cli php$PHP_VERSION-mysql php$PHP_VERSION-gd php$PHP_VERSION-xsl php$PHP_VERSION-json php$PHP_VERSION-intl php-pear php$PHP_VERSION-dev php$PHP_VERSION-common php$PHP_VERSION-mbstring php$PHP_VERSION-zip php-soap php$PHP_VERSION-bcmath 
 	echoblue "PHP installation has been completed"
 fi
 
@@ -84,7 +84,7 @@ rsync -avz $BASE_WP/mautic /var/www/
 
 sudo chown -R www-data:www-data /var/www/mautic
 cd /var/www/mautic/
-composer install
+sudo -u www-data composer install
 
 if [ "$(which mysql)" = "" ]; then
 	. $BASE_INSTALL/scripts/mariadb.sh
@@ -118,7 +118,7 @@ read -e -p "Please enter the public host name for Mautic server (fully qualified
 read -e -p "Please enter the protocol for MAUTIC server (fully qualified domain name)${ques} [http] " -i "http" MAUTIC_PROTOCOL
 
 if [ -n "$MAUTIC_HOSTNAME" ]; then
-	if [ "${CAMUNDA_PROTOCOL,,}" = "https" ]; then
+	if [ "${MAUTIC_PROTOCOL,,}" = "https" ]; then
 		if [ -f "$BASE_INSTALL/scripts/ssl.sh" ]; then
 			. $BASE_INSTALL/scripts/ssl.sh	$MAUTIC_HOSTNAME
 		else
