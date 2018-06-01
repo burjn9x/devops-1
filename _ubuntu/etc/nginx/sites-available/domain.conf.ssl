@@ -43,5 +43,7 @@ server {
 	##CAMUNDA##
 	
 	##EFORM##
+	
+	##MAUTIC##
 
 }
