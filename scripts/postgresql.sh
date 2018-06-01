@@ -140,7 +140,19 @@ if [ "$createdbcashflow" = "y" ]; then
 	
 	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $CASHFLOW_USER;"
 	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON DATABASE cashflow_general TO $CASHFLOW_USER;"
-	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON DATABASE cashflow_DEMO TO $CASHFLOW_USER;"
+	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON DATABASE \"cashflow_DEMO\" TO $CASHFLOW_USER;"
+
+	for table in `echo "SELECT schemaname || '.' || relname FROM pg_stat_user_tables;" |  sudo -i -u postgres psql -A -t cashflow_general`;
+do
+    echo "GRANT ALL ON TABLE $table to $CASHFLOW_USER;"
+    echo "GRANT ALL ON TABLE $table to $CASHFLOW_USER;" | sudo -i -u postgres psql cashflow_general
+done
+
+	for table in `echo "SELECT schemaname || '.' || relname FROM pg_stat_user_tables;" |  sudo -i -u postgres psql -A -t cashflow_DEMO`;
+do
+    echo "GRANT ALL ON TABLE $table to $CASHFLOW_USER;"
+    echo "GRANT ALL ON TABLE $table to $CASHFLOW_USER;" | sudo -i -u postgres psql cashflow_DEMO
+done
 	
   echo
   echo "Remember to update application properties with the cashflow database info"
