@@ -48,7 +48,12 @@ if [ "$createdbalfresco" = "y" ]; then
   read -s -p "Enter the Alfresco database password:" ALFRESCO_PASSWORD
   echo ""
   read -s -p "Re-Enter the Alfresco database password:" ALFRESCO_PASSWORD2
-  if [ "$ALFRESCO_PASSWORD" == "$ALFRESCO_PASSWORD2" ]; then
+  while [ "$ALFRESCO_PASSWORD" != "$ALFRESCO_PASSWORD2" ]; do
+		echo "Password does not match. Please try again"
+		read -s -p "Enter the Alfresco database password:" ALFRESCO_PASSWORD
+		echo ""
+		read -s -p "Re-Enter the Alfresco database password:" ALFRESCO_PASSWORD2
+  done
     echo "Creating Alfresco database and user."
     echo "You must supply the root user password for MariaDB:"
     mysql -u root -p << EOF
@@ -61,11 +66,7 @@ EOF
   echo
   echo "Remember to update alfresco-global.properties with the Alfresco database password"
   echo
-  else
-    echo
-    echo "Passwords do not match. Please run the script again for better luck!"
-    echo
-  fi
+ 
 fi
 
 read -e -p "Create Camunda Database and user? [y/n] " -i "y" createdbcamunda
@@ -73,7 +74,12 @@ if [ "$createdbcamunda" = "y" ]; then
   read -s -p "Enter the Camunda database password:" CAMUNDA_PASSWORD
   echo ""
   read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
-  if [ "$CAMUNDA_PASSWORD" == "$CAMUNDA_PASSWORD2" ]; then
+  while [ "$CAMUNDA_PASSWORD" != "$CAMUNDA_PASSWORD2" ]; do
+		echo "Password does not match. Please try again"
+		read -s -p "Enter the Camunda database password:" CAMUNDA_PASSWORD
+		echo ""
+		read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
+  done
     echo "Creating Camunda database and user."
     echo "You must supply the root user password for MariaDB:"
     mysql -u root -p << EOF
@@ -86,9 +92,5 @@ EOF
   echo
   echo "Remember to update server.xml with the Camunda database password"
   echo
-  else
-    echo
-    echo "Passwords do not match. Please run the script again for better luck!"
-    echo
-  fi
+ 
 fi

@@ -22,6 +22,8 @@ export ALFRESCO_DB=alfresco
 export ALFRESCO_USER=alfresco
 export CAMUNDA_DB=camunda
 export CAMUNDA_USER=camunda
+export CASHFLOW_USER=cashflow
+export CASHFLOW_DB=cashflow
 export PGADMIN_INSTALLATION_DEST=/home/ubuntu
 
 echo
@@ -55,7 +57,12 @@ if [ "$createdbalfresco" = "y" ]; then
   read -s -p "Enter the Alfresco database password:" ALFRESCO_PASSWORD
   echo ""
   read -s -p "Re-Enter the Alfresco database password:" ALFRESCO_PASSWORD2
-  if [ "$ALFRESCO_PASSWORD" == "$ALFRESCO_PASSWORD2" ]; then
+ while [ "$ALFRESCO_PASSWORD" != "$ALFRESCO_PASSWORD2" ]; do
+		echo "Password does not match. Please try again"
+		read -s -p "Enter the Alfresco database password:" ALFRESCO_PASSWORD
+		echo ""
+		read -s -p "Re-Enter the Alfresco database password:" ALFRESCO_PASSWORD2
+  done
     echo
     echo "Creating Alfresco database and user."
 	sudo -i -u postgres psql -c "CREATE USER $ALFRESCO_USER WITH PASSWORD '"$ALFRESCO_PASSWORD"';"
@@ -63,11 +70,7 @@ if [ "$createdbalfresco" = "y" ]; then
   echo
   echo "Remember to update alfresco-global.properties with the Alfresco database password"
   echo
-  else
-    echo
-    echo "Passwords do not match. Please run the script again for better luck!"
-    echo
-  fi
+ 
 fi
 
 read -e -p "Create Camunda Database and user? [y/n] " -i "y" createdbcamunda
@@ -75,7 +78,12 @@ if [ "$createdbcamunda" = "y" ]; then
   read -s -p "Enter the Camunda database password:" CAMUNDA_PASSWORD
   echo ""
   read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
-  if [ "$CAMUNDA_PASSWORD" == "$CAMUNDA_PASSWORD2" ]; then
+  while [ "$CAMUNDA_PASSWORD" != "$CAMUNDA_PASSWORD2" ]; do
+		echo "Password does not match. Please try again"
+		read -s -p "Enter the Camunda database password:" CAMUNDA_PASSWORD
+		echo ""
+		read -s -p "Re-Enter the Camunda database password:" CAMUNDA_PASSWORD2
+  done
     echo
     echo "Creating Camunda database and user."
     sudo -i -u postgres psql -c "CREATE USER $CAMUNDA_USER WITH PASSWORD '"$CAMUNDA_PASSWORD"';"
@@ -83,11 +91,27 @@ if [ "$createdbcamunda" = "y" ]; then
   echo
   echo "Remember to update server.xml with the Camunda database password"
   echo
-  else
+fi
+
+read -e -p "Create Cashflow Database and user? [y/n] " -i "y" createdbcashflow
+if [ "$createdbcashflow" = "y" ]; then
+  read -s -p "Enter the Cashflow database password:" CASHFLOW_PASSWORD
+  echo ""
+  read -s -p "Re-Enter the Cashflow database password:" CASHFLOW_PASSWORD2
+  while [ "$CASHFLOW_PASSWORD" != "$CASHFLOW_PASSWORD2" ]; do
+		echo "Password does not match. Please try again"
+		read -s -p "Enter the Cashflow database password:" CASHFLOW_PASSWORD
+		echo ""
+		read -s -p "Re-Enter the Cashflow database password:" CASHFLOW_PASSWORD2
+  done
     echo
-    echo "Passwords do not match. Please run the script again for better luck!"
-    echo
-  fi
+    echo "Creating Cashflow database and user."
+    sudo -i -u postgres psql -c "CREATE USER $CASHFLOW_USER WITH PASSWORD '"$CASHFLOW_PASSWORD"';"
+	sudo -u postgres createdb -O $CASHFLOW_USER $CASHFLOW_DB
+  echo
+  echo "Remember to update application properties with the cashflow database info"
+  echo
+  
 fi
 
 read -e -p "Install PostgreSQL Admin (Web)? [y/n] " -i "y" createpgadmin
