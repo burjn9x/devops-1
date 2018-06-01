@@ -118,12 +118,14 @@ if [ "$createdbcashflow" = "y" ]; then
 		if [ $count != 0 ]; then
 			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/2.cashflow_create_script_general.sql
 			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/3.insert_data_general.sql
-			sudo -i -u postgres psql -d cashflow_general -a -f  $DEVOPS_HOME/cashflow/database/insert_master_data.sql
 			
 			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/2.cashflow_create_script_tenant.sql
 			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/3.create_function.sql
 			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/4.insert_system_value.sql
 			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/5.create_view.sql
+			
+			sudo -i -u postgres psql -d cashflow_DEMO -a -f  $DEVOPS_HOME/cashflow/database/insert_master_data.sql
+
 		else
 			echored "Scripts in $DEVOPS_HOME/cashflow/database seems not exist."
 		fi
