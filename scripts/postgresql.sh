@@ -109,7 +109,7 @@ if [ "$createdbcashflow" = "y" ]; then
     sudo -i -u postgres psql -c "CREATE USER $CASHFLOW_USER WITH PASSWORD '"$CASHFLOW_PASSWORD"';"
 	sudo -u postgres createdb -O $CASHFLOW_USER cashflow_general
 	sudo -u postgres createdb -O $CASHFLOW_USER cashflow_DEMO
-	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $CASHFLOW_USER;"
+	sudo -i -u postgres psql -c "CREATE USER $CASHFLOW_USER WITH PASSWORD '"$CASHFLOW_PASSWORD"';"
 	
 	read -e -p "Do you want to initialize data for Cashflow system ? [y/n] " -i "y" cashflowinitialize
 	if [ "$cashflowinitialize" = "y" ]; then
@@ -137,7 +137,10 @@ if [ "$createdbcashflow" = "y" ]; then
 			echored "Scripts in $DEVOPS_HOME/cashflow/database seems not exist."
 		fi
 	fi
+	
 	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $CASHFLOW_USER;"
+	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON DATABASE cashflow_general TO $CASHFLOW_USER;"
+	sudo -i -u postgres psql -c " GRANT ALL PRIVILEGES ON DATABASE cashflow_DEMO TO $CASHFLOW_USER;"
 	
   echo
   echo "Remember to update application properties with the cashflow database info"
