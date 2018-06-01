@@ -153,6 +153,6 @@ if [ -n "$MAUTIC_HOSTNAME" ]; then
 	sudo service nginx restart
 fi
 
-echogreen "After you login into the home page, you will see profile avatar be broken, the reason is mautic will get avatar picture from http://www.gravatar.com via email"
-echogreen " so you should access http://www.gravatar.com to register an account firstly using your email."
+echogreen "After you login into the home page, you will see profile avatar broken, the reason is mautic will get avatar picture from http://www.gravatar.com via email"
+echogreen " so you should use your email to register an account in http://www.gravatar.com "
 
